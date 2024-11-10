@@ -1,0 +1,131 @@
+body {
+    background: #ffffff;
+    /*
+    background-image: url(bg.png);
+    background-repeat: no-repeat;
+    background-position: center center;*/
+    margin: 0;
+    padding: 0;
+}
+
+.maincontainer {
+    display: flex;
+    width: 60%;
+    max-width: 1000px;
+    height: 400px;
+    padding: 0;
+    margin: 5% auto;
+    background-color: #fdf4c3;
+    border-radius: 25px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    overflow: hidden
+}
+
+.text-con {
+    flex: 1;
+    padding: 20px;
+    padding-left: 30px;
+    display: flex;
+    flex-direction: column;
+    /*justify-content: center;*/
+}
+
+.text-con h1 {
+    font-size: 45px;
+    color: #AF1F1F;
+    font-weight: bold;
+    margin: 0;
+}
+
+.text-con h2 {
+    font-size: 30px;
+    font-weight: bold;
+    margin: 10px 0 5px;
+}
+
+.text-con p {
+    font-size: 17px;
+    color: #AF1F1F;
+    margin: 5px 0 20px;
+}
+
+
+.image-con {
+    flex: 1;
+    padding: 20px;
+    padding-left: 30px;
+    display: flex;
+    flex-direction: column;
+    /*justify-content: center;*/
+    background-color: #AF1F1F;
+    border-radius: 25px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+
+    /*
+    display: flex;
+    align-items: stretch;
+    margin: 0;
+    padding: 0;*/
+}
+
+.image-con h1 {
+    font-size: 45px;
+    color: #fdf4c3;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+.image-con .indent {
+    margin-left: 40px;
+}
+
+.image-con h2 {
+    font-size: 45px;
+    font-weight: bold;
+    margin: 10px 0 5px;
+}
+
+.image-con p {
+    font-size: 20px;
+    color: #fdf4c3;
+    margin: 0;
+    line-height: 40px;
+}
+
+
+.image-con img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-top-right-radius: 25px;
+    border-bottom-right-radius: 25px;
+    margin: 0;
+    display: block;
+}
+
+
+.cont-con {
+    width: 100%;
+    height: 7%;
+    padding: 15px 0;
+    margin: 0;
+    background-color: #b22c27;
+    display: flex;
+    align-items: center;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}
+
+.logo {
+    position: relative;
+    left: 20px;
+    color: #FFFAB7;
+}
+
+.contact-con {
+    position: relative;
+    left: 50px;
+    color: #ffffff;
+}

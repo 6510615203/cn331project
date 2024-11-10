@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+<title>KINKORN Home</title>
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/aboutstyle.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="maincontainer">
+    <div class="text-con">
+        <h1>About us</h1>
+        <p><b>ผู้จัดทำคณะวิศวะกรรมศาสตร์สาขาคอมพิวเตอร์
+                มุ่งหวังแก้ไขปัญหาความหนาแน่นในโรงอาหาร<br>
+                จัดทำโดย</b></p>
+        <p>6510615096 นางสาวณัฐภูพิชา อรุณกรพสุรักษ์<br>
+            6510615203 นางสาวพรทิพย์พา ธีระประเวศ<br>
+            6510685211 นางสาวพรนัชชา ประทีปสังคม<br>
+            6510685040 นางสาวชนิกานต์ โสตถิวนิชย์วงศ์<br>
+            6510685057 นางสาวญาณัชทัฬห์ คงกระจ่าง</p>
+    </div>
+    <div class="image-con">
+        <h1>We are<br><span class="indent">in progress...</span></h1>
+        <p class="c1" ">Agile user stories</p>
+        <a href=" https://trello.com/b/SYxaUonl/kinkorn" style="color: white">https://trello.com/b/SYxaUonl/kinkorn</a>
+        <p class="c2">Our project overall</p>
+        <a href="https://github.com/6510615203/cn331project"
+            style="color: white">https://github.com/6510615203/cn331project</a>
+    </div>
+</div>
+
+<div class="cont-con">
+    <div class="logo">
+        <h2>CONTACT US</h2>
+    </div>
+    <div class="contact-con">
+        <p>kinkorn@gmail.com TEL. 081-123-4567<br>
+            Faculty of Computer Engineering, Thammasat University
+        </p>
+    </div>
+</div>
+
+
+{% endblock %}
