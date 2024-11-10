@@ -112,11 +112,12 @@ body {
 }
 
 .image1 {
-    width: 250%;
-    height: 200%;
-    top: -70px;
-    left: 10px;
-    z-index: 2;
+    position: fixed;
+    object-fit: cover;
+    width: 1025px;
+    height: 580px;
+    bottom: 0px;
+    right: 0px
 }
 
 /*
@@ -140,3 +141,22 @@ body {
     z-index: 0;
 }
 */
+
+@media (max-width: 768px) {
+    .image1 {
+        width: 15vw;
+        /* Increase the width on smaller screens */
+        max-width: 100px;
+        /* Set a smaller max width for mobile devices */
+    }
+}
+
+/* Media Query for very small devices */
+@media (max-width: 480px) {
+    .image1 {
+        width: 20vw;
+        /* Further increase width on very small screens */
+        max-width: 80px;
+        /* Set an even smaller max width for very small screens */
+    }
+}
