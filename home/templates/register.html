@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+<title>Register</title>
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/register.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5 signup-container">
+    <h2 class="text-center signup-title">Sign Up</h2>
+    <form method="POST" action="/register/" class="signup-form">
+        {% csrf_token %}
+
+  
+        <div class="form-section">
+            <label for="name" class="form-title">Name</label>
+            <input type="text" class="form-input" id="name" name="name" required>
+        </div>
+
+ 
+        <div class="form-section">
+            <label for="username" class="form-title">Username</label>
+            <input type="text" class="form-input" id="username" name="username" required>
+        </div>
+
+        <div class="form-section">
+            <label for="password" class="form-title">Password</label>
+            <input type="password" class="form-input" id="password" name="password" required>
+        </div>
+  
+        <div class="form-section">
+            <label for="phone_number" class="form-title">Phone Number</label>
+            <input type="text" class="form-input" id="phone_number" name="phone_number" required>
+        </div>
+
+        <div class="form-section">
+            <label for="email" class="form-title">Email</label>
+            <input type="email" class="form-input" id="email" name="email" required>
+        </div>
+
+        <input type="hidden" name="user_type" value="{{ user_type }}">
+
+
+        <div class="form-section">
+            <button type="submit" class="button">Register</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+

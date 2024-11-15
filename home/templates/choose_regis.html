@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+<title>KINKORN Sign Up</title>
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/choose_regis.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="signup-container">
+    <h2>Sign up as .....</h2>
+    <div class="signup-options">
+        <div class="option">
+            <img src="{% static '/css/restaurant.png' %}" alt="Restaurant">
+            <a href="/register/?user_type=restaurant" class="button">restaurant</a>
+        </div>
+        <div class="option">
+            <img src="{% static '/css/customer.png' %}" alt="Customer">
+            <a href="/register/?user_type=customer" class="button">customer</a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

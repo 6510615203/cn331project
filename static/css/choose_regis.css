@@ -1,0 +1,61 @@
+
+body {
+    background: #ffffff;
+    /*
+    background-image: url(bg.png);
+    background-repeat: no-repeat;
+    background-position: center center;*/
+    margin: 0;
+    padding: 0;
+}
+
+.signup-container {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.signup-container h2 {
+    color: #AF1F1F;
+    font-size: 24px;
+    margin-bottom: 30px;
+}
+
+/* Options Container */
+.signup-options {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+}
+
+.option {
+    text-align: center;
+    width: 200px;
+}
+
+.option img {
+    width: 100%;
+    height: auto; 
+    border-radius: 20px; 
+    border: none; 
+    object-fit: cover; 
+}
+
+
+.option img:hover {
+    transform: scale(1.05);
+}
+
+.button {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 10px 20px;
+    background-color: #FFFAB7;
+    color: #AF1F1F;
+    font-weight: bold;
+    border-radius: 25px;
+    text-decoration: none;
+}
+
+.button:hover {
+    background-color: #ffdd70;
+}

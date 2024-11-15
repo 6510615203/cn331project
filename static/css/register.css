@@ -1,0 +1,169 @@
+
+body {
+    background-color: #ffffff;
+    margin: 0;
+    padding: 0;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.signup-container {
+    text-align: center;
+    margin-top: 50px;
+}
+
+.signup-container h2 {
+    color: #AF1F1F;
+    font-size: 24px;
+    margin-bottom: 30px;
+}
+
+
+.form-section {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 0;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 36px;
+    color: #AF1F1F;
+}
+
+.form-input {
+    width: 317px;
+    height: 72px;
+    margin: 5px;
+    font-size: 18px;
+    text-align: center;
+    color: #000000;
+    padding: 0 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+
+.form-title {
+    width: 526px;
+    height: 47px;
+    font-size: 36px;
+    line-height: 56px;
+    color: #000000;
+}
+
+
+.signup-options {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+}
+
+.option {
+    text-align: center;
+    width: 200px;
+}
+
+.option img {
+    width: 100%;
+    height: auto;
+    border-radius: 20px;
+    object-fit: cover;
+}
+
+.option img:hover {
+    transform: scale(1.05);
+}
+
+
+.button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #FFFAB7;
+    color: #AF1F1F;
+    font-weight: bold;
+    border-radius: 25px;
+    text-decoration: none;
+    margin-top: 20px;
+}
+
+.button:hover {
+    background-color: #ffdd70;
+}
+
+
+.shape {
+    position: absolute;
+    border-radius: 50%;
+}
+
+.ellipse-5 {
+    width: 47px;
+    height: 47px;
+    background-color: #AF1F1F;
+    left: 613px;
+    top: 176px;
+}
+
+.ellipse-6 {
+    width: 47px;
+    height: 47px;
+    background-color: #FBF27C;
+    left: 1021px;
+    top: 176px;
+}
+
+.ellipse-7 {
+    width: 47px;
+    height: 47px;
+    background-color: #FBF27C;
+    left: 1424px;
+    top: 176px;
+}
+
+.star {
+    width: 69px;
+    height: 69px;
+    background-color: #FBF27C;
+    left: 1754px;
+    top: 165px;
+}
+
+/* Rectangle Divider */
+.rectangle-24 {
+    position: absolute;
+    width: 1446px;
+    height: 18px;
+    left: 345px;
+    top: 191px;
+    background-color: #FFFAB7;
+}
+
+
+.section-label {
+    font-size: 36px;
+    font-weight: 200;
+    text-align: center;
+    color: #000000;
+}
+
+
+.input-group {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+    width: 100%;
+}
+
+.input-group .input-container {
+    width: 317px;
+}
+
+.input-container input {
+    width: 100%;
+    height: 72px;
+    font-size: 18px;
+    text-align: center;
+    padding: 0 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
