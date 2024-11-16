@@ -1,56 +1,42 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Page</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-    <div class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-4">
-                <h2 class="text-center">Login</h2>
-                {% if messages %}
-                    {% for message in messages %}
-                    <div class="alert alert-warning" role="alert">
-                        <strong>{{ message }}</strong>
-                    </div>
-                    {% endfor %}
-                {% endif %}
-                <form method="POST" action="/login/">
-                    {% csrf_token %}
-                    <div class="form-group">
-                        <label for="username">Username</label>
-                        <input type="text" class="form-control" id="username" name="username" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="password">Password</label>
-                        <input type="password" class="form-control" id="password" name="password" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-block">Login</button> 
-                </form>
-                <div class="text-center mt-3">
-                    <a href="/register/" class="btn btn-secondary mb-3">Register</a>
-                </div>
-            </div>
-        </div>
-    </div>
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+<title>KINKORN Login</title>
+{% endblock %}
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script>
-        setTimeout(function() {
-            const alert = document.querySelector('.alert');
-            if (alert) {
-                alert.style.transition = "opacity 0.5s ease";
-                alert.style.opacity = 0;
-                setTimeout(function() {
-                    alert.remove();
-                }, 500);
-            }
-        }, 3000);
-    </script>
-</body>
-</html>
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/loginstyle.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>Login for start your meal !</h1>
+    <div class="login-container">
+        <form action="#" method="post">
+            <div class="input-group">
+                <label for="username">Username</label>
+                <input type="text" placeholder="Enter your username" id="username" name="username" required>
+            </div>
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" placeholder="Enter your password" id="password" name="password" required>
+            </div>
+            <div class="signuphere">
+                <p1>Don't have an account ?</p1>
+                <span class="auth-links">
+                    <a href="/choose_regis/">Sign up here</a>
+                </span>
+            </div>
+            <div class="input-group">
+                <div class="buttom">
+                    <span class="auth-links">
+                        <a href="/choose_regis/">forget password ?</a> <!-- Link ไปหน้าลืมรหัส -->
+                    </span>
+                    <button type="submit">Log in</button>
+                </div>
+                
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
