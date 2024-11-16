@@ -12,10 +12,15 @@
 {% block content %}
 <div class="container mt-5 signup-container">
     <h2 class="text-center signup-title">Sign Up</h2>
-    <form method="POST" action="/register/" class="signup-form">
+    <form method="POST" action="/register/" class="signup-form" enctype="multipart/form-data">
         {% csrf_token %}
 
-  
+        
+        <div class="form-section">
+            <label for="profile_picture" class="form-title">Profile Picture</label>
+            <input type="file" class="form-input" id="profile_picture" name="profile_picture">
+        </div>
+
         <div class="form-section">
             <label for="name" class="form-title">Name</label>
             <input type="text" class="form-input" id="name" name="name" required>
@@ -48,6 +53,7 @@
         <div class="form-section">
             <button type="submit" class="button">Register</button>
         </div>
+
     </form>
 </div>
 {% endblock %}

@@ -38,8 +38,6 @@ def choose_regis(request):
     return render(request, "choose_regis.html")
 
 
-# ฟังก์ชันสำหรับการลงทะเบียน
-
 def register(request):
     if request.method == "POST":
         username = request.POST.get("username")
@@ -57,20 +55,23 @@ def register(request):
             messages.error(request, "ชื่อผู้ใช้นี้มีอยู่แล้วในระบบ")
             return render(request, "register.html", {"user_type": user_type})
 
+        profile_picture = request.FILES.get("profile_picture", None)
     
         user = User.objects.create_user(username=username, password=password, email=email)
-        # สร้าง UserProfile ที่เชื่อมโยงกับ User ที่สร้างขึ้น
         profile = UserProfile.objects.create(
             user=user, 
             phone_number=phone_number, 
             user_type=user_type
         )
+        
+        if profile_picture:
+            profile.profile_picture = profile_picture
+            profile.save()
 
         messages.success(request, "ลงทะเบียนสำเร็จ!")
         login(request, user)
         return redirect("login") 
 
-    # ส่ง user_type ไปยังหน้า register.html
     user_type = request.GET.get("user_type", "customer")
     return render(request, "register.html", {"user_type": user_type})
 
