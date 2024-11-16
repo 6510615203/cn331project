@@ -11,49 +11,75 @@
 
 {% block content %}
 <div class="container mt-5 signup-container">
-    <h2 class="text-center signup-title">Sign Up</h2>
+    <div class="title">
+        <h2>Restaurant</h2>
+        <div class="stepline">
+            <div class="step">
+                <div class="stepicon">
+                    <div class="circleiconnow"></div>
+                    <label for="step">กรอกข้อมูลส่วนตัว</label>
+                </div>
+                <div class="stepicon">
+                    <div class="circleicon"></div>
+                    <label for="step">กรอกข้อมูลร้านอาหาร</label>
+                </div>
+                <div class="stepicon">
+                    <div class="circleicon"></div>
+                    <label for="step">เพิ่มเมนูอาหาร</label>
+                </div>
+                <div class="stepicon">
+                    <div class="circleicon"></div>
+                    <label for="step">ลงทะเบียนเสร็จสิ้น</label>
+                </div>
+            </div>
+        </div>
+    </div>
     <form method="POST" action="/register/" class="signup-form" enctype="multipart/form-data">
-        {% csrf_token %}
+    {% csrf_token %}
+    <div class="position">
+        <div class="picposition">
+            <div class="form-input-file">
+                <input type="file" class="form-input" id="profile_picture" name="profile_picture">
+                <label for="profile_picture" class="form-title">add your picture</label>
+            </div>
+        </div>
+        <div class="inputposition">
+            <div class="form-section">
+                <label for="name" class="form-title">ชื่อ - นามสกุล</label>
+                <input type="text" placeholder="Enter your name - surname" class="form-input" id="name" name="name" required>
+            </div>
+            
+            <div class="form-section">
+                <label for="phone_number" class="form-title">เบอร์โทรศัพท์</label>
+                <input type="text" placeholder="Enter your phone number " class="form-input" id="phone_number" name="phone_number" required>
+            </div>
 
+            <div class="form-section">
+                <label for="username" class="form-title">Username</label>
+                <input type="text" placeholder="Create your username" class="form-input" id="username" name="username" required>
+            </div>
         
-        <div class="form-section">
-            <label for="profile_picture" class="form-title">Profile Picture</label>
-            <input type="file" class="form-input" id="profile_picture" name="profile_picture">
+            <div class="form-section">
+                <label for="password" class="form-title">Password</label>
+                <div class="form-section-pass">
+                    <input type="password" placeholder="Create your password" class="form-input" id="password" name="password" required>
+                    <input type="password" placeholder="Enter your password again" class="form-input" id="password" name="password" required>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <label for="email" class="form-title">e - mail</label>
+                <input type="email" placeholder="Enter your email address" class="form-input" id="email" name="email" required>
+            </div>
+        
+            <input type="hidden" name="user_type" value="{{ user_type }}">
+
+
+            <div class="form-button">
+                <button type="submit" class="button">ถัดไป</button>
+            </div>
         </div>
-
-        <div class="form-section">
-            <label for="name" class="form-title">Name</label>
-            <input type="text" class="form-input" id="name" name="name" required>
-        </div>
-
- 
-        <div class="form-section">
-            <label for="username" class="form-title">Username</label>
-            <input type="text" class="form-input" id="username" name="username" required>
-        </div>
-
-        <div class="form-section">
-            <label for="password" class="form-title">Password</label>
-            <input type="password" class="form-input" id="password" name="password" required>
-        </div>
-  
-        <div class="form-section">
-            <label for="phone_number" class="form-title">Phone Number</label>
-            <input type="text" class="form-input" id="phone_number" name="phone_number" required>
-        </div>
-
-        <div class="form-section">
-            <label for="email" class="form-title">Email</label>
-            <input type="email" class="form-input" id="email" name="email" required>
-        </div>
-
-        <input type="hidden" name="user_type" value="{{ user_type }}">
-
-
-        <div class="form-section">
-            <button type="submit" class="button">Register</button>
-        </div>
-
+    </div>
     </form>
 </div>
 {% endblock %}
