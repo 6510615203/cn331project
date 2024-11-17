@@ -15,8 +15,10 @@ def kinkorn(request):
     return render(request, "index.html")
 
 def about(request):
+    """"
     if request.method == "POST":
-        return HttpResponseRedirect("about")      
+        return HttpResponseRedirect("about") 
+    """
     return render(request, "about.html")
 
 def order(request):      
@@ -26,13 +28,13 @@ def yourorder(request):
     return render(request, "index.html")
 
 def index_restaurant(request):
+ 
     if request.method == "POST":
-        return HttpResponseRedirect("index_restaurant")   
+        return HttpResponseRedirect("index_restaurant")
+
     return render(request, "index_restaurant.html")
 
-def welcome_registration(request):
-    if request.method == "POST":
-        return HttpResponseRedirect("welcome_registration")   
+def welcome_registration(request):  
     return render(request, "welcome_registration.html")
 
 
@@ -46,8 +48,12 @@ def choose_regis(request):
 
 def restaurant_register(request):
     username = request.GET.get("username")  # รับ username จาก query parameter
+    new_restaurant = None
 
     if request.method == "POST":
+        if "back" in request.POST:
+            return redirect("register")
+        
         restaurant_name = request.POST.get("restaurant_name")
         food_category = request.POST.get("food_category")
         about = request.POST.get("about")
@@ -70,9 +76,11 @@ def restaurant_register(request):
         )
         restaurant_info.save()
 
+        new_restaurant = restaurant_info.restaurant_name
+
         return redirect("add_menu")  
 
-    return render(request, "restaurant_register.html", {"username": username})
+    return render(request, "restaurant_register.html", {"username": username, "new_restaurant": new_restaurant})
 
 def add_menu(request):
     if request.method == "POST":

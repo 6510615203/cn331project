@@ -5,6 +5,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path("",views.index, name="index"),
+    path("kinkorn",views.kinkorn, name="kinkorn"),
     path("about",views.about, name="about"),
     path("order",views.order, name="order"),
     path("yourorder",views.yourorder, name="yourorder"),
