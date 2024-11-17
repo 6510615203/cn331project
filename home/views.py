@@ -29,6 +29,11 @@ def index_restaurant(request):
         return HttpResponseRedirect("index_restaurant")   
     return render(request, "index_restaurant.html")
 
+def welcome_registration(request):
+    if request.method == "POST":
+        return HttpResponseRedirect("welcome_registration")   
+    return render(request, "welcome_registration.html")
+
 
 def choose_regis(request):
     if request.method == "POST":
@@ -72,7 +77,7 @@ def add_menu(request):
         food_info.save()
         #messages.success(request, "ลงทะเบียนสำเร็จ!")
         #login(request, user)
-        return redirect("login")
+        return redirect("welcome_registration")
     return render(request, "add_menu.html")
 
     
@@ -112,7 +117,7 @@ def register(request):
         if user_type == "restaurant":
             return redirect("restaurant_register")
         else:
-            return redirect("login")
+            return redirect("welcome_registration")
 
     user_type = request.GET.get("user_type", "customer")
     return render(request, "register.html", {"user_type": user_type})
