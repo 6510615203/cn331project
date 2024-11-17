@@ -41,19 +41,24 @@ def choose_regis(request):
     if request.method == "POST":
         user_type = request.POST.get("user_type")  
         request.session['user_type'] = user_type  
-        return redirect("register") 
+        if user_type == 'restaurant':
+            return redirect("register") 
+        else:
+            return redirect("customer_register")            
+            
     return render(request, "choose_regis.html")
 
+def customer_register(request):
+    return render(request, "customer_register.html")
 
 def restaurant_register(request):
-    print(request.POST.get("username"))
     username = request.GET.get("username")  # รับ username จาก query parameter
-    new_restaurant = None
 
     if request.method == "POST":
+        '''
         if "back" in request.POST:
             return redirect("register")
-        
+        '''
         restaurant_name = request.POST.get("restaurant_name")
         food_category = request.POST.get("food_category")
         about = request.POST.get("about")
@@ -66,11 +71,9 @@ def restaurant_register(request):
             )
         restaurant_info.save()
 
-        new_restaurant = restaurant_info.restaurant_name
-
         return redirect("add_menu")
 
-    return render(request, "restaurant_register.html", {"username": username, "new_restaurant": new_restaurant})
+    return render(request, "restaurant_register.html", {"username": username})
 
 def add_menu(request):
     if request.method == "POST":
