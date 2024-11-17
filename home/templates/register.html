@@ -11,7 +11,8 @@
 
 {% block content %}
 <div class="container mt-5 signup-container">
-    <div class="title">
+    <div class="title"> 
+        {% if user_type == "restaurant" %}
         <h2>Restaurant</h2>
         <div class="stepline">
             <div class="step">
@@ -33,6 +34,21 @@
                 </div>
             </div>
         </div>
+        {% else %}
+        <h2>Customer</h2>
+        <div class="stepline">
+            <div class="step">
+                <div class="stepicon">
+                    <div class="circleiconnow"></div>
+                    <label for="step">กรอกข้อมูลส่วนตัว</label>
+                </div>
+                <div class="stepicon">
+                    <div class="circleicon"></div>
+                    <label for="step">ลงทะเบียนเสร็จสิ้น</label>
+                </div>
+            </div>
+        </div>
+        {% endif %}
     </div>
     <form method="POST" action="/register/" class="signup-form" enctype="multipart/form-data">
         {% csrf_token %}
