@@ -19,7 +19,7 @@ def about(request):
     return render(request, "about.html")
 
 def order(request):      
-    return render(request, "index.html")
+    return render(request, "order.html")
 
 def yourorder(request):      
     return render(request, "index.html")

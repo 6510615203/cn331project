@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+<title>KINKORN - Start to Order</title>
+{% endblock %}
+
+{% block style %}
+<style>
+    .content {
+        max-width: 1200px;
+        margin: 20px auto;
+        padding: 20px;
+    }
+
+    .canteen-header {
+        margin-bottom: 20px;
+    }
+
+    .canteen-header h1 {
+        font-size: 32px;
+        color: #b20000;
+    }
+
+    .canteen-header p {
+        font-size: 18px;
+        color: #666;
+    }
+
+    .restaurant-grid {
+        display: flex;
+        gap: 20px;
+        justify-content: space-between;
+    }
+
+    .card {
+        background-color: #fff8e1;
+        border: 1px solid #ffecb3;
+        border-radius: 10px;
+        width: 30%;
+        text-align: center;
+        padding: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .card:hover {
+        transform: scale(1.05);
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .card img {
+        max-width: 100%;
+        border-radius: 10px;
+        margin-bottom: 10px;
+    }
+
+    .card h3 {
+        color: #b20000;
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
+
+    .card p {
+        font-size: 14px;
+        margin: 5px 0;
+    }
+
+    .card .time {
+        font-weight: bold;
+        color: #333;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="content">
+
+    <div class="content">
+        <div class="canteen-header">
+            <h1>JC Canteen</h1>
+            <p>Start to order</p>
+        </div>
+    
+        <div class="restaurant-grid">
+            {% for restaurant in restaurants %}
+            <div class="card">
+                <img src="{{ restaurant.image.url }}" alt="{{ restaurant.name }}">
+                <h3>{{ restaurant.name }}</h3>
+                <p>{{ restaurant.description }}</p>
+                <p class="time">{{ restaurant.opening_time|time:"H:i" }} - {{ restaurant.closing_time|time:"H:i" }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
