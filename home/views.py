@@ -14,8 +14,10 @@ def kinkorn(request):
     return render(request, "index.html")
 
 def about(request):
+    """
     if request.method == "POST":
-        return HttpResponseRedirect("about")      
+        return HttpResponseRedirect("about") 
+    """     
     return render(request, "about.html")
 
 def order(request):      
@@ -25,13 +27,13 @@ def yourorder(request):
     return render(request, "index.html")
 
 def index_restaurant(request):
+    """
     if request.method == "POST":
-        return HttpResponseRedirect("index_restaurant")   
+        return HttpResponseRedirect("index_restaurant")
+    """   
     return render(request, "index_restaurant.html")
 
-def welcome_registration(request):
-    if request.method == "POST":
-        return HttpResponseRedirect("welcome_registration")   
+def welcome_registration(request):  
     return render(request, "welcome_registration.html")
 
 
