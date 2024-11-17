@@ -16,10 +16,10 @@ class UserProfile(models.Model):
     ]
 
     profile_picture = models.ImageField(upload_to="profile_pictures/", blank=True, null=True)
-    name=models.CharField(max_length=100, blank=True),
+    name=models.CharField(max_length=100, blank=True)
     user = models.OneToOneField(User, on_delete=models.CASCADE, default=None)
     phone_number = models.CharField(max_length=20, blank=True)
-    email = models.CharField(max_length=255, default="example@domain.com")  
+    email = models.CharField(max_length=255, blank=True)  
     created_at = models.DateTimeField(default=timezone.now) 
     user_type = models.CharField(max_length=50, choices=USER_TYPE_CHOICES)
   

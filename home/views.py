@@ -1,8 +1,8 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.contrib.auth.hashers import check_password
 from django.contrib import messages
-from .models import UserProfile
+from .models import UserProfile, RestaurantProfile, Menu
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
@@ -38,6 +38,45 @@ def choose_regis(request):
     return render(request, "choose_regis.html")
 
 
+def restaurant_register(request):
+    print(request.POST.get("username"))
+    username = request.GET.get("username")  # รับ username จาก query parameter
+
+    if request.method == "POST":
+        restaurant_name = request.POST.get("restaurant_name")
+        food_category = request.POST.get("food_category")
+        about = request.POST.get("about")
+
+        # สร้างข้อมูลร้านอาหาร
+        restaurant_info = RestaurantProfile.objects.create(
+                restaurant_name=restaurant_name, 
+                food_category=food_category, 
+                about=about
+            )
+        restaurant_info.save()
+
+        return redirect("add_menu")
+
+    return render(request, "restaurant_register.html", {"username": username})
+
+def add_menu(request):
+    if request.method == "POST":
+        food_name = request.POST.get("food_name")
+        food_category = request.POST.get("food_category")
+        about = request.POST.get("about")
+        food_info = Menu.objects.create(
+                food_name=food_name, 
+                food_category=food_category, 
+                about=about
+            )
+        food_info.save()
+        #messages.success(request, "ลงทะเบียนสำเร็จ!")
+        #login(request, user)
+        return redirect("login")
+    return render(request, "add_menu.html")
+
+    
+
 def register(request):
     if request.method == "POST":
         username = request.POST.get("username")
@@ -70,10 +109,14 @@ def register(request):
 
         messages.success(request, "ลงทะเบียนสำเร็จ!")
         login(request, user)
-        return redirect("login") 
+        if user_type == "restaurant":
+            return redirect("restaurant_register")
+        else:
+            return redirect("login")
 
     user_type = request.GET.get("user_type", "customer")
     return render(request, "register.html", {"user_type": user_type})
+
 
 
 # ตรวจสอบการเข้าสู่ระบบ
