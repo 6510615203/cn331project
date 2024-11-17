@@ -237,24 +237,6 @@ body {
     top: 176px;
 }
 
-.star {
-    width: 69px;
-    height: 69px;
-    background-color: #FBF27C;
-    left: 1754px;
-    top: 165px;
-}
-
-/* Rectangle Divider */
-.rectangle-24 {
-    position: absolute;
-    width: 1446px;
-    height: 18px;
-    left: 345px;
-    top: 191px;
-    background-color: #FFFAB7;
-}
-
 .section-label {
     font-size: 36px;
     font-weight: 200;
@@ -303,4 +285,40 @@ body {
     position: absolute;
     top: 30%;
     left: 25%;
+}
+
+.welcometitle {
+    text-align: center;
+    margin-top: 100px;
+    font-family: 'Montserrat', sans-serif;
+    color: #AF1F1F;
+    font-weight: 1000;
+}
+
+.welcometitle h1 {
+    font-size: 50px;
+}
+
+.welcometitle h2 {
+    font-size: 30px;
+}
+
+.welcometitle button {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #AF1F1F;
+    color: #ffffff;
+    font-weight: bold;
+    border-radius: 10px;
+    text-decoration: none;
+    margin-top: 20px;
+    cursor: pointer;
+    font-size: 18px;
+    width: 200px;
+    height: 50px;
+}
+
+.welcometitle button:hover {
+    background-color: #fdf4c3;
+    color: black;
 }
