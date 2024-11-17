@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+<title>Register</title>
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/register.css' %}">
+{% endblock %}
+
+{% block content %}
+restaurant register
+<div class="container mt-5 signup-container">
+    <div class="title">
+        <h2>Restaurant</h2>
+        <div class="stepline">
+            <div class="step">
+                <div class="stepicon">
+                    <div class="circleiconnow"></div>
+                    <label for="step">กรอกข้อมูลส่วนตัว</label>
+                </div>
+                <div class="stepicon">
+                    <div class="circleicon"></div>
+                    <label for="step">กรอกข้อมูลร้านอาหาร</label>
+                </div>
+                <div class="stepicon">
+                    <div class="circleicon"></div>
+                    <label for="step">เพิ่มเมนูอาหาร</label>
+                </div>
+                <div class="stepicon">
+                    <div class="circleicon"></div>
+                    <label for="step">ลงทะเบียนเสร็จสิ้น</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <form method="POST" action="/register/" class="signup-form" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="position">
+            <div class="picposition">
+                <div class="form-input-file">
+                    <input type="file" class="form-input" id="profile_picture" name="profile_picture">
+                    <label for="profile_picture" class="form-title">add your picture</label>
+                </div>
+            </div>
+            <div class="inputposition">
+                <div class="form-section">
+                    <label for="restaurant_name" class="form-title">ชื่อร้านอาหาร</label>
+                    <input type="text" placeholder="Enter your restaurant name" class="form-input" id="restaurant_name"
+                        name="restaurant_name" required>
+                </div>
+
+                <div class="form-section">
+                    <label for="food_category" class="form-title">ประเภทอาหาร</label>
+                    <input type="text" placeholder="Enter your category" class="form-input" id="food_category"
+                        name="food_category" required>
+                </div>
+
+                <div class="form-section">
+                    <label for="about" class="form-title">เกี่ยวกับ</label>
+                    <input type="text" placeholder="Enter your restaurant description here" class="form-input"
+                        id="about" name="about" required>
+                </div>
+
+                <input type="hidden" name="username" value="{{ username}}">
+
+
+                <div class="form-button">
+                    <button type="submit" class="button">ถัดไป</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+{% endblock %}
