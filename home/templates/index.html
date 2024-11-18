@@ -16,9 +16,12 @@
             <p>เว็บไซต์สั่งอาหารส่งหน้าในโรงอาหาร</p>
             <div class="button-auth">
                 <button class="explore-btn">Explore Your Meal!</button>
+                {% if user.is_authenticated %}
+                {% else %}
                 <span class="auth-links">
                     <a href="/login/">login</a> | <a href="/choose_regis/">sign up</a>
                 </span>
+                {% endif %}
             </div>
     </div>
     <div class="image-con">
