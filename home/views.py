@@ -55,10 +55,7 @@ def choose_regis(request):
     if request.method == "POST":
         user_type = request.POST.get("user_type")  
         request.session['user_type'] = user_type  
-        if user_type == 'restaurant':
-            return redirect("register") 
-        else:
-            return redirect("customer_register")            
+        return redirect("register")         
             
     return render(request, "choose_regis.html")
 
@@ -166,14 +163,17 @@ def register(request):
 
         messages.success(request, "ลงทะเบียนสำเร็จ!")
         login(request, user)
+        
+        # ตรวจสอบ user_type และเปลี่ยนเส้นทาง
         if user_type == "restaurant":
-            return redirect("restaurant_register")
+            return redirect("restaurant:index")  # เส้นทางของหน้า restaurant
         else:
             url = reverse("welcome_registration")
             return redirect(f"{url}?user_type=customer&username={username}")
 
     user_type = request.GET.get("user_type", "customer")
     return render(request, "register.html", {"user_type": user_type})
+
 
 
 
@@ -200,26 +200,30 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
-            login(request, user)  
-            
+            login(request, user)
+
             try:
+                # ดึง user_type จาก UserProfile
                 profile = UserProfile.objects.get(user=user)
                 user_type = profile.user_type
+                print(f"User Type from UserProfile: {user_type}")  
             except UserProfile.DoesNotExist:
-                user_type = None
+                # หากไม่มี UserProfile ให้ดึง user_type จาก session
+                user_type = request.session.get("user_type", None)
+                print(f"User Type from Session: {user_type}") 
 
+            # ตรวจสอบ user_type เพื่อเปลี่ยนเส้นทาง
             if user_type == "restaurant":
-                return redirect("index_restaurant")  
+                return redirect("restaurant:index")
             else:
-                return redirect("index") 
-
-            messages.success(request, "เข้าสู่ระบบสำเร็จ!")
-            return redirect("index")  # หากไม่มี user_type ก็ให้ไปหน้า index
-
+                return redirect("index")
         else:
             messages.error(request, "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง")
 
     return render(request, "login.html")
+
+
+
 
 
 def logout_view(request):
