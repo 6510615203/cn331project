@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block title %}
-<title>Add menu</title>
+<title>Welcome page</title>
 {% endblock %}
 
 {% block style %}
@@ -39,11 +39,11 @@
         <div class="stepline">
             <div class="step">
                 <div class="stepicon">
-                    <div class="circleiconnow"></div>
+                    <div class="circleicon"></div>
                     <label for="step">กรอกข้อมูลส่วนตัว</label>
                 </div>
                 <div class="stepicon">
-                    <div class="circleicon"></div>
+                    <div class="circleiconnow"></div>
                     <label for="step">ลงทะเบียนเสร็จสิ้น</label>
                 </div>
             </div>
@@ -53,7 +53,23 @@
 </div>
 <div class="welcometitle">
     <h1>Welcome To KINKORN</h1>
-    <button type="submit" class="button">เสร็จสิ้น</button>
+    {% if user_type == "restaurant" %}
+    <h2>{{ restaurant_name }} !</h2>
+    <form action="{% url 'index_restaurant' %}" method="post">
+        {% csrf_token %}
+        <div class="welcome-button">
+            <button type="submit">เสร็จสิ้น</button>
+        </div>
+    </form>
+    {% else %}
+    <h2>{{ username }} !</h2>
+    <form action="{% url 'index' %}" method="post">
+        {% csrf_token %}
+        <div class="welcome-button">
+            <button type="submit">เริ่มสั่งอาหาร</button>
+        </div>
+    </form>
+    {% endif %}
 </div>
 </div>
 
