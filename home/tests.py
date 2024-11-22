@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from .models import UserProfile, RestaurantProfile, Menu
 
 
-class EnrollmentTestCase(TestCase):
+class ModelTestCase(TestCase):
 
     def setUp(self):
         self.user = User.objects.create_user(username="somtamkaiyang", password="passsomtam")
