@@ -55,7 +55,9 @@ def choose_regis(request):
     if request.method == "POST":
         user_type = request.POST.get("user_type")  
         request.session['user_type'] = user_type  
-        return redirect("register")         
+        if user_type == 'restaurant':
+            return redirect("register") 
+        
             
     return render(request, "choose_regis.html")
 
@@ -200,30 +202,26 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
 
         if user is not None:
-            login(request, user)
-
+            login(request, user)  
+            
             try:
-                # ดึง user_type จาก UserProfile
                 profile = UserProfile.objects.get(user=user)
                 user_type = profile.user_type
-                print(f"User Type from UserProfile: {user_type}")  
             except UserProfile.DoesNotExist:
-                # หากไม่มี UserProfile ให้ดึง user_type จาก session
-                user_type = request.session.get("user_type", None)
-                print(f"User Type from Session: {user_type}") 
+                user_type = None
 
-            # ตรวจสอบ user_type เพื่อเปลี่ยนเส้นทาง
             if user_type == "restaurant":
-                return redirect("restaurant:index")
+                return redirect("restaurant:index")  
             else:
-                return redirect("index")
+                return redirect("index") 
+
+            messages.success(request, "เข้าสู่ระบบสำเร็จ!")
+            return redirect("index")  # หากไม่มี user_type ก็ให้ไปหน้า index
+
         else:
             messages.error(request, "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง")
 
     return render(request, "login.html")
-
-
-
 
 
 def logout_view(request):
