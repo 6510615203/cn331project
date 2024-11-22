@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}
+<title>KINKORN Home</title>
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/homestyle.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="maincontainer">
+    <div class="text-con">
+        <h1>KINKORN</h1>
+    
+    </div>
+    <div class="image-con">
+        <img src="{% static '/css/homepic.png' %}" alt="home pic" class="image image1">
+    </div>
+</div>
+
+
+
+{% endblock %}
