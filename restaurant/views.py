@@ -11,7 +11,16 @@ from django.core.files.storage import FileSystemStorage
 
 # Create your views here.
 def index(request):      
-    return render(request, "index_restaurant.html")
+    user_type = request.GET.get('user_type', 'default_value') 
+    username = request.GET.get('username', 'default_value')
+    restaurant_name= request.GET.get('restaurant_name', 'default_value')
+
+    context = {
+        'user_type': user_type,
+        'username': username,
+        'restaurant_name': restaurant_name,
+    }
+    return render(request, "index_restaurant.html", context)
 
 def manage(request): 
     username = request.user.username
