@@ -10,17 +10,10 @@ from django.contrib.auth.models import User
 from django.core.files.storage import FileSystemStorage
 
 # Create your views here.
-def index(request):      
-    user_type = request.GET.get('user_type', 'default_value') 
-    username = request.GET.get('username', 'default_value')
-    restaurant_name= request.GET.get('restaurant_name', 'default_value')
-
-    context = {
-        'user_type': user_type,
-        'username': username,
-        'restaurant_name': restaurant_name,
-    }
-    return render(request, "index_restaurant.html", context)
+def index(request):
+    username = request.user.username
+    restaurant = get_object_or_404(RestaurantProfile, user_profile__user__username=username)      
+    return render(request, "index_restaurant.html",  {'restaurant': restaurant})
 
 def manage(request): 
     username = request.user.username
