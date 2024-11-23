@@ -31,16 +31,24 @@
         <div class="container">
             <div class="nav-con">
                 <div class="logo">
-                    <a href="/">KINKORN</a>
+                    <a href="{% url 'restaurant:index' %}">KINKORN</a>
                 </div>
                 <ul class="menu">
-                    <li><a href="/about"><img src="{% static '/css/about.png' %}" class="icon" alt="About Icon">ABOUT
+                    <li><a href="{% url 'restaurant:about' %}"><img src="{% static '/css/about.png' %}" class="icon"
+                                alt="About Icon">ABOUT
                             US</a>
                     </li>
-                    <li><a href="/"><img src="{% static '/css/order.png' %}" class="icon" alt="Order Icon">ORDER</a>
+                    <li><a href="{% url 'restaurant:manage' %}"><img src="{% static '/css/order.png' %}" class="icon"
+                                alt="Mange Icon">MANAGE
+                            RESTAURANT</a>
                     </li>
-                    <li><a href="/"><img src="{% static '/css/yourorder.png' %}" class="icon" alt="Yourorder Icon">YOUR
-                            ORDER</a>
+                    <li><a href="{% url 'restaurant:order_list' %}"><img src="{% static '/css/yourorder.png' %}"
+                                class="icon" alt="Order List Icon">ORDER
+                            LIST</a>
+                    </li>
+                    <li><a href="{% url 'restaurant:sales_report' %}"><img src="{% static '/css/sales.png' %}"
+                                class="icon" alt="Salesreport Icon">SALES
+                            REPORT</a>
                     </li>
                     {% if user.is_authenticated %}
                     <li>
@@ -55,10 +63,6 @@
                         </a>
                     </li>
                     {% endif %}
-                    <!--<li>
-                        <div class="auth-box">
-                            <button class="nav-login-btn">LOG IN</button>
-                            <button class="nav-signup-btn">SIGN UP</button>-->
             </div>
             </li>
             </ul>
@@ -67,6 +71,7 @@
     </nav>
     {% block content %}
     {% endblock %}
+
 </body>
 
 </html>

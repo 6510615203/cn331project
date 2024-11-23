@@ -1,16 +1,18 @@
+/* Basic Body Styling */
 body {
-    background-color: #fdf4c3;
+    background-color: #fece6b;
     margin: 0;
     padding: 0;
+    font-family: 'Montserrat', sans-serif;
 }
 
+/* Navigation Bar Styling */
 nav {
     background-color: #b22c27;
     padding: 15px 0;
     margin-top: 25px;
     width: 100%;
 }
-
 
 .container {
     width: 100%;
@@ -24,7 +26,6 @@ nav {
     justify-content: space-between;
     align-items: center;
 }
-
 
 .logo a {
     font-size: 30px;
@@ -63,24 +64,20 @@ nav {
     border-radius: 10px;
 }
 
-
 .icon {
     width: 30px;
     height: 30px;
-    margin-right: 6px;
+    margin-right: 8px;
     object-fit: contain;
 }
 
+/* Auth Buttons */
 .auth-box {
     display: flex;
     gap: 10px;
 }
 
-.nav-login-btn
-
-/*,
-.nav-signup-btn */
-    {
+.nav-login-btn {
     padding: 10px 20px;
     font-size: 16px;
     font-family: inherit;
@@ -91,15 +88,55 @@ nav {
     color: rgb(14, 0, 0);
 }
 
-.nav-login-btn:hover
-
-/*,
-.nav-signup-btn:hover*/
-    {
+.nav-login-btn:hover {
     background-color: #45a049;
 }
 
+/* Main Titles and Restaurant Section */
+.title-text {
+    position: absolute;
+    width: 100%;
+    max-width: 980px;
+    top: 378px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    font-size: 64px;
+    font-weight: 700;
+    color: #AF1F1F;
+    letter-spacing: 0.1px;
+    line-height: 31%;
+    font-family: 'Montserrat', sans-serif;
+}
 
+/* Specific Title for Restaurant */
+.restaurant-title {
+    position: absolute;
+    width: 100%;
+    max-width: 980px;
+    top: 468px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    font-size: 64px;
+    font-weight: 700;
+    color: #AF1F1F;
+    letter-spacing: 0.1px;
+    line-height: 31%;
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* Group 6 */
+.group-6 {
+    position: absolute;
+    width: 291px;
+    height: 63px;
+    left: 50%;
+    top: 644px;
+    transform: translateX(-50%);
+}
+
+/* Responsive Styles for Small Screens */
 @media screen and (max-width: 750px) {
     .nav-con {
         flex-direction: column;
@@ -115,5 +152,15 @@ nav {
     .menu li {
         margin-right: 0;
         margin-bottom: 10px;
+    }
+
+    .title-text, .restaurant-title {
+        font-size: 48px; /* Reduce size on mobile */
+        top: 20px; /* Adjust top margin for small screens */
+    }
+
+    .group-6 {
+        width: 100%; /* Take up full width */
+        text-align: center;
     }
 }

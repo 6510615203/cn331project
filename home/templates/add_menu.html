@@ -34,14 +34,22 @@
             </div>
         </div>
     </div>
-    <form method="POST" action="/add_menu/" class="signup-form" enctype="multipart/form-data">
+    <form method="POST" action=" {% url 'add_menu' %}?restaurant_name={{ restaurant_name }}" class="signup-form"
+        enctype="multipart/form-data">
         {% csrf_token %}
         <div class="position">
-            <div class="picposition">
-                <div class="form-input-file">
-                    <input type="file" class="form-input" id="profile_picture" name="profile_picture">
-                    <label for="profile_picture" class="form-title">add your picture</label>
+            <div class="form-input-file">
+                <div class="image-container" style="display: flex; flex-direction: column; align-items: center;">
+                    <div class="image-preview-circle"
+                        style="width: 150px; height: 150px; border-radius: 50%; overflow: hidden; margin-top: 10px; display: flex; justify-content: center; align-items: center; border: 3px solid #ccc;">
+                        <img id="image_preview" src="#" alt="Image Preview"
+                            style="display: none; width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                    <label for="menu_picture" class="form-title" style="margin-top: 10px;">Add your picture
+                        here!</label>
                 </div>
+                <input type="file" class="form-input" id="menu_picture" name="menu_picture" onchange="previewImage();"
+                    style="display: none;">
             </div>
             <div class="inputposition">
                 <div class="form-section">
@@ -62,7 +70,15 @@
                         name="about" required>
                 </div>
 
+                <div class="form-section">
+                    <label for="price" class="form-title">ราคา</label>
+                    <input type="number" placeholder="0.00" class="form-input" id="price" name="price" required>
+                    <span>บาท</span>
+                </div>
+
                 <input type="hidden" name="user_type" value="{{ user_type }}">
+                <input type="hidden" name="restaurant_name" id="restaurant_name" value="{{ restaurant_name }}">
+
 
 
                 <div class="form-button">
@@ -72,6 +88,22 @@
         </div>
     </form>
 </div>
+<script>
+    // ฟังก์ชันที่ใช้แสดงรูปพรีวิวเมื่อมีการเลือกไฟล์
+    function previewImage() {
+        var file = document.getElementById("menu_picture").files[0];
+        var reader = new FileReader();
 
+        reader.onload = function (e) {
+            var image = document.getElementById("image_preview");
+            image.src = e.target.result;
+            image.style.display = "block";
+        };
+
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
+</script>
 
 {% endblock %}

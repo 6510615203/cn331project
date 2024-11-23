@@ -2,10 +2,13 @@ from django.shortcuts import render,redirect, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.contrib.auth.hashers import check_password
 from django.contrib import messages
+from django.urls import reverse
 from .models import UserProfile, RestaurantProfile, Menu
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
+from django.core.files.storage import FileSystemStorage
+
 
 def index(request):      
     return render(request, "index.html")
@@ -26,15 +29,28 @@ def order(request):
 def yourorder(request):      
     return render(request, "index.html")
 
+"""
 def index_restaurant(request):
-    """
+    
     if request.method == "POST":
         return HttpResponseRedirect("index_restaurant")
-    """   
+ 
     return render(request, "index_restaurant.html")
+"""
 
-def welcome_registration(request):  
-    return render(request, "welcome_registration.html")
+def welcome_registration(request): 
+    user_type = request.GET.get('user_type', 'default_value') 
+    username = request.GET.get('username', 'default_value')
+    restaurant_name= request.GET.get('restaurant_name', 'default_value')
+
+    context = {
+        'user_type': user_type,
+        'username': username,
+        'restaurant_name': restaurant_name,
+    }
+    
+    return render(request, "welcome_registration.html", context)
+
 
 
 def choose_regis(request):
@@ -52,7 +68,7 @@ def customer_register(request):
     return render(request, "customer_register.html")
 
 def restaurant_register(request):
-    username = request.GET.get("username")  # รับ username จาก query parameter
+    username = request.user.username  # รับ username จาก query parameter
 
     if request.method == "POST":
         '''
@@ -62,35 +78,62 @@ def restaurant_register(request):
         restaurant_name = request.POST.get("restaurant_name")
         food_category = request.POST.get("food_category")
         about = request.POST.get("about")
+        open_close_time = request.POST.get("open_close_time")
 
-        # สร้างข้อมูลร้านอาหาร
+        # รับไฟล์รูปภาพจากฟอร์ม
+        if 'restaurant_picture' in request.FILES:
+            restaurant_picture = request.FILES['restaurant_picture']
+            fs = FileSystemStorage()
+            filename = fs.save(restaurant_picture.name, restaurant_picture)  # บันทึกไฟล์
+            restaurant_picture_url = fs.url(filename)  # ดึง URL ของไฟล์ที่บันทึก
+
+        else:
+            restaurant_picture_url = None
+
         restaurant_info = RestaurantProfile.objects.create(
-                restaurant_name=restaurant_name, 
-                food_category=food_category, 
-                about=about
-            )
+            restaurant_name=restaurant_name, 
+            food_category=food_category, 
+            about=about,
+            open_close_time=open_close_time,
+            restaurant_picture=restaurant_picture_url  
+        )
         restaurant_info.save()
-
-        return redirect("add_menu")
+        
+        url = reverse("add_menu")
+        return redirect(f"{url}?restaurant_name={restaurant_name}")
 
     return render(request, "restaurant_register.html", {"username": username})
 
 def add_menu(request):
+    restaurant_name= request.GET.get('restaurant_name', 'default_restaurant_name')
     if request.method == "POST":
         food_name = request.POST.get("food_name")
         food_category = request.POST.get("food_category")
         about = request.POST.get("about")
-        food_info = Menu.objects.create(
-                food_name=food_name, 
-                food_category=food_category, 
-                about=about
-            )
-        food_info.save()
-        #messages.success(request, "ลงทะเบียนสำเร็จ!")
-        #login(request, user)
-        return redirect("welcome_registration")
-    return render(request, "add_menu.html")
+        price = request.POST.get("price")
+        user_type = request.POST.get("user_type")
+        
+        # รับไฟล์รูปภาพจากฟอร์ม
+        if 'menu_picture' in request.FILES:
+            menu_picture = request.FILES['menu_picture']
+            fs = FileSystemStorage()
+            filename = fs.save(menu_picture.name, menu_picture) 
+            menu_picture_url = fs.url(filename)  
+        else:
+            menu_picture_url = None
 
+        food_info = Menu.objects.create(
+            food_name=food_name, 
+            food_category=food_category, 
+            about=about,
+            menu_picture=menu_picture_url ,
+            price=price
+        )
+        food_info.save()
+        url = reverse("welcome_registration")
+        return redirect(f"{url}?user_type=restaurant&restaurant_name={restaurant_name}")     
+
+    return render(request, "add_menu.html", {"restaurant_name": restaurant_name})
     
 
 def register(request):
@@ -128,7 +171,8 @@ def register(request):
         if user_type == "restaurant":
             return redirect("restaurant_register")
         else:
-            return redirect("welcome_registration")
+            url = reverse("welcome_registration")
+            return redirect(f"{url}?user_type=customer&username={username}")
 
     user_type = request.GET.get("user_type", "customer")
     return render(request, "register.html", {"user_type": user_type})
@@ -167,7 +211,7 @@ def login_view(request):
                 user_type = None
 
             if user_type == "restaurant":
-                return redirect("index_restaurant")  
+                return redirect("/restaurant/")  
             else:
                 return redirect("index") 
 
@@ -178,3 +222,10 @@ def login_view(request):
             messages.error(request, "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง")
 
     return render(request, "login.html")
+
+
+def logout_view(request):
+    logout(request)  # ล็อกเอาท์ผู้ใช้
+    return redirect('/')  # เปลี่ยนเส้นทางไปที่หน้าแรกหลังจากออกจากระบบ
+
+
