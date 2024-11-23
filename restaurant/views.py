@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect, get_object_or_404
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.hashers import check_password
 from django.contrib import messages
 from django.urls import reverse
@@ -58,5 +58,51 @@ def order_list(request):
 def sales_report(request):      
     return render(request, "sales.html")
 
-def edit_menu_payment(request):      
-    return render(request, "edit_menu_payment.html")
+def edit_menu_payment(request):
+    username = request.user.username
+    restaurant = get_object_or_404(RestaurantProfile, user_profile__user__username=username)
+
+    menu_items = Menu.objects.filter(restaurant_profile=restaurant)
+
+    return render(request, 'edit_menu_payment.html',{'restaurant': restaurant, 'menu_items': menu_items})
+
+
+def add_menu_res(request):
+    username = request.user.username
+    restaurant = get_object_or_404(RestaurantProfile, user_profile__user__username=username)
+    restaurant_name = restaurant.restaurant_name
+    food_categories = RestaurantProfile.Foodcate.choices
+    if request.method == "POST":
+        food_name = request.POST.get("food_name")
+        food_category = request.POST.get("food_category")
+        about = request.POST.get("about")
+        price = request.POST.get("price")
+        user_type = request.POST.get("user_type")
+        
+        # รับไฟล์รูปภาพจากฟอร์ม
+        if 'menu_picture' in request.FILES:
+            menu_picture = request.FILES['menu_picture']
+            fs = FileSystemStorage()
+            filename = fs.save(menu_picture.name, menu_picture) 
+            menu_picture_url = fs.url(filename)  
+        else:
+            menu_picture_url = None
+
+        restaurant_profile = get_object_or_404(RestaurantProfile, restaurant_name=restaurant_name)
+
+        food_info = Menu.objects.create(
+            restaurant_profile=restaurant_profile,
+            food_name=food_name, 
+            food_category=food_category, 
+            about=about,
+            menu_picture=menu_picture_url ,
+            price=price
+        )
+        food_info.save()
+        url = reverse("restaurant:edit_menu_payment")
+        return redirect(f"{url}?user_type=restaurant&restaurant_name={restaurant_name}")     
+
+    return render(request, "add_menu_res.html", {"restaurant_name": restaurant_name, 'food_categories': food_categories})
+
+def add_payment(request):
+    return render(request, "add_payment.html")
