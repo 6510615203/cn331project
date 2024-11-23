@@ -53,8 +53,23 @@
 </div>
 <div class="welcometitle">
     <h1>Welcome To KINKORN</h1>
-    <h2>ชื่อร้าน {{ new_restaurant }}</h2>
-    <button type="submit" class="button">เสร็จสิ้น</button>
+    {% if user_type == "restaurant" %}
+    <h2>{{ restaurant_name }} !</h2>
+    <form action="{% url 'restaurant:index' %}" method="post">
+        {% csrf_token %}
+        <div class="welcome-button">
+            <button type="submit">เสร็จสิ้น</button>
+        </div>
+    </form>
+    {% else %}
+    <h2>{{ username }} !</h2>
+    <form action="{% url 'index' %}" method="post">
+        {% csrf_token %}
+        <div class="welcome-button">
+            <button type="submit">เริ่มสั่งอาหาร</button>
+        </div>
+    </form>
+    {% endif %}
 </div>
 </div>
 
