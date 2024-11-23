@@ -29,12 +29,14 @@ def order(request):
 def yourorder(request):      
     return render(request, "index.html")
 
+"""
 def index_restaurant(request):
-    """
+    
     if request.method == "POST":
         return HttpResponseRedirect("index_restaurant")
-    """   
+ 
     return render(request, "index_restaurant.html")
+"""
 
 def welcome_registration(request): 
     user_type = request.GET.get('user_type', 'default_value') 
@@ -209,7 +211,7 @@ def login_view(request):
                 user_type = None
 
             if user_type == "restaurant":
-                return redirect("index_restaurant")  
+                return redirect("/restaurant/")  
             else:
                 return redirect("index") 
 
