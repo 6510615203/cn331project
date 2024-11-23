@@ -27,6 +27,7 @@ class UserProfile(models.Model):
         return self.user.username
     
 class RestaurantProfile(models.Model):
+    #user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
     restaurant_name = models.CharField(max_length=100, blank=True)
     food_category =  models.CharField(max_length=100, blank=True)
     about = models.CharField(max_length=1000, blank=True)

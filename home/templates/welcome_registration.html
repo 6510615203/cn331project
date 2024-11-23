@@ -55,7 +55,7 @@
     <h1>Welcome To KINKORN</h1>
     {% if user_type == "restaurant" %}
     <h2>{{ restaurant_name }} !</h2>
-    <form action="{% url 'index_restaurant' %}" method="post">
+    <form action="{% url 'restaurant:index' %}" method="post">
         {% csrf_token %}
         <div class="welcome-button">
             <button type="submit">เสร็จสิ้น</button>
