@@ -16,11 +16,7 @@ def index(request):
 def kinkorn(request):      
     return render(request, "index.html")
 
-def about(request):
-    """
-    if request.method == "POST":
-        return HttpResponseRedirect("about") 
-    """     
+def about(request):   
     return render(request, "about.html")
 
 def order(request):      
@@ -29,14 +25,6 @@ def order(request):
 def yourorder(request):      
     return render(request, "index.html")
 
-"""
-def index_restaurant(request):
-    
-    if request.method == "POST":
-        return HttpResponseRedirect("index_restaurant")
- 
-    return render(request, "index_restaurant.html")
-"""
 
 def welcome_registration(request): 
     user_type = request.GET.get('user_type', 'default_value') 
@@ -69,6 +57,7 @@ def customer_register(request):
 
 def restaurant_register(request):
     username = request.user.username  # รับ username จาก query parameter
+    user_profile = UserProfile.objects.get(user=request.user)
 
     if request.method == "POST":
         '''
@@ -91,6 +80,7 @@ def restaurant_register(request):
             restaurant_picture_url = None
 
         restaurant_info = RestaurantProfile.objects.create(
+            user_profile=user_profile,
             restaurant_name=restaurant_name, 
             food_category=food_category, 
             about=about,
