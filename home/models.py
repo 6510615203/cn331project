@@ -1,12 +1,6 @@
-
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.db import models
-
-
-from django.db import models
-from django.contrib.auth.hashers import make_password, check_password
-from django.utils import timezone
 
 
 class UserProfile(models.Model):
@@ -53,6 +47,7 @@ class RestaurantProfile(models.Model):
         return self.restaurant_name
     
 class Menu(models.Model):
+    restaurant_profile = models.ForeignKey(RestaurantProfile, on_delete=models.CASCADE, related_name='menus', default=1) 
     food_name = models.CharField(max_length=100, blank=True)
     about = models.CharField(max_length=1000, blank=True)
     price = models.DecimalField(max_digits=10,     

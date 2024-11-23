@@ -114,7 +114,10 @@ def add_menu(request):
         else:
             menu_picture_url = None
 
+        restaurant_profile = get_object_or_404(RestaurantProfile, restaurant_name=restaurant_name)
+
         food_info = Menu.objects.create(
+            restaurant_profile=restaurant_profile,
             food_name=food_name, 
             food_category=food_category, 
             about=about,
