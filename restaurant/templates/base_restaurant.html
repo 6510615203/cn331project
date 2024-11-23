@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Mitr:wght@200;300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Kanit', sans-serif;
+        }
+    </style>
+
+    {% block title %}
+    {% endblock %}
+
+    <link rel="stylesheet" type="text/css" href="{% static 'css/basestyle.css' %}">
+
+    {% block style %}
+    {% endblock %}
+</head>
+
+<body>
+    <nav>
+        <div class="container">
+            <div class="nav-con">
+                <div class="logo">
+                    <a href="{% url 'restaurant:index' %}">KINKORN</a>
+                </div>
+                <ul class="menu">
+                    <li><a href="{% url 'restaurant:about' %}"><img src="{% static '/css/about.png' %}" class="icon"
+                                alt="About Icon">ABOUT
+                            US</a>
+                    </li>
+                    <li><a href="{% url 'restaurant:manage' %}"><img src="{% static '/css/order.png' %}" class="icon"
+                                alt="Mange Icon">MANAGE
+                            RESTAURANT</a>
+                    </li>
+                    <li><a href="{% url 'restaurant:order_list' %}"><img src="{% static '/css/yourorder.png' %}"
+                                class="icon" alt="Order List Icon">ORDER
+                            LIST</a>
+                    </li>
+                    <li><a href="{% url 'restaurant:sales_report' %}"><img src="{% static '/css/sales.png' %}"
+                                class="icon" alt="Salesreport Icon">SALES
+                            REPORT</a>
+                    </li>
+                    {% if user.is_authenticated %}
+                    <li>
+                        <a href="{% url 'logout' %}">
+                            <img src="{% static '/css/user.png' %}" class="icon" alt="User Icon"> LOG OUT
+                        </a>
+                    </li>
+                    {% else %}
+                    <li>
+                        <a href="{% url 'login' %}">
+                            <img src="{% static '/css/user.png' %}" class="icon" alt="User Icon"> LOG IN
+                        </a>
+                    </li>
+                    {% endif %}
+            </div>
+            </li>
+            </ul>
+        </div>
+        </div>
+    </nav>
+    {% block content %}
+    {% endblock %}
+
+</body>
+
+</html>
