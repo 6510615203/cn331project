@@ -4,25 +4,27 @@ body {
     padding: 0;
 
 }
-
 .title {
     display: flex;
-    justify-content: center;
-    text-align: center;
+    justify-content: center; /* จัดให้อยู่ตรงกลางแนวนอน */
+    align-items: center; /* จัดให้อยู่ตรงกลางแนวตั้ง */
+    margin: 0; /* ลบระยะห่างทั้งหมด */
+    padding: 0; /* ลบ Padding ที่อาจทำให้เกิดช่องว่าง */
 }
 
 .title h2 {
-    color: #AF1F1F;
+    background-color: #FFFAB7; /* สีพื้นหลัง */
+    border-radius: 100px; /* ทำให้เป็นมุมโค้งมน */
+    color: #AF1F1F; /* สีข้อความ */
     font-size: 20px;
-    margin-top: 0px;
-    padding: 15px;
-    width: 120px;
-    display: inline-block;
-    font-family: inherit;
-    background-color: #FFFAB7;
-    border-radius: 100px;
-    text-align: center;
+    margin: 0;
+    padding: 10px 20px; /* ขนาด Padding ภายในกรอบ */
+    margin-bottom: 0; /* ลบช่องว่างด้านล่าง */
+    position: relative;
+    left: 20px;
+    top: 22px;
 }
+
 
 .signup-container {
     text-align: center;
@@ -30,7 +32,7 @@ body {
 }
 
 .stepline {
-    width: 1000%;
+    width: 70%;
     height: 10px;
     background-color: #FFFAB7;
     display: block;
@@ -39,6 +41,15 @@ body {
     position: relative;
     top: 22px;
     left: 0;
+}
+.stepicon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1; /* ให้อยู่ด้านบนของเส้น */
+    top: -15px; /* ปรับไอคอนให้อยู่ตรงกลางเส้น */
 }
 
 .steplinecustomer {
@@ -64,32 +75,44 @@ body {
     left: 0;
 }
 
-.circleiconnow {
-    width: 25px;
-    height: 25px;
-    background-color: #AF1F1F;
+
+
+.circleiconnow, .circleicon {
+    width: 20px; /* ขนาดไอคอน */
+    height: 20px;
     border-radius: 50%;
-    align-items: center;
-    justify-content: center;
     margin-bottom: 5px;
-    margin-left: 40%;
+}
+
+.circleiconnow {
+    background-color: #AF1F1F; /* สีแดงเข้ม */
 }
 
 .circleicon {
-    width: 25px;
-    height: 25px;
-    background-color: #FFFAB7;
-    border-radius: 50%;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 5px;
-    margin-left: 40%;
+    background-color: #FFFAB7; /* สีเหลือง */
 }
 
-.stepicon {
-    display: block;
-    align-items: center;
 
+.staricon {
+    font-size: 30px; /* ขนาดดาว */
+    color: #FFFAB7; /* สีดาว */
+    position: relative;
+    top: 0px; /* ปรับให้อยู่ตรงกลางเส้น */
+}
+
+.stariconnow {
+    font-size: 30px; /* ขนาดดาว */
+    color: #AF1F1F; /* สีดาว */
+    position: relative;
+    top: 0px; /* ปรับให้อยู่ตรงกลางเส้น */
+}
+
+.stepicon label {
+    font-family: 'Kanit', sans-serif; /* ฟอนต์ไทย */
+    font-size: 14px;
+    color: #333; /* สีข้อความ */
+    margin-top: 5px;
+    text-align: center;
 }
 
 .form-section {
