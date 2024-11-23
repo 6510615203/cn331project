@@ -7,6 +7,85 @@
 
 {% block style %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/register.css' %}">
+<style>
+    /* ฟอนต์ Kanit สำหรับองค์ประกอบทั้งหมด */
+    body {
+        font-family: 'Kanit', sans-serif;
+    }
+
+    /* กำหนดฟอนต์ Kanit ให้กับ h2 */
+    h2 {
+        font-family: 'Kanit', sans-serif;
+        font-weight: 700;
+        font-size: 24px;
+        color: #AF1F1F;
+        text-align: center;
+    }
+
+    /* ฟอนต์ Kanit สำหรับ label */
+    label {
+        font-family: 'Kanit', sans-serif;
+        font-size: 14px;
+        color: #333;
+        text-align: center;
+        align-items: center;
+        line-height: 1.5;
+    }
+
+    .stepline {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+        width: 65%;
+    }
+
+    .stepicon {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        z-index: 0;
+    }
+
+    .circleicon {
+        border-radius: 50%;
+        position: relative;
+        background-color: #ddd;
+        top: 10px;
+    }
+
+    .circleiconnow {
+        background-color: #AF1F1F;
+        position: relative;
+        top: 10px;
+    }
+
+    .staricon {
+        font-size: 30px;
+        position: relative;
+        color: #ddd;
+        top: 10px;
+    }
+
+    .form-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .stepicon label {
+        font-family: 'Kanit', sans-serif; 
+        font-size: 14px; 
+        color: #333; 
+        margin-top: 5px; 
+        position: relative; 
+        top: 0; 
+        text-align: center; 
+        transform: translateX(20px);
+    }
+</style>
 {% endblock %}
 
 {% block content %}
@@ -28,7 +107,7 @@
                     <label for="step">เพิ่มเมนูอาหาร</label>
                 </div>
                 <div class="stepicon">
-                    <div class="circleicon"></div>
+                    <div class="staricon">★</div>
                     <label for="step">ลงทะเบียนเสร็จสิ้น</label>
                 </div>
             </div>
