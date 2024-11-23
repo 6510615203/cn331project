@@ -5,12 +5,48 @@
 {% endblock %}
 
 {% block style %}
-<!--<link rel="stylesheet" type="text/css" href="{% static 'css/homestyle.css' %}">-->
+<link rel="stylesheet" type="text/css" href="{% static 'css/index_restaurant.css' %}">
 {% endblock %}
 
 {% block content %}
 
-test restaurant index
+<div class="welcometitle">
+    <h1>{{ restaurant_name }}</h1>
+</div>
+<status>
+    <div class="statuscontainer">
+        <div class="nav-con">
+            <p1>Status</p1>
+            <div class="step">
+                <div class="statusbox">
+                    <p2>0</p2> <!-- รับออเดอร์จากลูกค้า -->
+                    <p>ออเดอร์เข้าใหม่</p>
+                </div>
+                <div class="statusbox">
+                    <p2>0</p2> <!-- รับออเดอร์จากลูกค้า -->
+                    <p>ที่กำลังทำ</p>
+                </div>
+                <div class="statusbox">
+                    <p2>0</p2> <!-- รับออเดอร์จากลูกค้า -->
+                    <p>ส่งมอบเสร็จสิ้น</p>
+                </div>
+                <div class="statusbox">
+                    <p2>0</p2> <!-- รับออเดอร์จากลูกค้า -->
+                    <p>รีวิวร้านของฉัน</p>
+                </div>
+            </div>
+        </div>
+        <div class="restaurantbutton">
+            <div class="res-button">
+                <button type="submit">จัดการร้านอาหาร</button>
+            </div>
+            <div class="res-button">
+                <button type="submit">รายรับทั้งหมด</button>
+            </div>
+        </div>
+    </div>
+    </div>
+</status>
 
 
 
