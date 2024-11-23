@@ -16,41 +16,37 @@ def index(request):
     return render(request, "index_restaurant.html",  {'restaurant': restaurant})
 
 
-def manage(request): 
+def manage(request):
     username = request.user.username
     restaurant = get_object_or_404(RestaurantProfile, user_profile__user__username=username)
-    is_editing = request.GET.get("edit")  # ตรวจสอบโหมดแก้ไข
-    food_categories = FoodCategory.objects.all()  # ดึงข้อมูล FoodCategory ทั้งหมด
+    is_editing = request.GET.get("edit")  # ตรวจสอบค่าจาก query parameter
+    food_categories = FoodCategory.objects.all()
 
     if request.method == "POST":
-        if "restaurant_name" in request.POST:
+        if is_editing == "restaurant_name":
             restaurant_name = request.POST.get("restaurant_name", "").strip()
             if restaurant_name:
                 restaurant.restaurant_name = restaurant_name
-
-        elif "food_category" in request.POST:
-            # รับค่า ID ของ FoodCategory ที่เลือกจาก Drop-down
-            food_category_id = request.POST.get("food_category")
+        elif is_editing == "food_category":
+            food_category_id = request.POST.get("food_category")  
             food_category = get_object_or_404(FoodCategory, id=food_category_id)
             restaurant.food_category = food_category
-
-        elif "about" in request.POST:
+        elif is_editing == "about":
             about = request.POST.get("about", "").strip()
             if about:
                 restaurant.about = about
-
-        elif "open_close_time" in request.POST:
+        elif is_editing == "open_close_time":
             open_close_time = request.POST.get("open_close_time", "").strip()
             if open_close_time:
                 restaurant.open_close_time = open_close_time
 
         restaurant.save()
-        return redirect("restaurant:manage")  # กลับไปยังหน้า manage
+        return redirect("restaurant:manage")  
 
     return render(request, "manage_restaurant.html", {
-        'restaurant': restaurant,
-        'is_editing': is_editing,
-        'food_categories': food_categories,  # ส่ง FoodCategory ไปยังเทมเพลต
+        "restaurant": restaurant,
+        "is_editing": is_editing,
+        "food_categories": food_categories,  
     })
 
 def about(request):      
