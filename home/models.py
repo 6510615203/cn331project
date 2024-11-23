@@ -29,21 +29,47 @@ class UserProfile(models.Model):
 class RestaurantProfile(models.Model):
     user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE, null=True, blank=True)
     restaurant_name = models.CharField(max_length=100, blank=True)
-    food_category =  models.CharField(max_length=100, blank=True)
+    #food_category =  models.CharField(max_length=100, blank=True)
     about = models.CharField(max_length=1000, blank=True)
     open_close_time = models.CharField(max_length=100, blank=True)
     restaurant_picture = models.ImageField(upload_to='restaurant_picture/', null=True, blank=True)
+
+    class Foodcate(models.TextChoices):
+        CHOOSE_CATEGORY = "เลือกประเภทอาหาร", "เลือกประเภทอาหาร"
+        RICE_AND_CURRY = "ข้าวราดแกง", "ข้าวราดแกง"
+        MADE_TO_ORDER = "อาหารตามสั่ง", "อาหารตามสั่ง"
+        DESSERT = "ขนมหวาน", "ขนมหวาน"
+        WATER = "น้ำ", "น้ำ"
+        NOODLES = "ก๋วยเตี๋ยว","ก๋วยเตี๋ยว"
+        JAPANESE_FOOD = "อาหารญี่ปุ่น","อาหารญี่ปุ่น"
+        SNACKS = "ของกินเล่น","ของกินเล่น"
+
+    food_category = models.CharField(
+        max_length=50,
+        choices=Foodcate.choices,
+        default=Foodcate.CHOOSE_CATEGORY  # Provide a valid default value
+    )
 
     def __str__(self):
         return self.restaurant_name
     
 class Menu(models.Model):
     food_name = models.CharField(max_length=100, blank=True)
-    food_category =  models.CharField(max_length=100, blank=True)
+    #food_category =  models.CharField(max_length=100, blank=True)
     about = models.CharField(max_length=1000, blank=True)
     price = models.DecimalField(max_digits=10,     
         decimal_places=2, default=0.00)
     menu_picture = models.ImageField(upload_to='menu_picture/', null=True, blank=True)
+    class Foodcate(models.TextChoices):
+        RICE_AND_CURRY = "ข้าวราดแกง", "ข้าวราดแกง"
+        MADE_TO_ORDER = "อาหารตามสั่ง", "อาหารตามสั่ง"
+        DESSERT = "ขนมหวาน", "ขนมหวาน"
+
+    food_category = models.CharField(
+        max_length=50,
+        choices=Foodcate.choices,
+        default=Foodcate.RICE_AND_CURRY  # Provide a valid default value
+    )
     def __str__(self):
         return self.food_name
 

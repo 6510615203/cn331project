@@ -58,6 +58,7 @@ def customer_register(request):
 def restaurant_register(request):
     username = request.user.username  # รับ username จาก query parameter
     user_profile = UserProfile.objects.get(user=request.user)
+    food_categories = RestaurantProfile.Foodcate.choices
 
     if request.method == "POST":
         '''
@@ -92,10 +93,11 @@ def restaurant_register(request):
         url = reverse("add_menu")
         return redirect(f"{url}?restaurant_name={restaurant_name}")
 
-    return render(request, "restaurant_register.html", {"username": username})
+    return render(request, "restaurant_register.html", {"username": username,'food_categories': food_categories})
 
 def add_menu(request):
     restaurant_name= request.GET.get('restaurant_name', 'default_restaurant_name')
+    food_categories = RestaurantProfile.Foodcate.choices
     if request.method == "POST":
         food_name = request.POST.get("food_name")
         food_category = request.POST.get("food_category")
@@ -123,7 +125,7 @@ def add_menu(request):
         url = reverse("welcome_registration")
         return redirect(f"{url}?user_type=restaurant&restaurant_name={restaurant_name}")     
 
-    return render(request, "add_menu.html", {"restaurant_name": restaurant_name})
+    return render(request, "add_menu.html", {"restaurant_name": restaurant_name, 'food_categories': food_categories})
     
 
 def register(request):

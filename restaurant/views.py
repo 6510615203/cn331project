@@ -19,6 +19,7 @@ def manage(request):
     username = request.user.username
     restaurant = get_object_or_404(RestaurantProfile, user_profile__user__username=username)
     is_editing = request.GET.get("edit")
+    food_categories = RestaurantProfile.Foodcate.choices
 
     if request.method == "POST":
         if "restaurant_name" in request.POST:
@@ -28,7 +29,7 @@ def manage(request):
         
         elif "food_category" in request.POST:
             food_category = request.POST.get("food_category", "").strip()
-            if food_category:
+            if food_category and food_category in dict(RestaurantProfile.Foodcate.choices):
                 restaurant.food_category = food_category
 
         elif "about" in request.POST:
@@ -46,7 +47,7 @@ def manage(request):
         return redirect("restaurant:manage")
 
     
-    return render(request, "manage_restaurant.html", {'restaurant': restaurant, "is_editing": is_editing,})
+    return render(request, "manage_restaurant.html", {'restaurant': restaurant, "is_editing": is_editing,'food_categories': food_categories})
 
 def about(request):      
     return render(request, "about_kinkorn.html")
