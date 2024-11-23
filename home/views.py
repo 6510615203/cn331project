@@ -57,7 +57,8 @@ def choose_regis(request):
         request.session['user_type'] = user_type  
         if user_type == 'restaurant':
             return redirect("register") 
-        
+        else:
+            return redirect("customer_register")            
             
     return render(request, "choose_regis.html")
 
