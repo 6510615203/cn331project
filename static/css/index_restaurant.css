@@ -45,30 +45,6 @@ status {
     font-size: 30px;
 }
 
-.order {
-    list-style: none;
-    display: flex;
-    margin: 0;
-    padding: 0;
-}
-
-.order li {
-    display: flex;
-    margin-left: 0px;
-    justify-content: center;
-    align-items: center;
-}
-
-.order li a {
-    color: black;
-    text-decoration: none;
-    font-size: 18px;
-    padding: 8px 12px;
-    display: flex;
-    align-items: center;
-    vertical-align: middle;
-}
-
 .menu li a:hover {
     background-color: #fdf4c3;
     color: black;
@@ -99,7 +75,6 @@ status {
     font-size: 20px;
     align-items: center;
 }
-
 
 .step {
     display: flex;
