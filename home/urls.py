@@ -16,7 +16,7 @@ urlpatterns = [
     path('choose_regis/', views.choose_regis, name='choose_regis'),
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
-    path('index_restaurant/', views.index_restaurant, name='index_restaurant')
+    #path('index_restaurant/', views.index_restaurant, name='index_restaurant')
 ]
 
 if settings.DEBUG:  # ใช้เฉพาะในโหมด debug (development server)
