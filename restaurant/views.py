@@ -57,3 +57,6 @@ def order_list(request):
 
 def sales_report(request):      
     return render(request, "sales.html")
+
+def edit_menu_payment(request):      
+    return render(request, "edit_menu_payment.html")

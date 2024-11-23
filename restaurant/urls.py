@@ -8,4 +8,5 @@ urlpatterns = [
     path('about_kinkorn', views.about, name='about'),
     path('order_list', views.order_list, name='order_list'),
     path('sales_report', views.sales_report, name='sales_report'),
+    path('edit_menu_payment', views.edit_menu_payment, name='edit_menu_payment'),
 ]
