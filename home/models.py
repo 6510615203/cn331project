@@ -26,14 +26,18 @@ class UserProfile(models.Model):
     def __str__(self):
         return self.user.username
     
+class FoodCategory(models.Model):
+    name = models.CharField(max_length=100, unique=True)  # ชื่อประเภทอาหาร (ไม่ซ้ำ)
+    def __str__(self):
+        return self.name
+    
 class RestaurantProfile(models.Model):
-    user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE, null=True, blank=True)
-    restaurant_name = models.CharField(max_length=100, blank=True)
-    food_category =  models.CharField(max_length=100, blank=True)
-    about = models.CharField(max_length=1000, blank=True)
-    open_close_time = models.CharField(max_length=100, blank=True)
+    user_profile = models.OneToOneField(UserProfile, on_delete=models.CASCADE, null=True, blank=True)
+    restaurant_name = models.CharField(max_length=100)
+    food_category = models.ForeignKey(FoodCategory, on_delete=models.SET_NULL, null=True)
+    about = models.TextField(blank=True)
+    open_close_time = models.CharField(max_length=50, blank=True)
     restaurant_picture = models.ImageField(upload_to='restaurant_picture/', null=True, blank=True)
-
     def __str__(self):
         return self.restaurant_name
     
@@ -47,3 +51,5 @@ class Menu(models.Model):
     def __str__(self):
         return self.food_name
 
+
+    

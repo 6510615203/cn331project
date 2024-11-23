@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.hashers import check_password
 from django.contrib import messages
 from django.urls import reverse
-from .models import UserProfile, RestaurantProfile, Menu
+from home.models import UserProfile, RestaurantProfile, Menu, FoodCategory
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
@@ -55,17 +55,18 @@ def choose_regis(request):
 def customer_register(request):
     return render(request, "customer_register.html")
 
+from django.shortcuts import render, redirect
+from django.urls import reverse
+from django.core.files.storage import FileSystemStorage
+from home.models import UserProfile, RestaurantProfile, FoodCategory
+
 def restaurant_register(request):
     username = request.user.username  # รับ username จาก query parameter
-    user_profile = UserProfile.objects.get(user=request.user)
+    user_profile = UserProfile.objects.get(user=request.user)  # ดึง UserProfile ของผู้ใช้ปัจจุบัน
 
     if request.method == "POST":
-        '''
-        if "back" in request.POST:
-            return redirect("register")
-        '''
         restaurant_name = request.POST.get("restaurant_name")
-        food_category = request.POST.get("food_category")
+        food_category_id = request.POST.get("food_category")  # รับค่า ID จาก Drop-down
         about = request.POST.get("about")
         open_close_time = request.POST.get("open_close_time")
 
@@ -75,24 +76,32 @@ def restaurant_register(request):
             fs = FileSystemStorage()
             filename = fs.save(restaurant_picture.name, restaurant_picture)  # บันทึกไฟล์
             restaurant_picture_url = fs.url(filename)  # ดึง URL ของไฟล์ที่บันทึก
-
         else:
             restaurant_picture_url = None
 
+        # ดึง FoodCategory ที่เลือกจากฐานข้อมูล
+        food_category = get_object_or_404(FoodCategory, id=food_category_id)
+
+        # สร้าง RestaurantProfile
         restaurant_info = RestaurantProfile.objects.create(
-            user_profile=user_profile,
-            restaurant_name=restaurant_name, 
-            food_category=food_category, 
+            user_profile=user_profile,  # ใช้ UserProfile instance
+            restaurant_name=restaurant_name,
+            food_category=food_category,
             about=about,
             open_close_time=open_close_time,
             restaurant_picture=restaurant_picture_url  
         )
         restaurant_info.save()
-        
+
         url = reverse("add_menu")
         return redirect(f"{url}?restaurant_name={restaurant_name}")
 
-    return render(request, "restaurant_register.html", {"username": username})
+    food_categories = FoodCategory.objects.all()  # ดึงข้อมูล FoodCategory ทั้งหมด
+    return render(request, "restaurant_register.html", {
+        "username": username,
+        "food_categories": food_categories,
+    })
+
 
 def add_menu(request):
     restaurant_name= request.GET.get('restaurant_name', 'default_restaurant_name')

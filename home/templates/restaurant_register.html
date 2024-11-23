@@ -61,9 +61,14 @@
 
             <div class="form-section">
                 <label for="food_category" class="form-title">ประเภทอาหาร</label>
-                <input type="text" placeholder="Enter your category" class="form-input" id="food_category"
-                    name="food_category" required>
+                <select id="food_category" name="food_category" class="form-input" required>
+                    <option value="" disabled selected>เลือกประเภทอาหาร</option>
+                    {% for category in food_categories %}
+                    <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% endfor %}
+                </select>
             </div>
+            
 
             <div class="form-section">
                 <label for="about" class="form-title">เกี่ยวกับ</label>
