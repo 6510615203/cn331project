@@ -70,8 +70,9 @@ def edit_menu_payment(request):
     restaurant = get_object_or_404(RestaurantProfile, user_profile__user__username=username)
 
     menu_items = Menu.objects.filter(restaurant_profile=restaurant)
+    payment_items = PaymentMethod.objects.filter(restaurant_profile=restaurant)
 
-    return render(request, 'edit_menu_payment.html',{'restaurant': restaurant, 'menu_items': menu_items})
+    return render(request, 'edit_menu_payment.html',{'restaurant': restaurant, 'menu_items': menu_items, 'payment_items': payment_items})
 
 
 def add_menu_res(request):
