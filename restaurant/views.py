@@ -100,7 +100,7 @@ def add_menu_res(request):
             food_name=food_name, 
             food_category=food_category, 
             about=about,
-            menu_picture=menu_picture_url ,
+            menu_picture=menu_picture ,
             price=price
         )
         food_info.save()
