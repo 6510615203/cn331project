@@ -34,37 +34,27 @@
                     <a href="/">KINKORN</a>
                 </div>
                 <ul class="menu">
-                    <li><a href="/about"><img src="{% static '/css/about.png' %}" class="icon" alt="About Icon">ABOUT
-                            US</a>
-                    </li>
-                    <li><a href="/"><img src="{% static '/css/order.png' %}" class="icon" alt="Order Icon">ORDER</a>
-                    </li>
-                    <li><a href="/"><img src="{% static '/css/yourorder.png' %}" class="icon" alt="Yourorder Icon">YOUR
-                            ORDER</a>
-                    </li>
+                    <li><a href="/about"><img src="{% static 'css/about.png' %}" class="icon" alt="About Icon">ABOUT US</a></li>
+                    <li><a href="{% url 'restaurant_list' %}"><img src="{% static 'css/order.png' %}" class="icon" alt="Order Icon">ORDER</a></li>
+                    <li><a href="#"><img src="{% static 'css/yourorder.png' %}" class="icon" alt="Yourorder Icon">YOUR ORDER</a></li>
                     {% if user.is_authenticated %}
                     <li>
                         <a href="{% url 'logout' %}">
-                            <img src="{% static '/css/user.png' %}" class="icon" alt="User Icon"> LOG OUT
+                            <img src="{% static 'css/user.png' %}" class="icon" alt="User Icon"> LOG OUT
                         </a>
                     </li>
                     {% else %}
                     <li>
                         <a href="{% url 'login' %}">
-                            <img src="{% static '/css/user.png' %}" class="icon" alt="User Icon"> LOG IN
+                            <img src="{% static 'css/user.png' %}" class="icon" alt="User Icon"> LOG IN
                         </a>
                     </li>
                     {% endif %}
-                    <!--<li>
-                        <div class="auth-box">
-                            <button class="nav-login-btn">LOG IN</button>
-                            <button class="nav-signup-btn">SIGN UP</button>-->
+                </ul>
             </div>
-            </li>
-            </ul>
-        </div>
         </div>
     </nav>
+    
     {% block content %}
     {% endblock %}
 </body>

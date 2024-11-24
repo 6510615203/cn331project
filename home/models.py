@@ -72,9 +72,11 @@ class Menu(models.Model):
         return self.food_name
     
 class PaymentMethod(models.Model):
-    restaurant_profile = models.ForeignKey(RestaurantProfile, on_delete=models.CASCADE, related_name='payment', default=1)
+    restaurant_profile = models.ForeignKey(
+        RestaurantProfile, on_delete=models.CASCADE, related_name='payment', default=1)
     bank_name = models.CharField(max_length=100, blank=True)
     account_number = models.CharField(max_length=100, blank=True)
+
     def __str__(self):
         return f"{self.bank_name} : {self.account_number}"
 

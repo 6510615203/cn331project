@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block style %}
-<link rel="stylesheet" type="text/css" href="{% static 'css/register.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/manage_restaurant.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -24,8 +24,7 @@
                     </div>
                     <label for="menu_picture" class="form-title" style="margin-top: 10px;">Add your picture
                         here!</label>
-
-                    <label for="restaurant_picture" class="form-title" style="margin-top: 10px;">required</label>
+                    <p>required</p>
 
                 </div>
                 <input type="file" class="form-input" id="menu_picture" name="menu_picture" onchange="previewImage();"
@@ -40,11 +39,13 @@
 
                 <div class="form-section">
                     <label for="food_category" class="form-title">ประเภทอาหาร</label>
-                    <select id="food_category" name="food_category" required>
-                        {% for value, display in food_categories %}
-                        <option value="{{ value }}">{{ display }}</option>
-                        {% endfor %}
-                    </select>
+                    <div class="select-dropdown">
+                        <select id="food_category" name="food_category" required>
+                            {% for value, display in food_categories %}
+                            <option value="{{ value }}">{{ display }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
                 </div>
 
                 <div class="form-section">
@@ -62,16 +63,18 @@
                 <input type="hidden" name="user_type" value="{{ user_type }}">
                 <input type="hidden" name="restaurant_name" id="restaurant_name" value="{{ restaurant_name }}">
 
-
-
-                <div class="form-button">
-                    <button type="submit" class="button">ยืนยัน</button>
+                <div class="confirmbutton">
+                    <div class="form-button">
+                        <form method="GET" action="{% url 'restaurant:edit_menu_payment'%}">
+                            <button type="submit" class="button">ยกเลิก</button>
+                        </form>
+                    </div>
+                    <div class="form-button">
+                        <button type="submit" class="button">ยืนยัน</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </form>
-    <form method="GET" action="{% url 'restaurant:edit_menu_payment'%}">
-        <button type="submit" class="button">ยกเลิก</button>
     </form>
 </div>
 <script>

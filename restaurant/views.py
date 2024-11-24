@@ -3,11 +3,13 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.hashers import check_password
 from django.contrib import messages
 from django.urls import reverse
-from .models import UserProfile, RestaurantProfile, Menu
+from .models import UserProfile, RestaurantProfile, Menu, PaymentMethod
+from restaurant.models import PaymentMethod, RestaurantProfile
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 from django.core.files.storage import FileSystemStorage
+
 
 # Create your views here.
 def index(request):
@@ -109,5 +111,58 @@ def add_menu_res(request):
 
     return render(request, "add_menu_res.html", {"restaurant_name": restaurant_name, 'food_categories': food_categories})
 
+
+
 def add_payment(request):
-    return render(request, "add_payment.html")
+    restaurant_profile = RestaurantProfile.objects.get(user_profile__user=request.user)
+  
+    error_message = None
+
+    if request.method == 'POST':
+        bank_name = request.POST.get('bank_name', '').strip()
+        account_number = request.POST.get('account_number', '').strip()
+
+        if not bank_name or not account_number:
+            error_message = "กรุณากรอกชื่อธนาคารและเลขบัญชีให้ครบถ้วน"
+        else:
+
+            PaymentMethod.objects.create(
+                restaurant_profile=restaurant_profile,
+                bank_name=bank_name,
+                account_number=account_number
+            )
+         
+            return redirect('restaurant:add_payment')
+
+
+    payment_methods = PaymentMethod.objects.filter(restaurant_profile=restaurant_profile)
+    
+
+    return render(request, "add_payment.html", {
+        'payment_methods': payment_methods,
+        'error_message': error_message
+    })
+
+
+
+def edit_only_menu(request):
+    username = request.user.username
+    restaurant = get_object_or_404(RestaurantProfile, user_profile__user__username=username)
+    is_editing = request.GET.get("edit")
+    food_categories = RestaurantProfile.Foodcate.choices
+
+    
+    if request.method == "POST":
+        menu_id = request.POST.get('menu_id')
+        if menu_id:
+            menu_item = get_object_or_404(Menu, id=menu_id)
+            if "food_name" in request.POST:
+                food_name = request.POST.get("food_name").strip()
+                menu_item.food_name = food_name
+
+            menu_item.save()       
+            return render(request, "edit_only_menu.html", {"restaurant": restaurant, "menu_item": menu_item})
+            
+    return render(request, "edit_only_menu.html", {'restaurant': restaurant,'food_categories': food_categories, "is_editing": is_editing})
+
+

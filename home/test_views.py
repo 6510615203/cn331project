@@ -5,12 +5,14 @@ from .models import UserProfile, RestaurantProfile, Menu
 
 
 class ViewsTestsCase(TestCase):
+
     def setUp(self):
         self.client = Client()
         self.user = User.objects.create_user(username="somtamkaiyang", password="passsomtam")
         self.profile = UserProfile.objects.create(user=self.user, name="Yingthai Jaingam", phone_number=66912345678, email="yingthaijai@gmail.com", user_type="restaurant")
         self.restaurant = RestaurantProfile.objects.create(restaurant_name="Somtam YingThai", food_category="Thai food", about="ขายส้มตำ ไก่ย่าง แซ่บๆ")
         self.menu = Menu.objects.create(food_name="ส้มตำไทย",food_category="ส้มตำ", about="ส้มตำไทย อร่อย ถูกใจวัยรุ่น" )
+
 
     def test_index_page(self):
         response = self.client.get(reverse("index"))
