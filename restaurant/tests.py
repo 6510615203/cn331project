@@ -1,12 +1,14 @@
-from django.test import TestCase
+from django.test import Client, TestCase
 from django.test import TestCase
 from django.urls import reverse
 from restaurant.models import RestaurantProfile
 from django.contrib.auth.models import User
-from home.models import UserProfile  # นำเข้าหาก UserProfile อยู่ในแอปอื่น
+from .models import RestaurantProfile, Menu
+from home.models import UserProfile  
 from django.core.files.uploadedfile import SimpleUploadedFile
 
-class BasicViewTest(TestCase):
+class GeneralViewTest(TestCase):
+    #สร้างข้อมูล user ให้เชื่อมกับ UserProfilecและสร้างข้อมูลร้านอาหาร
     def setUp(self):
         self.user = User.objects.create_user(username='testuser', password='testpassword')
         self.user_profile = UserProfile.objects.create(user=self.user)
@@ -17,14 +19,16 @@ class BasicViewTest(TestCase):
             about='A test restaurant',
             open_close_time='10:00-22:00',
         )
-
-    def test_index_view_loads_correct_template(self):
+        
+    #ลองล้อกอิน + ส่งคำขอ http ไป view ให้ตรวจสอบสถานะ http ,template กับ ข้อมูลไปว่าตรงกับที่เราเซ็ตไหม"
+    def test_index(self):
         self.client.login(username='testuser', password='testpassword')
         response = self.client.get(reverse('restaurant:index'))
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'index_restaurant.html')
         self.assertEqual(response.context['restaurant'], self.restaurant)
         
+    #ส่งคำขอ http ไป view ให้ตรวจสอบสถานะ http ,template กับ ข้อมูลไปว่าตรงกับที่เราเซ็ตไหม"    
     def test_about_view(self):
         response = self.client.get(reverse('restaurant:about'))
         self.assertEqual(response.status_code, 200)
@@ -47,6 +51,7 @@ class BasicViewTest(TestCase):
 
         
 class ManageViewTest(TestCase):
+    #สร้างข้อมูล user ให้เชื่อมกับ UserProfilecและสร้างข้อมูลร้านอาหาร
     def setUp(self):
         self.user = User.objects.create_user(username='testuser', password='testpassword')
         self.user_profile = UserProfile.objects.create(user=self.user)
@@ -57,24 +62,25 @@ class ManageViewTest(TestCase):
             about='A test restaurant',
             open_close_time='10:00-22:00',
         )
-
+        
+    #ส่งคำขอ http ไป view พร้อมกับข้อมูล และดึงข้อมูลล่าสุดมาตรวจสอบว่าตรงกันไหม
     def test_update_restaurant_name(self):
         self.client.login(username="testuser", password="testpassword")
         response = self.client.post(
             reverse("restaurant:manage"), 
-            {"restaurant_name": "Updated Restaurant Name"}
+            {" restaurant_name": "หิวสหาย"}
         )
         self.restaurant.refresh_from_db()
-        self.assertEqual(self.restaurant.restaurant_name, "Updated Restaurant Name")
+        self.assertEqual(self.restaurant.restaurant_name, "หิวสหาย")
 
     def test_update_food_category(self):
         self.client.login(username="testuser", password="testpassword")
         response = self.client.post(
             reverse("restaurant:manage"), 
-            {"food_category": "อาหารตามสั่ง"}
+            {"food_category": "อาหารญี่ปุ่น"}
         )
         self.restaurant.refresh_from_db()
-        self.assertEqual(self.restaurant.food_category, "อาหารตามสั่ง")
+        self.assertEqual(self.restaurant.food_category, "อาหารญี่ปุ่น")
 
     def test_update_about(self):
         self.client.login(username="testuser", password="testpassword")
@@ -94,7 +100,7 @@ class ManageViewTest(TestCase):
         self.restaurant.refresh_from_db()
         self.assertEqual(self.restaurant.open_close_time, "09:00-20:00")
 
-    
+    #สร้างไฟล์ภาพรูปแบบไบต์ ส่งคำขอ http ไป view ไฟล์ภาพถูกอัปโหลด restaurant_picture จะมีค่า
     def test_update_restaurant_picture(self):
         self.client.login(username="testuser", password="testpassword")
         test_image = SimpleUploadedFile(
@@ -106,7 +112,6 @@ class ManageViewTest(TestCase):
             reverse("restaurant:manage"),
             {"restaurant_picture": test_image},
         )
-
-
         self.restaurant.refresh_from_db()
         self.assertTrue(self.restaurant.restaurant_picture)
+        
