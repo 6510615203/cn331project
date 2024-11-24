@@ -153,6 +153,7 @@ body {
     border: 1px solid #ccc;
     border-radius: 5px;
     font-family: inherit;
+    justify-content: left;
 }
 
 .form-input-file {
@@ -163,6 +164,7 @@ body {
     color: #000000;
     padding: 0 10px;
     flex-direction: column;
+    margin-top: 120px;
 }
 
 .form-input-file input {
@@ -419,7 +421,7 @@ input[type="text"]:focus {
     border-radius: 7px;
     background-color: #e2e2e2;
     border: none;
-    font-weight: semibold;
+    font-weight: 10;
     font-size: 17px;
     width: 320px;
     height: 40px;
@@ -442,4 +444,13 @@ input[type="text"]:focus {
     background-repeat: no-repeat;
     background-position: right 10px center;
     background-size: 1rem;
+}
+
+.confirmbutton {
+    justify-content: flex-end;
+    align-items: center;
+    display: flex;
+    margin-top: 2%;
+    gap: 5%;
+    margin-right: 2%;
 }
