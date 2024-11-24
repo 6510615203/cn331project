@@ -86,6 +86,7 @@ def add_menu_res(request):
         price = request.POST.get("price")
         user_type = request.POST.get("user_type")
         
+        
         # รับไฟล์รูปภาพจากฟอร์ม
         if 'menu_picture' in request.FILES:
             menu_picture = request.FILES['menu_picture']
