@@ -47,3 +47,11 @@ class Menu(models.Model):
     def __str__(self):
         return self.food_name
 
+class Restaurant(models.Model):
+    name = models.CharField(max_length=100)
+    category = models.CharField(max_length=100)
+    description = models.TextField()
+    open_close_time = models.CharField(max_length=50)
+
+    def __str__(self):
+        return self.name
