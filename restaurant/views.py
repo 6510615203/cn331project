@@ -56,3 +56,5 @@ def order_list(request):
 
 def sales_report(request):      
     return render(request, "sales.html")
+
+
