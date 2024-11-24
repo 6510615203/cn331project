@@ -25,6 +25,7 @@
                     <th>ราคา (บาท)</th>
                     <th>รายละเอียด</th>
                     <th>รูปภาพ</th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -41,6 +42,15 @@
                         {% else %}
                         ไม่มีรูปภาพ
                         {% endif %}
+                    </td>
+                    <td>
+                        <form action="{% url 'restaurant:edit_only_menu' %}" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="menu_id" value="{{ menu.id }}">
+                            <div class="enroll-container">
+                                <button type="submit" class="btn btn-primary">edit</button>
+                            </div>
+                        </form>
                     </td>
                 </tr>
                 {% endfor %}
