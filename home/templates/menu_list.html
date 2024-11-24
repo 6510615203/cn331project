@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+<title>KINKORN Restaurants</title>
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/your_style.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-5">
+    <!-- ส่วนเมนูอาหาร -->
+    <div class="menu-table mt-5">
+        <h2>เมนูอาหารในร้าน</h2>
+
+        {% if menu_items %}
+        <table border="1" class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>ชื่อเมนู</th>
+                    <th>ราคา (บาท)</th>
+                    <th>รายละเอียด</th>
+                    <th>รูปภาพ</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for menu in menu_items %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ menu.food_name }}</td>
+                    <td>{{ menu.price }}</td>
+                    <td>{{ menu.about }}</td>
+                    <td>
+                        {% if menu.menu_picture %}
+                        <img src="{{ menu.menu_picture.url }}" alt="{{ menu.food_name }}" width="100">
+                        {% else %}
+                        ไม่มีรูปภาพ
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p class="text-center">ยังไม่มีเมนูอาหารในร้านนี้</p>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

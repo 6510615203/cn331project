@@ -209,7 +209,7 @@ def login_view(request):
             if user_type == "restaurant":
                 return redirect("/restaurant/")  
             else:
-                return redirect("index") 
+                return redirect("/order/") 
 
             messages.success(request, "เข้าสู่ระบบสำเร็จ!")
             return redirect("index")  # หากไม่มี user_type ก็ให้ไปหน้า index
@@ -224,4 +224,11 @@ def logout_view(request):
     logout(request)  # ล็อกเอาท์ผู้ใช้
     return redirect('/')  # เปลี่ยนเส้นทางไปที่หน้าแรกหลังจากออกจากระบบ
 
+def restaurant_list(request):
+    restaurants = RestaurantProfile.objects.all()  # ดึงข้อมูลร้านอาหารทั้งหมด
+    return render(request, 'order.html', {'restaurants': restaurants})
 
+def menu_list(request, restaurant_id):
+    restaurant = get_object_or_404(RestaurantProfile, id=restaurant_id)
+    menu_items = Menu.objects.filter(restaurant_profile=restaurant)
+    return render(request, 'menu_list.html', {'restaurant': restaurant, 'menu_items': menu_items})

@@ -1,0 +1,64 @@
+/* Layout Container */
+.card-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* ระยะห่างระหว่างการ์ด */
+    justify-content: center; /* จัดให้อยู่ตรงกลาง */
+    padding: 20px;
+}
+
+/* Card Styling */
+.restaurant-card {
+    width: 300px; /* ความกว้างของการ์ด */
+    background-color: #FCF9CA;
+    border-radius: 20px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* การ์ดเมื่อ hover */
+.restaurant-card:hover {
+    transform: scale(1.05); /* ขยายเล็กน้อยเมื่อ hover */
+    box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.3);
+}
+
+/* รูปภาพในการ์ด */
+.restaurant-image {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
+
+/* ชื่อร้านอาหาร */
+.restaurant-card h3 {
+    font-size: 18px;
+    color: #AF1F1F;
+    margin-bottom: 10px;
+}
+
+/* เวลาเปิด-ปิด */
+.restaurant-card p {
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* ปุ่ม */
+.button-primary {
+    background-color: #AF1F1F;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 10px;
+    font-weight: bold;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.button-primary:hover {
+    background-color: #fdf4c3;
+    color: #000;
+}
