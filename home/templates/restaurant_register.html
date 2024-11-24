@@ -46,6 +46,7 @@
                     </div>
                     <label for="restaurant_picture" class="form-title" style="margin-top: 10px; cursor: pointer;">Add
                         your picture here!</label>
+                    <label for="restaurant_picture" class="form-title" style="margin-top: 10px;">required</label>
                 </div>
                 <input type="file" class="form-input" id="restaurant_picture" name="restaurant_picture"
                     onchange="previewImage();" style="display: none;">
@@ -61,8 +62,11 @@
 
             <div class="form-section">
                 <label for="food_category" class="form-title">ประเภทอาหาร</label>
-                <input type="text" placeholder="Enter your category" class="form-input" id="food_category"
-                    name="food_category" required>
+                <select id="food_category" name="food_category" required>
+                    {% for value, display in food_categories %}
+                    <option value="{{ value }}">{{ display }}</option>
+                    {% endfor %}
+                </select>
             </div>
 
             <div class="form-section">

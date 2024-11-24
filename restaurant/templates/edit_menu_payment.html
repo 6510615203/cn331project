@@ -1,0 +1,78 @@
+{% extends "base_restaurant.html" %}
+{% load static %}
+{% block title %}
+<title>Restaurant Order List</title>
+{% endblock %}
+
+{% block style %}
+<!--<link rel="stylesheet" type="text/css" href="{% static 'css/homestyle.css' %}">-->
+{% endblock %}
+
+{% block content %}
+
+
+<div class="container mt-5">
+    <h2>เมนูของร้าน: {{ restaurant.restaurant_name }}</h2>
+
+    <div class="menu-table">
+        {% if menu_items %}
+        <table border="1" class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>ชื่ออาหาร</th>
+                    <th>ประเภทอาหาร</th>
+                    <th>ราคา (บาท)</th>
+                    <th>รายละเอียด</th>
+                    <th>รูปภาพ</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for menu in menu_items %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ menu.food_name }}</td>
+                    <td>{{ menu.get_food_category_display }}</td>
+                    <td>{{ menu.price }}</td>
+                    <td>{{ menu.about }}</td>
+                    <td>
+                        {% if menu.menu_picture %}
+                        <img src="{{ menu.menu_picture.url }}" alt="{{ menu.food_name }}" width="100">
+                        {% else %}
+                        ไม่มีรูปภาพ
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>ยังไม่มีเมนูในร้านนี้</p>
+        {% endif %}
+    </div>
+</div>
+
+
+
+
+
+
+
+<div class="restaurantbutton">
+    <div class="res-button">
+        <form method="GET" action="{% url 'restaurant:add_payment'%}">
+            <button type="submit" class="button">Add your payment</button>
+        </form>
+    </div>
+    <div class="res-button">
+        <form method="GET" action="{% url 'restaurant:manage'%}">
+            <button type="submit" class="button">Edit Profile</button>
+        </form>
+    </div>
+    <div class="res-button">
+        <form method="GET" action="{% url 'restaurant:add_menu_res'%}">
+            <button type="submit" class="button">Add menu</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

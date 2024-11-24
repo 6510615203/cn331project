@@ -38,10 +38,14 @@
         </div>
         <div class="restaurantbutton">
             <div class="res-button">
-                <button type="submit">จัดการร้านอาหาร</button>
+                <form method="GET" action="{% url 'restaurant:manage'%}">
+                    <button type="submit" class="button">จัดการร้านอาหาร</button>
+                </form>
             </div>
             <div class="res-button">
-                <button type="submit">รายรับทั้งหมด</button>
+                <form method="GET" action="{% url 'restaurant:sales_report'%}">
+                    <button type="submit" class="button">รายรับทั้งหมด</button>
+                </form>
             </div>
         </div>
     </div>
