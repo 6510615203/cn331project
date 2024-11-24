@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.hashers import check_password
 from django.contrib import messages
 from django.urls import reverse
-from home.models import UserProfile, RestaurantProfile, Menu, FoodCategory
+from .models import UserProfile, RestaurantProfile, Menu
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
@@ -55,93 +55,82 @@ def choose_regis(request):
 def customer_register(request):
     return render(request, "customer_register.html")
 
-from django.shortcuts import render, redirect
-from django.urls import reverse
-from django.core.files.storage import FileSystemStorage
-from home.models import UserProfile, RestaurantProfile, FoodCategory
-
 def restaurant_register(request):
     username = request.user.username  # รับ username จาก query parameter
-    user_profile = UserProfile.objects.get(user=request.user)  # ดึง UserProfile ของผู้ใช้ปัจจุบัน
+    user_profile = UserProfile.objects.get(user=request.user)
+    food_categories = RestaurantProfile.Foodcate.choices
 
     if request.method == "POST":
+        '''
+        if "back" in request.POST:
+            return redirect("register")
+        '''
         restaurant_name = request.POST.get("restaurant_name")
-        food_category_id = request.POST.get("food_category")  # รับค่า ID จาก Drop-down
+        food_category = request.POST.get("food_category")
         about = request.POST.get("about")
         open_close_time = request.POST.get("open_close_time")
 
-
+        # รับไฟล์รูปภาพจากฟอร์ม
         if 'restaurant_picture' in request.FILES:
             restaurant_picture = request.FILES['restaurant_picture']
             fs = FileSystemStorage()
-            filename = fs.save(restaurant_picture.name, restaurant_picture)  
-            restaurant_picture_url = fs.url(filename)  
+            filename = fs.save(restaurant_picture.name, restaurant_picture)  # บันทึกไฟล์
+            restaurant_picture_url = fs.url(filename)  # ดึง URL ของไฟล์ที่บันทึก
+
         else:
             restaurant_picture_url = None
 
-        food_category = get_object_or_404(FoodCategory, id=food_category_id)
-
         restaurant_info = RestaurantProfile.objects.create(
-            user_profile=user_profile,  
-            restaurant_name=restaurant_name,
-            food_category=food_category,
+            user_profile=user_profile,
+            restaurant_name=restaurant_name, 
+            food_category=food_category, 
             about=about,
             open_close_time=open_close_time,
-            restaurant_picture=restaurant_picture_url  
+            restaurant_picture=restaurant_picture 
         )
         restaurant_info.save()
-
+        
         url = reverse("add_menu")
         return redirect(f"{url}?restaurant_name={restaurant_name}")
 
-    food_categories = FoodCategory.objects.all() 
-    return render(request, "restaurant_register.html", {
-        "username": username,
-        "food_categories": food_categories,
-    })
-
+    return render(request, "restaurant_register.html", {"username": username,'food_categories': food_categories})
 
 def add_menu(request):
     restaurant_name = request.GET.get('restaurant_name', 'default_restaurant_name')
-    food_categories = FoodCategory.objects.all()  # ดึงข้อมูลประเภทอาหารทั้งหมด
-    
+    food_categories = RestaurantProfile.Foodcate.choices
+
     if request.method == "POST":
         food_name = request.POST.get("food_name")
-        food_category_id = request.POST.get("food_category")  # รับ ID ของประเภทอาหารจาก Drop-down
+        food_category = request.POST.get("food_category")
         about = request.POST.get("about")
         price = request.POST.get("price")
         user_type = request.POST.get("user_type")
-        
-        # รับไฟล์รูปภาพจากฟอร์ม
+
+        # ค้นหา RestaurantProfile
+        restaurant_profile = get_object_or_404(RestaurantProfile, restaurant_name=restaurant_name)
+
+        # รับไฟล์รูปภาพจากฟอร์มและบันทึกใน menu_picture
+        menu_picture = None  # ตั้งค่าเริ่มต้น
         if 'menu_picture' in request.FILES:
             menu_picture = request.FILES['menu_picture']
-            fs = FileSystemStorage()
-            filename = fs.save(menu_picture.name, menu_picture)
-            menu_picture_url = fs.url(filename)
-        else:
-            menu_picture_url = None
 
-        # ดึงประเภทอาหารจาก ID
-        food_category = get_object_or_404(FoodCategory, id=food_category_id)
-
-        # สร้างข้อมูลเมนู
+        # สร้างข้อมูลเมนูและบันทึกข้อมูล
         food_info = Menu.objects.create(
-            food_name=food_name,
-            food_category=food_category.name,  # เก็บชื่อประเภทอาหาร
+            restaurant_profile=restaurant_profile,
+            food_name=food_name, 
+            food_category=food_category, 
             about=about,
-            menu_picture=menu_picture_url,
+            menu_picture=menu_picture,  # บันทึกใน menu_picture
             price=price
         )
         food_info.save()
 
         url = reverse("welcome_registration")
-        return redirect(f"{url}?user_type=restaurant&restaurant_name={restaurant_name}")
+        return redirect(f"{url}?user_type=restaurant&restaurant_name={restaurant_name}")     
 
-    return render(request, "add_menu.html", {
-        "restaurant_name": restaurant_name,
-        "food_categories": food_categories,  # ส่งประเภทอาหารไปยังเทมเพลต
-    })
+    return render(request, "add_menu.html", {"restaurant_name": restaurant_name, 'food_categories': food_categories})
 
+    
 
 def register(request):
     if request.method == "POST":

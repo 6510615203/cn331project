@@ -221,36 +221,6 @@ body {
     transform: scale(1.05);
 }
 
-
-.shape {
-    position: absolute;
-    border-radius: 50%;
-}
-
-.ellipse-5 {
-    width: 47px;
-    height: 47px;
-    background-color: #AF1F1F;
-    left: 613px;
-    top: 176px;
-}
-
-.ellipse-6 {
-    width: 47px;
-    height: 47px;
-    background-color: #FBF27C;
-    left: 1021px;
-    top: 176px;
-}
-
-.ellipse-7 {
-    width: 47px;
-    height: 47px;
-    background-color: #FBF27C;
-    left: 1424px;
-    top: 176px;
-}
-
 .section-label {
     font-size: 36px;
     font-weight: 200;
