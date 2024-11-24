@@ -181,11 +181,12 @@ body {
 }
 
 .form-title {
-    width: 450px;
     height: 47px;
     font-size: 20px;
     line-height: 50px;
     color: #000000;
+    margin-top: 10px;
+    width: 380px;
 }
 
 .signup-options {
@@ -262,8 +263,8 @@ body {
     position: absolute;
     top: 25%;
     left: 30%;
-    width: 900px; 
-    height: 50%; 
+    width: 900px;
+    height: 50%;
     background-color: #f5f5f5;
     border-radius: 20px;
 }
@@ -286,7 +287,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
+    gap: 10px;
     margin-top: 3%;
 }
 
@@ -322,9 +323,22 @@ body {
     object-fit: cover;
 }
 
-.form-title {
-    margin-top: 10px;
-    width: 380px;
+.savebutton {
+    background-color: #AF1F1F;
+    width: 200px;
+    height: 50px;
+    border-radius: 20px;
+    color: white;
+    cursor: pointer;
+    border: none;
+    font-size: 20px;
+    font-family: inherit;
+    margin-top: 0px;
+}
+
+.savebutton:hover {
+    background-color: #FFFAB7;
+    color: black;
 }
 
 .button {
@@ -357,7 +371,7 @@ body {
     border-radius: 7px;
     background-color: #e2e2e2;
     border: none;
-    font-weight: 10;
+    font-weight: semibold;
     font-size: 17px;
     width: 320px;
     height: 40px;
@@ -405,7 +419,7 @@ input[type="text"]:focus {
     border-radius: 7px;
     background-color: #e2e2e2;
     border: none;
-    font-weight: 10;
+    font-weight: semibold;
     font-size: 17px;
     width: 320px;
     height: 40px;
