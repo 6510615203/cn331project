@@ -43,22 +43,6 @@ class RestaurantProfile(models.Model):
         default=Foodcate.CHOOSE_CATEGORY
     )
 
-    class Foodcate(models.TextChoices):
-        CHOOSE_CATEGORY = "เลือกประเภทอาหาร", "เลือกประเภทอาหาร"
-        RICE_AND_CURRY = "ข้าวราดแกง", "ข้าวราดแกง"
-        MADE_TO_ORDER = "อาหารตามสั่ง", "อาหารตามสั่ง"
-        DESSERT = "ขนมหวาน", "ขนมหวาน"
-        WATER = "น้ำ", "น้ำ"
-        NOODLES = "ก๋วยเตี๋ยว","ก๋วยเตี๋ยว"
-        JAPANESE_FOOD = "อาหารญี่ปุ่น","อาหารญี่ปุ่น"
-        SNACKS = "ของกินเล่น","ของกินเล่น"
-
-    food_category = models.CharField(
-        max_length=50,
-        choices=Foodcate.choices,
-        default=Foodcate.CHOOSE_CATEGORY
-    )
-
     def __str__(self):
         return self.restaurant_name
     
@@ -88,9 +72,11 @@ class Menu(models.Model):
         return self.food_name
     
 class PaymentMethod(models.Model):
-    restaurant_profile = models.ForeignKey(RestaurantProfile, on_delete=models.CASCADE, related_name='payment', default=1)
+    restaurant_profile = models.ForeignKey(
+        RestaurantProfile, on_delete=models.CASCADE, related_name='payment', default=1)
     bank_name = models.CharField(max_length=100, blank=True)
     account_number = models.CharField(max_length=100, blank=True)
+
     def __str__(self):
         return f"{self.bank_name} : {self.account_number}"
 

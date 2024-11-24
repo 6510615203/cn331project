@@ -29,13 +29,12 @@
                 </label>
 
                 <!-- Form สำหรับอัปโหลดและบันทึกรูป -->
-                <form method="POST" action="{% url 'restaurant:manage' %}" enctype="multipart/form-data"
-                    style="margin-top: 20px;">
+                <form method="POST" action="{% url 'restaurant:manage' %}" enctype="multipart/form-data" style="margin-top: 20px;">
                     {% csrf_token %}
                     <input type="file" class="form-input" id="restaurant_picture" name="restaurant_picture"
                         onchange="previewImage();" style="display: none;">
                     <!-- ปุ่ม Save -->
-                    <button type="submit" class="button" style="margin-top: 0px;">Save</button>
+                    <button type="submit" class="savebutton" style="margin-top: 0px;">Save</button>
                 </form>
             </div>
         </div>

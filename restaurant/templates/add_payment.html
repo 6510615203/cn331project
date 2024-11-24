@@ -1,19 +1,35 @@
 {% extends "base_restaurant.html" %}
 {% load static %}
+
 {% block title %}
-<title>Restaurant Sales Report</title>
+<title>เพิ่มช่องทางการชำระเงิน</title>
 {% endblock %}
 
 {% block style %}
-<!--<link rel="stylesheet" type="text/css" href="{% static 'css/homestyle.css' %}">-->
+<link rel="stylesheet" type="text/css" href="{% static 'css/addpayment.css' %}">
 {% endblock %}
 
 {% block content %}
-
-test add payment restaurant
-
-
-
-
-
+<div class="main-container">
+    <div class="form-wrapper">
+        <h1 class="text-center">เพิ่มช่องทางการชำระเงิน</h1>
+        <form method="post" class="form-container">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="bank_name" class="form-label">ชื่อธนาคาร:</label>
+                <input type="text" name="bank_name" id="bank_name" class="input-field" placeholder="ชื่อธนาคาร" required>
+            </div>
+            <div class="form-group">
+                <label for="account_number" class="form-label">เลขบัญชี:</label>
+                <input type="text" name="account_number" id="account_number" class="input-field" placeholder="เลขบัญชี" required>
+            </div>
+            <div class="form-actions">
+                <a href="{% url 'restaurant:edit_menu_payment' %}" class="btn-back">กลับ</a>
+                <button type="submit" class="btn-submit">บันทึก</button>
+            </div>
+        </form>
+    </div>
+</div>
 {% endblock %}
+
+

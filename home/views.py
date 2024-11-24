@@ -232,3 +232,4 @@ def menu_list(request, restaurant_id):
     restaurant = get_object_or_404(RestaurantProfile, id=restaurant_id)
     menu_items = Menu.objects.filter(restaurant_profile=restaurant)
     return render(request, 'menu_list.html', {'restaurant': restaurant, 'menu_items': menu_items})
+

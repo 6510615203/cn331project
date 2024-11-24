@@ -346,7 +346,7 @@ body {
 }
 
 .form-section .select-dropdown select {
-    color: black;
+    color: #afacac;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -356,13 +356,18 @@ body {
     background-color: #e2e2e2;
     border: none;
     font-weight: 10;
-    font-size: 17px;
-    width: 320px;
-    height: 40px;
-    margin-top: 10px;
+    font-size: 18px;
+    width: 340px;
+    height: 50px;
+    margin-left: 5px;
     appearance: none;
     cursor: pointer;
     outline: none;
+
+
+    text-align: center;
+    
+    font-family: inherit;
 }
 
 .form-section .select-dropdown select:hover {

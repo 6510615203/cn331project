@@ -1,0 +1,109 @@
+
+body {
+    background: #ffffff;
+    margin: 0;
+    padding: 0;
+    font-family: 'Kanit', sans-serif;
+}
+
+/* Main container to center content */
+.main-container {
+    display: flex;
+    justify-content: center; /* จัดให้อยู่กึ่งกลางแนวนอน */
+    align-items: center; /* จัดให้อยู่กึ่งกลางแนวตั้ง */
+    height: calc(100vh - 80px); /* ลบพื้นที่ส่วนหัว */
+    background-color: #fdf4c3;
+}
+
+/* Form Wrapper */
+.form-wrapper {
+    background-color: #fff8d9;
+    padding: 30px 40px; /* เพิ่ม padding */
+    border-radius: 15px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    width: 400px;
+    text-align: center;
+}
+
+/* Header Style */
+.form-wrapper h1 {
+    font-size: 24px;
+    color: #AF1F1F;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+/* Form Group */
+.form-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+/* Form Label */
+.form-label {
+    font-size: 14px;
+    color: #AF1F1F;
+    font-weight: bold;
+    margin-bottom: 5px;
+    display: block;
+}
+
+/* Input Fields */
+.input-field {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    color: #333;
+    background-color: #f5f5f5;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    box-sizing: border-box;
+}
+
+.input-field:focus {
+    border-color: #AF1F1F;
+}
+
+/* Action Buttons */
+.form-actions {
+    display: flex;
+    justify-content: space-between; /* จัดปุ่มให้อยู่ซ้ายและขวา */
+    margin-top: 20px;
+}
+
+.btn-back {
+    display: inline-block;
+    padding: 10px 15px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #AF1F1F;
+    background-color: #fff;
+    border: 2px solid #AF1F1F;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: all 0.3s;
+}
+
+.btn-back:hover {
+    background-color: #AF1F1F;
+    color: #fff;
+}
+
+.btn-submit {
+    display: inline-block;
+    padding: 10px 15px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #AF1F1F;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s;
+}
+
+.btn-submit:hover {
+    background-color: #922020;
+}
