@@ -112,12 +112,25 @@ def add_menu_res(request):
 def add_payment(request):
     return render(request, "add_payment.html")
 
+
 def edit_only_menu(request):
     username = request.user.username
     restaurant = get_object_or_404(RestaurantProfile, user_profile__user__username=username)
+    is_editing = request.GET.get("edit")
+    food_categories = RestaurantProfile.Foodcate.choices
+
+    
     if request.method == "POST":
         menu_id = request.POST.get('menu_id')
         if menu_id:
-            menu_item = get_object_or_404(Menu, id=menu_id, restaurant_profile=restaurant)
+            menu_item = get_object_or_404(Menu, id=menu_id)
+            if "food_name" in request.POST:
+                food_name = request.POST.get("food_name").strip()
+                menu_item.food_name = food_name
+
+            menu_item.save()       
             return render(request, "edit_only_menu.html", {"restaurant": restaurant, "menu_item": menu_item})
-    return render(request, "edit_only_menu.html")
+            
+    return render(request, "edit_only_menu.html", {'restaurant': restaurant,'food_categories': food_categories, "is_editing": is_editing})
+
+
