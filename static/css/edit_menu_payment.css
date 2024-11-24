@@ -1,0 +1,204 @@
+body {
+    background-color: #ffffff;
+    margin: 0;
+    padding: 0;
+
+}
+.container {
+    width: 90%;
+    margin: 0 auto;
+    font-family: Arial, sans-serif;
+    color: #333;
+}
+
+.menu-title {
+    display: flex;
+    text-align: center;
+    text-align: left;
+    width: 59%;
+    height: 50px;
+    padding-left: 20px; 
+    border-radius: 5px;
+    color: white;
+    background-color:#AF1F1F;
+    display: flex;
+    align-items: center; /* จัดกึ่งกลางแนวตั้ง */
+    font-family: Arial, sans-serif;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+ 
+.menu-table {
+    margin-top: 20px;
+    width: 60%;
+    height: 70%;
+    margin-left: 0;
+    margin-right: auto;
+    border-radius: 25px;
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #e2e2e2;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+}
+
+.table, .table th, .table td, .table tr {
+    border: none;  
+    padding: 12px 15px;
+}
+
+.table {
+    width: 100%;
+    border: none;
+    border-radius: 25px;
+    border-collapse: separate; 
+    border-spacing: 0 0px; 
+    font-size: 16px;
+    text-align: left;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    
+}
+
+.table th{
+    padding: 12px 15px;
+    text-align: center;
+}
+.table th:nth-child(1) {
+    width: 20px; 
+}
+.table th:nth-child(2) {
+    width: 200px; 
+}
+.table th:nth-child(3) {
+    width: 150px; 
+}
+.table th:nth-child(4) {
+    width: 100px; 
+}
+.table th:nth-child(5) {
+    width: 100px; 
+}
+
+/*ข้อมูลในตารง*/
+.table td {
+    padding: 12px 15px;
+}
+
+
+.table tbody tr:hover {
+    background-color: #f1f1f1;
+    border-radius: 25px;
+}
+
+.table td:nth-child(1) {
+    font-weight: bold; 
+    color: #333;
+}
+.table td:nth-child(2) {
+    text-align: center; 
+   
+}
+
+.table td:nth-child(3) {
+    text-align: center;  
+}
+.table td:nth-child(4) .bordered-text{
+    background-color: #f9f9f9; /* พื้นหลังเริ่มต้น */
+    text-align: center; /* จัดข้อความในคอลัมน์นี้ให้อยู่กลาง */
+    padding: 10px 10px;
+    border-radius: 25px;
+    border: 2px solid #333;  /* กรอบหนา 2px รอบข้อความ */
+    display: inline-block;  /* ทำให้ span ทำงานเหมือน block-level element */
+    
+}
+
+
+.table td:nth-child(5) {
+    text-align: center;  
+}
+
+
+
+.table img {
+    max-width: 100px;
+    border-radius: 5px;
+}
+
+/* ข้อความโชว์เวลาไม่มีรูปภาพ */
+.table td img {
+    display: block;
+    margin: 0 auto;
+}
+
+/*ปุ่มหลัก*/
+.restaurantbutton {
+    text-align: right;
+    font-family: inherit;
+    margin-right: 30px;
+    display: flex;
+    flex-direction: column; /* จัดวางองค์ประกอบในแนวตั้ง */
+    gap: 20px;
+}
+
+
+/* add payment button*/
+.restaurantbutton .res-button:nth-child(1) .button {
+    background-color: #fdf4c3; 
+    font-size: 20px;
+    font-family: inherit;
+    text-align: center;
+    width: 35%;
+    height: 50px;
+    color: black;
+    border-radius: 25px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+}
+
+.restaurantbutton .res-button:nth-child(1) .button:hover {
+    background-color: #AF1F1F;
+    color: white; 
+}
+
+.restaurantbutton .button-group {
+    display: flex;
+    gap: 20px;
+    flex-direction: row;
+    justify-content: flex-end;
+    margin-right: 15px;
+
+}
+
+
+/* edit profile button*/
+.restaurantbutton .button-group .res-button:nth-child(1) .button {
+    background-color: #AF1F1F; 
+    font-size: 20px;
+    font-family: inherit;
+    text-align: center;
+    width: 220px;
+    height: 50px;
+    color: white;
+    border-radius: 25px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+}
+
+/* add menu button*/
+.restaurantbutton .button-group .res-button:nth-child(2) .button {
+    background-color: #AF1F1F; 
+    font-size: 20px;
+    font-family: inherit;
+    text-align: center;
+    width: 220px;
+    height: 50px;
+    color: white;
+    border-radius: 25px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+}
+
+.restaurantbutton .button-group .res-button:nth-child(1) .button:hover,
+.restaurantbutton .button-group .res-button:nth-child(2) .button:hover {
+    background-color: #fdf4c3;
+    color: black; 
+}

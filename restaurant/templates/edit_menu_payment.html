@@ -5,14 +5,14 @@
 {% endblock %}
 
 {% block style %}
-<!--<link rel="stylesheet" type="text/css" href="{% static 'css/homestyle.css' %}">-->
+<link rel="stylesheet" type="text/css" href="{% static 'css/edit_menu_payment.css' %}">
 {% endblock %}
 
 {% block content %}
 
 
 <div class="container mt-5">
-    <h2>เมนูของร้าน: {{ restaurant.restaurant_name }}</h2>
+    <h2 class="menu-title">เมนูของร้าน: {{ restaurant.restaurant_name }}</h2>
 
     <div class="menu-table">
         {% if menu_items %}
@@ -33,7 +33,7 @@
                     <td>{{ forloop.counter }}</td>
                     <td>{{ menu.food_name }}</td>
                     <td>{{ menu.get_food_category_display }}</td>
-                    <td>{{ menu.price }}</td>
+                    <td><span class="bordered-text">{{ menu.price }}</span></td>
                     <td>{{ menu.about }}</td>
                     <td>
                         {% if menu.menu_picture %}
@@ -64,15 +64,18 @@
             <button type="submit" class="button">Add your payment</button>
         </form>
     </div>
-    <div class="res-button">
-        <form method="GET" action="{% url 'restaurant:manage'%}">
-            <button type="submit" class="button">Edit Profile</button>
-        </form>
-    </div>
-    <div class="res-button">
-        <form method="GET" action="{% url 'restaurant:add_menu_res'%}">
-            <button type="submit" class="button">Add menu</button>
-        </form>
+    
+    <div class="button-group">
+        <div class="res-button">
+            <form method="GET" action="{% url 'restaurant:manage'%}">
+                <button type="submit" class="button">Edit Profile</button>
+            </form>
+        </div>
+        <div class="res-button">
+            <form method="GET" action="{% url 'restaurant:add_menu_res'%}">
+                <button type="submit" class="button">Add menu</button>
+            </form>
+        </div>
     </div>
 </div>
 {% endblock %}
