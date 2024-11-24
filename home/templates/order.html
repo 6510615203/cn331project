@@ -19,9 +19,9 @@
             <h3>{{ restaurant.restaurant_name }}</h3>
             <img src="{{ restaurant.restaurant_picture.url }}" alt="{{ restaurant.restaurant_name }}" class="restaurant-image">
             <p>เวลาเปิด-ปิด: {{ restaurant.open_close_time }}</p>
-            {% if user.is_authenticated %}
+            
             <a href="{% url 'menu_list' restaurant.id %}" class="button button-primary">ดูเมนู</a>
-            {% endif %}
+            
         </div>
         {% endfor %}
         {% else %}
