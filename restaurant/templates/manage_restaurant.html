@@ -18,9 +18,8 @@
                 <div class="image-preview-circle"
                     style="width: 150px; height: 150px; border-radius: 50%; overflow: hidden; margin-top: 10px; display: flex; justify-content: center; align-items: center; border: 3px solid #ccc;">
                     <img id="previewImage"
-                         src="{% if restaurant.restaurant_picture %}{{ restaurant.restaurant_picture.url }}{% else %}https://via.placeholder.com/150{% endif %}" 
-                         alt="Restaurant Picture" 
-                         style="width: 100%; height: 100%; object-fit: cover;">
+                        src="{% if restaurant.restaurant_picture %}{{ restaurant.restaurant_picture.url }}{% else %}https://via.placeholder.com/150{% endif %}"
+                        alt="Restaurant Picture" style="width: 100%; height: 100%; object-fit: cover;">
                 </div>
 
                 <!-- ปุ่ม Edit Your Logo -->
@@ -30,7 +29,8 @@
             </div>
 
             <!-- Form สำหรับอัปโหลดและบันทึกรูป -->
-            <form method="POST" action="{% url 'restaurant:manage' %}" enctype="multipart/form-data" style="margin-top: 20px;">
+            <form method="POST" action="{% url 'restaurant:manage' %}" enctype="multipart/form-data"
+                style="margin-top: 20px;">
                 {% csrf_token %}
                 <input type="file" class="form-input" id="restaurant_picture" name="restaurant_picture"
                     onchange="previewImage();" style="display: none;">
@@ -42,91 +42,91 @@
 </div>
 
 
-    <div class="inputposition">
+<div class="inputposition">
 
-        <div class="form-section">
-            <label for="restaurant_name" class="form-title">ชื่อร้านอาหาร</label>
-            {% if is_editing == "restaurant_name" %}
-            <form method="POST" action="{% url 'restaurant:manage'%}?edit=restaurant_name" class="form-inline">
-                {% csrf_token %}
-                <input type="text" id="restaurant_name" name="restaurant_name" value="{{ restaurant.restaurant_name }}"
-                    required>
-                <button type="submit" class="button">Save</button>
-            </form>
-            {% else %}
-            <div class="box">
-                <p>{{ restaurant.restaurant_name }}</p>
-            </div>
-            <a href="{% url 'restaurant:manage' %}?edit=restaurant_name" class="button">Edit</a>
-            {% endif %}
+    <div class="form-section">
+        <label for="restaurant_name" class="form-title">ชื่อร้านอาหาร</label>
+        {% if is_editing == "restaurant_name" %}
+        <form method="POST" action="{% url 'restaurant:manage'%}?edit=restaurant_name" class="form-inline">
+            {% csrf_token %}
+            <input type="text" id="restaurant_name" name="restaurant_name" value="{{ restaurant.restaurant_name }}"
+                required>
+            <button type="submit" class="button">Save</button>
+        </form>
+        {% else %}
+        <div class="box">
+            <p>{{ restaurant.restaurant_name }}</p>
         </div>
-
-
-        <div class="form-section">
-            <label for="food_category" class="form-title">ประเภทอาหาร</label>
-            {% if is_editing == "food_category" %}
-            <form method="POST" action="{% url 'restaurant:manage'%}?edit=food_category">
-                {% csrf_token %}
-                <select id="food_category" name="food_category" required>
-                    {% for value, display in food_categories %}
-                    <option value="{{ value }}">{{ display }}</option>
-                    {% endfor %}
-                </select>
-                <button type="submit" class="button">Save</button>
-            </form>
-            {% else %}
-            <div class="box">
-                <p>{{ restaurant.food_category }}</p>
-            </div>
-            <a href="{% url 'restaurant:manage' %}?edit=food_category" class="button">Edit</a>
-            {% endif %}
-        </div>
-
-        <div class="form-section">
-            <label for="about" class="form-title">เกี่ยวกับ</label>
-            {% if is_editing == "about" %}
-            <form method="POST" action="{% url 'restaurant:manage'%}?edit=about">
-                {% csrf_token %}
-                <input type="text" id="about" name="about" value="{{ restaurant.about }}" required>
-                <button type="submit" class="button">Save</button>
-            </form>
-            {% else %}
-            <div class="box">
-                <p>{{ restaurant.about }}</p>
-            </div>
-            <a href="{% url 'restaurant:manage' %}?edit=about" class="button">Edit</a>
-            {% endif %}
-        </div>
-
-
-        <div class="form-section">
-            <label for="open_close_time" class="form-title">เวลาเปิด - ปิด (น.)</label>
-            {% if is_editing == "open_close_time" %}
-            <form method="POST" action="{% url 'restaurant:manage'%}?edit=open_close_time">
-                {% csrf_token %}
-                <input type="text" id="open_close_time" name="open_close_time" value="{{ restaurant.open_close_time }}"
-                    required>
-                <button type="submit" class="button">Save</button>
-            </form>
-            {% else %}
-            <div class="box">
-                <p>{{ restaurant.open_close_time }}</p>
-            </div>
-            <a href="{% url 'restaurant:manage' %}?edit=open_close_time" class="button">Edit</a>
-            {% endif %}
-        </div>
-
-
-
-        <input type="hidden" name="username" value="{{ username}}">
-
-
-        <div class="form-button">
-            <form method="GET" action="{% url 'restaurant:edit_menu_payment'%}">
-                <button type="submit" class="button">Edit Menu</button>
-            </form>
-        </div>
+        <a href="{% url 'restaurant:manage' %}?edit=restaurant_name" class="button">Edit</a>
+        {% endif %}
     </div>
+
+
+    <div class="form-section">
+        <label for="food_category" class="form-title">ประเภทอาหาร</label>
+        {% if is_editing == "food_category" %}
+        <form method="POST" action="{% url 'restaurant:manage'%}?edit=food_category">
+            {% csrf_token %}
+            <select id="food_category" name="food_category" required>
+                {% for value, display in food_categories %}
+                <option value="{{ value }}">{{ display }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="button">Save</button>
+        </form>
+        {% else %}
+        <div class="box">
+            <p>{{ restaurant.food_category }}</p>
+        </div>
+        <a href="{% url 'restaurant:manage' %}?edit=food_category" class="button">Edit</a>
+        {% endif %}
+    </div>
+
+    <div class="form-section">
+        <label for="about" class="form-title">เกี่ยวกับ</label>
+        {% if is_editing == "about" %}
+        <form method="POST" action="{% url 'restaurant:manage'%}?edit=about">
+            {% csrf_token %}
+            <input type="text" id="about" name="about" value="{{ restaurant.about }}" required>
+            <button type="submit" class="button">Save</button>
+        </form>
+        {% else %}
+        <div class="box">
+            <p>{{ restaurant.about }}</p>
+        </div>
+        <a href="{% url 'restaurant:manage' %}?edit=about" class="button">Edit</a>
+        {% endif %}
+    </div>
+
+
+    <div class="form-section">
+        <label for="open_close_time" class="form-title">เวลาเปิด - ปิด (น.)</label>
+        {% if is_editing == "open_close_time" %}
+        <form method="POST" action="{% url 'restaurant:manage'%}?edit=open_close_time">
+            {% csrf_token %}
+            <input type="text" id="open_close_time" name="open_close_time" value="{{ restaurant.open_close_time }}"
+                required>
+            <button type="submit" class="button">Save</button>
+        </form>
+        {% else %}
+        <div class="box">
+            <p>{{ restaurant.open_close_time }}</p>
+        </div>
+        <a href="{% url 'restaurant:manage' %}?edit=open_close_time" class="button">Edit</a>
+        {% endif %}
+    </div>
+
+
+
+    <input type="hidden" name="username" value="{{ username}}">
+
+
+    <div class="form-button">
+        <form method="GET" action="{% url 'restaurant:edit_menu_payment'%}">
+            <button type="submit" class="button">Edit Menu</button>
+        </form>
+    </div>
+</div>
 </div>
 
 </div>

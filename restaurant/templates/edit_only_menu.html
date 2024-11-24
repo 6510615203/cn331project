@@ -1,0 +1,27 @@
+{% extends "base_restaurant.html" %}
+{% load static %}
+{% block title %}
+<title>Restaurant Sales Report</title>
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/edit_only_menu.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<h1>คุณสามารถแก้ไข / ลบรายการเมนูได้ที่นี่</h1>
+
+
+<p>{{menu_item.food_name}}</p>
+
+
+
+
+
+
+
+
+
+
+{% endblock %}
