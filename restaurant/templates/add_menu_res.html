@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block style %}
-<link rel="stylesheet" type="text/css" href="{% static 'css/register.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'css/manage_restaurant.css' %}">
 {% endblock %}
 
 {% block content %}
@@ -24,8 +24,7 @@
                     </div>
                     <label for="menu_picture" class="form-title" style="margin-top: 10px;">Add your picture
                         here!</label>
-
-                    <label for="restaurant_picture" class="form-title" style="margin-top: 10px;">required</label>
+                    <p>required</p>
 
                 </div>
                 <input type="file" class="form-input" id="menu_picture" name="menu_picture" onchange="previewImage();"
