@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+<title>KINKORN Menu</title>
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/menu_choose.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="header">เมนูอาหารในร้าน</h2>
+
+    <div class="card-container">
+        {% if menu_items %}
+        {% for menu in menu_items %}
+        <div class="restaurant-card">
+            <h3>{{ menu.food_name }}</h3>
+            <div class="card-image" style="background-image: url('{{ menu.menu_picture.url }}');"></div>
+            <p class="card-description">รายละเอียด: {{ menu.about }}</p>
+            <p class="card-price">{{ menu.price }} บาท</p>
+            {% if user.is_authenticated %}
+            <button class="button button-primary">เพิ่ม</button>
+            {% endif %}
+        </div>
+        {% endfor %}
+        {% else %}
+        <p class="text-center">ยังไม่มีเมนูอาหารในร้านนี้</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

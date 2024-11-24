@@ -17,6 +17,9 @@ urlpatterns = [
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
     #path('index_restaurant/', views.index_restaurant, name='index_restaurant')
+    path('order/', views.restaurant_list, name='restaurant_list'), 
+    path('menu/<int:restaurant_id>/', views.menu_list, name='menu_list'),  # ระบุ restaurant_id ใน URL
+    
 ]
 
 if settings.DEBUG:  # ใช้เฉพาะในโหมด debug (development server)
