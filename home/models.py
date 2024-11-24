@@ -20,10 +20,6 @@ class UserProfile(models.Model):
     def __str__(self):
         return self.user.username
     
-class FoodCategory(models.Model):
-    name = models.CharField(max_length=100, unique=True)  # ชื่อประเภทอาหาร (ไม่ซ้ำ)
-    def __str__(self):
-        return self.name
     
 class RestaurantProfile(models.Model):
     user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE, null=True, blank=True)
@@ -74,6 +70,13 @@ class Menu(models.Model):
     )
     def __str__(self):
         return self.food_name
+    
+class PaymentMethod(models.Model):
+    restaurant_profile = models.ForeignKey(RestaurantProfile, on_delete=models.CASCADE, related_name='payment', default=1)
+    bank_name = models.CharField(max_length=100, blank=True)
+    account_number = models.CharField(max_length=100, blank=True)
+    def __str__(self):
+        return f"{self.bank_name} : {self.account_number}"
 
 
     
