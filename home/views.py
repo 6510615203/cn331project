@@ -86,7 +86,7 @@ def restaurant_register(request):
             food_category=food_category, 
             about=about,
             open_close_time=open_close_time,
-            restaurant_picture=restaurant_picture_url  
+            restaurant_picture=restaurant_picture 
         )
         restaurant_info.save()
         
@@ -96,39 +96,40 @@ def restaurant_register(request):
     return render(request, "restaurant_register.html", {"username": username,'food_categories': food_categories})
 
 def add_menu(request):
-    restaurant_name= request.GET.get('restaurant_name', 'default_restaurant_name')
+    restaurant_name = request.GET.get('restaurant_name', 'default_restaurant_name')
     food_categories = RestaurantProfile.Foodcate.choices
+
     if request.method == "POST":
         food_name = request.POST.get("food_name")
         food_category = request.POST.get("food_category")
         about = request.POST.get("about")
         price = request.POST.get("price")
         user_type = request.POST.get("user_type")
-        
-        # รับไฟล์รูปภาพจากฟอร์ม
-        if 'menu_picture' in request.FILES:
-            menu_picture = request.FILES['menu_picture']
-            fs = FileSystemStorage()
-            filename = fs.save(menu_picture.name, menu_picture) 
-            menu_picture_url = fs.url(filename)  
-        else:
-            menu_picture_url = None
 
+        # ค้นหา RestaurantProfile
         restaurant_profile = get_object_or_404(RestaurantProfile, restaurant_name=restaurant_name)
 
+        # รับไฟล์รูปภาพจากฟอร์มและบันทึกใน menu_picture
+        menu_picture = None  # ตั้งค่าเริ่มต้น
+        if 'menu_picture' in request.FILES:
+            menu_picture = request.FILES['menu_picture']
+
+        # สร้างข้อมูลเมนูและบันทึกข้อมูล
         food_info = Menu.objects.create(
             restaurant_profile=restaurant_profile,
             food_name=food_name, 
             food_category=food_category, 
             about=about,
-            menu_picture=menu_picture_url ,
+            menu_picture=menu_picture,  # บันทึกใน menu_picture
             price=price
         )
         food_info.save()
+
         url = reverse("welcome_registration")
         return redirect(f"{url}?user_type=restaurant&restaurant_name={restaurant_name}")     
 
     return render(request, "add_menu.html", {"restaurant_name": restaurant_name, 'food_categories': food_categories})
+
     
 
 def register(request):

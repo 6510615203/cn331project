@@ -41,10 +41,15 @@ def manage(request):
             open_close_time = request.POST.get("open_close_time", "").strip()
             if open_close_time:
                 restaurant.open_close_time = open_close_time
-        
+                
+        elif "restaurant_picture" in request.FILES:
+            restaurant_picture = request.FILES["restaurant_picture"]
+            # Save the new picture
+            restaurant.restaurant_picture = restaurant_picture
+            messages.success(request, "Profile picture updated successfully!")
 
-        restaurant.save()
-        return redirect("restaurant:manage")
+        restaurant.save()  # Save all updates to the database
+        return redirect("restaurant:manage")  # Redirect to refresh and show updates
 
     
     return render(request, "manage_restaurant.html", {'restaurant': restaurant, "is_editing": is_editing,'food_categories': food_categories})
@@ -95,7 +100,7 @@ def add_menu_res(request):
             food_name=food_name, 
             food_category=food_category, 
             about=about,
-            menu_picture=menu_picture_url ,
+            menu_picture=menu_picture ,
             price=price
         )
         food_info.save()

@@ -1,5 +1,7 @@
 from django.urls import path
 from . import views
+from django.conf import settings
+from django.conf.urls.static import static
 
 app_name = "restaurant"
 
@@ -13,3 +15,6 @@ urlpatterns = [
     path('add_menu_res', views.add_menu_res, name='add_menu_res'),
     path('add_payment', views.add_payment, name='add_payment'),
 ]
+
+if settings.DEBUG:  # ใช้เฉพาะในโหมด debug (development server)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
