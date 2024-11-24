@@ -3,7 +3,7 @@ from django.test import TestCase
 from django.urls import reverse
 from restaurant.models import RestaurantProfile
 from django.contrib.auth.models import User
-from .models import RestaurantProfile, Menu
+from restaurant.models import UserProfile, RestaurantProfile, Menu,  PaymentMethod
 from home.models import UserProfile  
 from django.core.files.uploadedfile import SimpleUploadedFile
 
@@ -19,7 +19,7 @@ class GeneralViewTest(TestCase):
             about='A test restaurant',
             open_close_time='10:00-22:00',
         )
-        
+    
     #ลองล้อกอิน + ส่งคำขอ http ไป view ให้ตรวจสอบสถานะ http ,template กับ ข้อมูลไปว่าตรงกับที่เราเซ็ตไหม"
     def test_index(self):
         self.client.login(username='testuser', password='testpassword')
@@ -27,6 +27,8 @@ class GeneralViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'index_restaurant.html')
         self.assertEqual(response.context['restaurant'], self.restaurant)
+        
+     
         
     #ส่งคำขอ http ไป view ให้ตรวจสอบสถานะ http ,template กับ ข้อมูลไปว่าตรงกับที่เราเซ็ตไหม"    
     def test_about_view(self):
@@ -44,14 +46,11 @@ class GeneralViewTest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, "sales.html")
 
-    def test_add_payment_view(self):
-        response = self.client.get(reverse('restaurant:add_payment'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "add_payment.html")
 
-        
+
+       
 class ManageViewTest(TestCase):
-    #สร้างข้อมูล user ให้เชื่อมกับ UserProfilecและสร้างข้อมูลร้านอาหาร
+    #สร้างข้อมูล user ให้เชื่อมกับ UserProfileและสร้างข้อมูลร้านอาหาร
     def setUp(self):
         self.user = User.objects.create_user(username='testuser', password='testpassword')
         self.user_profile = UserProfile.objects.create(user=self.user)
@@ -115,3 +114,175 @@ class ManageViewTest(TestCase):
         self.restaurant.refresh_from_db()
         self.assertTrue(self.restaurant.restaurant_picture)
         
+
+        
+class EditMenuPaymentTest(TestCase):
+    #สร้างข้อมูล user ให้เชื่อมกับ UserProfilecและสร้างข้อมูลร้านอาหารและเมนู
+    def setUp(self):
+        self.user = User.objects.create_user(username="testuser", password="password")
+        self.user_profile = UserProfile.objects.create(
+            user=self.user,
+            user_type="restaurant",
+            name="Test User"
+        )
+        self.restaurant = RestaurantProfile.objects.create(
+            user_profile=self.user_profile,
+            restaurant_name="Test Restaurant",
+            about="This is a test restaurant",
+            open_close_time="09:00-20:00"
+        )
+        self.menu1 = Menu.objects.create(
+            restaurant_profile=self.restaurant,
+            food_name="Test Food 1",
+            about="Delicious test food",
+            price=50.00
+        )
+        self.menu2 = Menu.objects.create(
+            restaurant_profile=self.restaurant,
+            food_name="Test Food 2",
+            about="Yummy test food",
+            price=100.00
+        )
+
+
+        self.client.login(username="testuser", password="password")
+
+    def test_edit_menu_payment_view(self):
+        response = self.client.get(reverse('restaurant:edit_menu_payment'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'edit_menu_payment.html')
+        self.assertEqual(response.context['restaurant'], self.restaurant)
+        
+        menu_items = response.context['menu_items']
+        self.assertIn(self.menu1, menu_items)
+        self.assertIn(self.menu2, menu_items)
+
+
+        self.assertContains(response, "Test Restaurant")  
+        self.assertContains(response, "Test Food 1")      
+        self.assertContains(response, "Test Food 2")
+
+
+class AddMenuResTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username="testuser", password="password")
+        self.user_profile = UserProfile.objects.create(
+            user=self.user,
+            user_type="restaurant",
+            name="Test User"
+        )
+
+        self.restaurant = RestaurantProfile.objects.create(
+            user_profile=self.user_profile,
+            restaurant_name="Test Restaurant",
+            about="This is a test restaurant",
+            open_close_time="09:00-20:00"
+        )
+  
+        self.client.login(username="testuser", password="password")
+
+    def test_add_menu_res_get(self):
+        response = self.client.get(reverse('restaurant:add_menu_res'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'add_menu_res.html')
+        self.assertEqual(response.context['restaurant_name'], self.restaurant.restaurant_name)
+
+
+class EditOnlyMenuTest(TestCase):
+    def setUp(self):
+        # สร้างข้อมูลผู้ใช้และร้านอาหาร
+        self.user = User.objects.create_user(username="testuser", password="password")
+        self.user_profile = UserProfile.objects.create(
+            user=self.user,
+            user_type="restaurant",
+            name="Test User"
+        )
+        self.restaurant = RestaurantProfile.objects.create(
+            user_profile=self.user_profile,
+            restaurant_name="Test Restaurant",
+            food_category="ข้าวราดแกง",
+            about="This is a test restaurant",
+            open_close_time="09:00-20:00"
+        )
+        # สร้างข้อมูลเมนู
+        self.menu_item = Menu.objects.create(
+            restaurant_profile=self.restaurant,
+            food_name="Test Food",
+            about="Delicious test food",
+            price=50.00
+        )
+        # ล็อกอินผู้ใช้
+        self.client.login(username="testuser", password="password")
+
+    # ทดสอบการเข้าถึง view
+    def test_edit_only_menu_view_access(self):
+        response = self.client.get(reverse("restaurant:edit_only_menu"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "edit_only_menu.html")
+        self.assertEqual(response.context["restaurant"], self.restaurant)
+
+    # ทดสอบการแก้ไขชื่ออาหาร 
+    def test_edit_only_menu_post_valid(self):
+        response = self.client.post(reverse("restaurant:edit_only_menu"), {
+            "menu_id": self.menu_item.id,
+            "food_name": "Updated Food Name"
+        })
+        self.assertEqual(response.status_code, 200)
+        self.menu_item.refresh_from_db()
+        self.assertEqual(self.menu_item.food_name, "Updated Food Name")
+        self.assertContains(response, "Updated Food Name")
+
+    # ทดสอบการส่งข้อมูลโดยไม่มี food_name 
+    def test_edit_only_menu_post_no_food_name(self):
+        response = self.client.post(reverse("restaurant:edit_only_menu"), {
+            "menu_id": self.menu_item.id
+        })
+        self.assertEqual(response.status_code, 200)  
+        self.menu_item.refresh_from_db()
+        self.assertNotEqual(self.menu_item.food_name, "")  
+
+    # ทดสอบ context ว่ามีข้อมูล food_categories และ is_editing หรือไม่
+    def test_edit_only_menu_context(self):
+        response = self.client.get(reverse("restaurant:edit_only_menu"))
+        self.assertIn("food_categories", response.context)
+        self.assertIn("is_editing", response.context)
+
+class AddPaymentTest(TestCase):
+    def setUp(self):
+        # สร้างข้อมูลผู้ใช้และร้านอาหาร
+        self.user = User.objects.create_user(username="testuser", password="password")
+        self.user_profile = UserProfile.objects.create(
+            user=self.user,
+            user_type="restaurant",
+            name="Test User"
+        )
+        self.restaurant = RestaurantProfile.objects.create(
+            user_profile=self.user_profile,
+            restaurant_name="Test Restaurant",
+            about="This is a test restaurant",
+            open_close_time="09:00-20:00"
+        )
+        # ล็อกอินผู้ใช้
+        self.client.login(username="testuser", password="password")
+
+    # ทดสอบการเข้าถึงหน้าเพิ่มช่องทางการชำระเงิน
+    def test_add_payment_view_access(self):
+        response = self.client.get(reverse("restaurant:add_payment"))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "add_payment.html")
+        self.assertIn("payment_methods", response.context)
+        self.assertIn("error_message", response.context)
+
+    # ทดสอบการเพิ่มช่องทางการชำระเงิน 
+    def test_add_payment_post_valid(self):
+        response = self.client.post(reverse("restaurant:add_payment"), {
+            "bank_name": "Test Bank",
+            "account_number": "1234567890"
+        })
+        self.assertEqual(response.status_code, 302)  
+        payment_methods = PaymentMethod.objects.filter(restaurant_profile=self.restaurant)
+        self.assertEqual(payment_methods.count(), 1)
+        self.assertEqual(payment_methods.first().bank_name, "Test Bank")
+        self.assertEqual(payment_methods.first().account_number, "1234567890")
+
+    
