@@ -144,26 +144,58 @@ def add_payment(request):
         'error_message': error_message
     })
 
-
-
 def edit_only_menu(request):
     username = request.user.username
     restaurant = get_object_or_404(RestaurantProfile, user_profile__user__username=username)
+    food_categories = Menu.Foodcate.choices
     is_editing = request.GET.get("edit")
-    food_categories = RestaurantProfile.Foodcate.choices
 
-    
+    menu_id = None
+    menu_item = None
+
     if request.method == "POST":
-        menu_id = request.POST.get('menu_id')
+        menu_id = request.POST.get("menu_id")
+        print("POST data:", request.POST)
+        print("Menu ID received:", menu_id)
         if menu_id:
             menu_item = get_object_or_404(Menu, id=menu_id)
             if "food_name" in request.POST:
                 food_name = request.POST.get("food_name").strip()
                 menu_item.food_name = food_name
-
-            menu_item.save()       
-            return render(request, "edit_only_menu.html", {"restaurant": restaurant, "menu_item": menu_item})
+            elif "food_category" in request.POST:
+                food_category = request.POST.get("food_category", "").strip()
+                if food_category and food_category in dict(Menu.Foodcate.choices):
+                    menu_item.food_category = food_category
+            elif "about" in request.POST:
+                about = request.POST.get("about", "").strip()
+                menu_item.about = about
+            elif "price" in request.POST:
+                price = request.POST.get("price", "").strip()
+                menu_item.price = price
+            elif "restaurant_picture" in request.FILES:
+                menu_picture = request.FILES["menu_picture"]
+                # Save the new picture
+                menu_item.menu_picture = menu_picture
+                messages.success(request, "Menu picture updated successfully!")
+            menu_item.save()
+            return render(request, "edit_only_menu.html", {"restaurant": restaurant, "menu_item": menu_item, "menu_id": menu_id})
             
-    return render(request, "edit_only_menu.html", {'restaurant': restaurant,'food_categories': food_categories, "is_editing": is_editing})
+    
+    elif request.method == "GET":
+        menu_id = request.GET.get("menu_id")
+        if menu_id:
+            menu_item = get_object_or_404(Menu, id=menu_id)
+    
 
+    return render(
+        request,
+        "edit_only_menu.html",
+        {
+            "restaurant": restaurant,
+            "menu_item": menu_item,
+            "menu_id": menu_id,
+            "food_categories": food_categories,
+            "is_editing": is_editing,
+        },
+    )
 
