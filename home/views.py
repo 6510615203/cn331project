@@ -3,12 +3,13 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.hashers import check_password
 from django.contrib import messages
 from django.urls import reverse
-from .models import UserProfile, RestaurantProfile, Menu
+from .models import UserProfile, RestaurantProfile, Menu, Order, OrderItem
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 from django.core.files.storage import FileSystemStorage
-
+from django.contrib.auth.decorators import login_required
+from django.utils import timezone  # เพิ่มการ import timezone
 
 def index(request):      
     return render(request, "index.html")
@@ -233,3 +234,98 @@ def menu_list(request, restaurant_id):
     menu_items = Menu.objects.filter(restaurant_profile=restaurant)
     return render(request, 'menu_list.html', {'restaurant': restaurant, 'menu_items': menu_items})
 
+@login_required
+def your_order(request):
+    # ดึงคำสั่งซื้อที่รอการชำระเงิน
+    restaurant = RestaurantProfile.objects.first()  
+    order = Order.objects.filter(user_profile=request.user.userprofile, status='waiting_for_payment').first()
+
+    if not order:
+        # ถ้าไม่พบคำสั่งซื้อที่มีสถานะ 'waiting_for_payment' ให้สร้างคำสั่งซื้อใหม่
+        order = Order.objects.create(
+            user_profile=request.user.userprofile,
+            status='waiting_for_payment',  # กำหนดสถานะเริ่มต้น
+            total_price=0,  # ราคาเริ่มต้น
+            pickup_time=None,  # เวลารับสามารถเพิ่มเติมได้
+            restaurant=restaurant  # กำหนดร้านอาหาร
+        )
+
+    if request.method == 'POST':
+        if 'save_order' in request.POST:  # ถ้าผู้ใช้กดบันทึกการเลือก
+            pickup_time = request.POST.get('pickup_time')
+            delivery_option = request.POST.get('delivery_option')
+            
+            # อัพเดทคำสั่งซื้อ
+            order.pickup_time = pickup_time
+            order.delivery_option = delivery_option
+            order.save()
+            
+            return redirect('your_order')  # ไปที่หน้ารายการคำสั่งซื้อ
+
+        else:  # ถ้าผู้ใช้เพิ่มเมนูในคำสั่งซื้อ
+            menu_id = request.POST.get('menu_id')
+            if menu_id:
+                try:
+                    menu = Menu.objects.get(id=menu_id)
+                    existing_item = order.order_items.filter(restaurant_menu=menu).first()
+                    if existing_item:
+                        existing_item.quantity += 1
+                        existing_item.total_price = existing_item.restaurant_menu.price * existing_item.quantity
+                        existing_item.save()
+                    else:
+                        OrderItem.objects.create(
+                            order=order,
+                            restaurant_menu=menu,
+                            quantity=1,
+                            total_price=menu.price
+                        )
+                    
+                    # คำนวณราคาทั้งหมด
+                    total_price = sum(item.total_price for item in order.order_items.all())
+                    order.total_price = total_price
+                    order.save()
+
+                except Menu.DoesNotExist:
+                    pass
+
+            return redirect('your_order')  # รีเฟรชหน้า
+
+    # หากไม่ใช่ POST ให้แสดงข้อมูลคำสั่งซื้อ
+    return render(request, 'your_order.html', {'order': order})
+
+@login_required
+def order_status(request):
+    orders = Order.objects.filter(user_profile=request.user.userprofile)
+
+    return render(request, "order_status.html", {"orders": orders})
+
+@login_required
+def upload_payment_slip(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    
+    if request.method == 'POST' and 'payment_slip' in request.FILES:
+        payment_slip = request.FILES['payment_slip']
+        order.payment_slip = payment_slip
+        order.status = 'paid'
+        order.save()
+        messages.success(request, "ชำระเงินเรียบร้อยแล้ว")
+        
+    return redirect('order_status')
+
+
+@login_required
+def order_confirmation(request):
+    # ดึงออร์เดอร์ที่ผู้ใช้กำลังทำการยืนยัน
+    order = Order.objects.get(id=request.POST.get('order_id'), user_profile=request.user.userprofile)
+
+    # เปลี่ยนสถานะออร์เดอร์เมื่อยืนยัน
+    order.status = 'paid'  # หรือ 'completed' ขึ้นอยู่กับขั้นตอน
+    order.save()
+
+    # กลับไปยังหน้าแสดงสถานะออร์เดอร์
+    return redirect('order_status')
+
+@login_required
+def order_status(request):
+    orders = Order.objects.filter(user_profile=request.user.userprofile)
+    return render(request, "order_status.html", {"orders": orders})

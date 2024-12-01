@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+<title>Your Order</title>
+{% endblock %}
+
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/your_order.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="header">คำสั่งซื้อของคุณ</h2>
+
+    <div class="order-summary">
+        {% if order %}
+        <h3>รายการเมนู</h3>
+        <ul>
+            {% for item in order.order_items.all %}
+            <li>
+                {{ item.restaurant_menu.food_name }} x {{ item.quantity }} - {{ item.total_price }} บาท
+            </li>
+            {% endfor %}
+        </ul>
+        <hr>
+        <p><strong>รวมทั้งหมด: {{ order.total_price }} บาท</strong></p>
+        <p>เลือกเวลารับ: {{ order.pickup_time }}</p>
+        <p>วิธีการรับ: {{ order.delivery_option }}</p>
+        {% else %}
+        <p>ยังไม่มีคำสั่งซื้อ</p>
+        {% endif %}
+    </div>
+
+    <form method="POST" action="">
+        {% csrf_token %}
+        <h3>เลือกเวลารับและวิธีการรับ</h3>
+        <label for="pickup_time">เวลาที่ต้องการรับ:</label>
+        <input type="datetime-local" id="pickup_time" name="pickup_time" required>
+        
+        <label for="delivery_option">วิธีการรับ:</label>
+        <select name="delivery_option" id="delivery_option" required>
+            <option value="in_store">ทานที่ร้าน</option>
+            <option value="takeaway">รับไปทานที่บ้าน</option>
+        </select>
+        
+        <button type="submit" name="save_order" class="button button-primary">บันทึก</button>
+    </form>
+
+    <div class="actions">
+        <a href="{% url 'order_status' %}" class="button button-primary">ยืนยันการสั่งซื้อ</a>
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Order Status</h1>
+    {% for order in orders %}
+    <p>Order ID: {{ order.id }} - Status: {{ order.status }}</p>
+        <ul>
+            {% for item in order.order_items.all %}
+                <li>{{ item.restaurant_menu.menu_item.name }} - Quantity: {{ item.quantity }} - Price: {{ item.total_price }} Baht</li>
+            {% endfor %}
+        </ul>
+        <p>Total Price: {{ order.total_price }} Baht</p>
+        <p>Status: {{ order.get_status_display }}</p>
+
+        {% if order.status == 'waiting_for_payment' %}
+        <form action="{% url 'upload_payment_slip' order.id %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for="payment_slip">Upload Payment Slip:</label>
+            <input type="file" name="payment_slip" accept="image/*">
+            <button type="submit">Upload</button>
+        </form>
+        
+        {% elif order.status == 'paid' %}
+            <p style="color: green;">Payment Completed. Waiting for Approval...</p>
+        {% endif %}
+    {% endfor %}
+{% endblock %}
