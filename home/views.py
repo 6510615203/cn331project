@@ -3,11 +3,12 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.hashers import check_password
 from django.contrib import messages
 from django.urls import reverse
-from .models import UserProfile, RestaurantProfile, Menu
+from .models import UserProfile, RestaurantProfile, Menu, Order
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 from django.core.files.storage import FileSystemStorage
+from django.contrib.auth.decorators import login_required
 
 
 def index(request):      
@@ -233,3 +234,158 @@ def menu_list(request, restaurant_id):
     menu_items = Menu.objects.filter(restaurant_profile=restaurant)
     return render(request, 'menu_list.html', {'restaurant': restaurant, 'menu_items': menu_items})
 
+
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def your_order(request):
+    # กรองออเดอร์ของผู้ใช้
+    orders = Order.objects.filter(user_profile=request.user.userprofile)
+
+    # คำนวณจำนวนเงินทั้งหมด
+    total_amount = sum(order.total_price for order in orders)
+
+    # สร้าง Dictionary เพื่อจัดกลุ่มออเดอร์ตามร้าน
+    restaurant_orders = {}
+    for order in orders:
+        restaurant_name = order.menu.restaurant_profile.restaurant_name
+        if restaurant_name not in restaurant_orders:
+            restaurant_orders[restaurant_name] = {
+                'orders': [],
+                'delivery_option': order.delivery_option  # กำหนดค่า delivery_option ที่เลือกล่าสุด
+            }
+        restaurant_orders[restaurant_name]['orders'].append(order)
+
+    return render(request, "your_order.html", {
+        "restaurant_orders": restaurant_orders,
+        "total_amount": total_amount,
+    })
+
+
+
+@login_required
+def update_order_quantity(request, order_id):
+    order = get_object_or_404(Order, id=order_id, user_profile=request.user.userprofile)
+
+    # ตรวจสอบว่าผู้ใช้ต้องการเพิ่มหรือลดจำนวน
+    action = request.POST.get('action')
+
+    if action == 'increase':
+        order.quantity += 1  # เพิ่มจำนวนอาหาร
+    elif action == 'decrease' and order.quantity > 1:
+        order.quantity -= 1  # ลดจำนวนอาหาร (ไม่ให้ลดต่ำกว่า 1)
+
+    # คำนวณราคาใหม่
+    order.total_price = order.quantity * order.menu.price
+    order.save()
+
+    return redirect('your_order')  # รีเฟรชหน้าเพื่อแสดงการอัพเดต
+
+@login_required
+def update_delivery_option(request):
+    user_profile = request.user.userprofile  # ตรวจสอบว่า user มี profile หรือไม่
+    delivery_option = request.POST.get('delivery_option')  # รับค่าจากฟอร์ม
+
+    # กรองออเดอร์ตาม user_profile
+    orders = Order.objects.filter(user_profile=user_profile)
+
+    # อัพเดตตัวเลือกการรับอาหาร
+    for order in orders:
+        order.delivery_option = delivery_option
+        order.save()
+
+    return redirect("your_order")  # รีเฟรชหน้าเพื่อแสดงการอัพเดต
+
+        
+@login_required
+def delete_order(request, order_id):
+    order = get_object_or_404(Order, id=order_id, user_profile=request.user.userprofile)
+    order.delete()
+    return redirect("your_order")
+
+@login_required
+def upload_payment_slip(request, order_id):
+    order = Order.objects.get(id=order_id)
+
+    if request.method == 'POST' and request.FILES.get('payment_slip'):
+        # เก็บสลิปการชำระเงิน
+        order.payment_slip = request.FILES['payment_slip']
+        order.status = 'paid'  # เปลี่ยนสถานะเป็น 'paid'
+        order.save()
+
+        # ตรวจสอบว่าออเดอร์ทุกตัวในร้านถูกชำระเงินแล้วหรือไม่
+        restaurant_orders = Order.objects.filter(restaurant_profile=order.restaurant_profile, status='paid')
+        if restaurant_orders.count() == Order.objects.filter(restaurant_profile=order.restaurant_profile).count():
+            for o in restaurant_orders:
+                o.status = 'paid'
+                o.save()
+
+        return redirect('order_status')
+
+    return render(request, 'upload_payment_slip.html', {'order': order})
+
+
+@login_required
+def confirm_order(request):
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    # ค้นหาทุกออเดอร์ของผู้ใช้ที่ยังไม่ถูกยืนยันการชำระเงิน
+    orders = Order.objects.filter(user_profile=request.user.userprofile, status='pending')
+
+    for order in orders:
+        # เปลี่ยนสถานะของออเดอร์เป็น 'waiting_for_payment'
+        order.status = 'waiting_for_payment'
+        order.save()
+
+    # รีไดเรกต์ไปยังหน้าสถานะ
+    return redirect('order_status')
+
+def order_status(request):
+    # ดึงข้อมูลออเดอร์ที่เกี่ยวข้องกับผู้ใช้
+    orders = Order.objects.filter(user_profile=request.user.userprofile)
+    
+    # สร้าง Dictionary สำหรับเก็บออเดอร์ที่ถูกจัดกลุ่มตามร้าน
+    restaurant_orders = {}
+    for order in orders:
+        restaurant_name = order.menu.restaurant_profile.restaurant_name
+        if restaurant_name not in restaurant_orders:
+            restaurant_orders[restaurant_name] = []
+        restaurant_orders[restaurant_name].append(order)
+    
+    # คำนวณ total_price สำหรับแต่ละร้าน
+    for restaurant_name, orders_list in restaurant_orders.items():
+        total_price = sum(order.total_price for order in orders_list)
+        # ส่ง total_price ไปยัง template
+        restaurant_orders[restaurant_name] = {'orders': orders_list, 'total_price': total_price}
+    
+    return render(request, "order_status.html", {
+        "orders": orders,
+        "restaurant_orders": restaurant_orders,
+    })
+
+def add_to_order(request, menu_id):
+
+    menu = Menu.objects.get(id=menu_id)
+    
+
+    quantity = int(request.POST.get('quantity', 1))  
+    delivery_option = request.POST.get('delivery_option', 'in_store') 
+
+    if request.user.is_authenticated:
+        user_profile = request.user.userprofile 
+       
+        total_price = menu.price * quantity
+
+
+        order = Order.objects.create(
+            user_profile=user_profile,
+            menu=menu,
+            quantity=quantity,
+            total_price=total_price,
+            delivery_option=delivery_option
+        )
+
+        return redirect('your_order')  
+    else:
+        return redirect('login')  

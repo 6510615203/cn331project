@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Order Status</h1>
+
+    {% if orders %}
+        {% for restaurant_name, restaurant_data in restaurant_orders.items %}
+            <!-- แสดงชื่อร้าน -->
+            <h3>ร้านที่คุณสั่ง: {{ restaurant_name }}</h3>
+            
+            <ul>
+                {% with total_price=0 %}
+                {% for order in restaurant_data.orders %}
+                    <li>
+                        <strong>{{ order.menu.food_name }}</strong><br>
+                        - Quantity: {{ order.quantity }}<br>
+                        - Price: {{ order.total_price }} Baht<br>
+                        - Status: {{ order.get_status_display }}<br>
+                        - Pick up option: {{ order.get_delivery_option_display }}<br>
+                    </li>
+                    {% with total_price=total_price|add:order.total_price %}
+                    {% endwith %}
+                {% endfor %}
+                
+                <!-- แสดงราคาทั้งหมดสำหรับร้านนี้ -->
+                <p><strong>Total Price: {{ restaurant_data.total_price }} Baht</strong></p>
+                
+                {% if restaurant_data.orders.0.status != 'paid' %}
+                    <form action="{% url 'upload_payment_slip' restaurant_data.orders.0.id %}" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <label for="payment_slip">อัพโหลดสลิปการชำระเงิน:</label>
+                        <input type="file" name="payment_slip" accept="image/*"><br>
+                        <button type="submit">อัพโหลด</button>
+                    </form>
+                {% else %}
+                    <p style="color: green;">ส่งหลักฐานการชำระเงินแล้ว</p>
+                {% endif %}
+                {% endwith %}
+            </ul>
+
+        {% endfor %}
+    {% else %}
+        <p>You have not placed any orders yet.</p>
+    {% endif %}
+{% endblock %}

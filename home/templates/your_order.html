@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Order Summary</h1>
+
+    {% if restaurant_orders %}
+        {% for restaurant_name, restaurant_data in restaurant_orders.items %}
+            <h3>ร้านอาหาร: {{ restaurant_name }}</h3>
+
+            <h3>รายการออเดอร์ทั้งหมด</h3>
+            <ul>
+                {% for order in restaurant_data.orders %}
+                    <li>
+                        <strong>{{ order.menu.food_name }}</strong><br>
+                        - Quantity: {{ order.quantity }}<br>
+                        - Price: {{ order.total_price }} Baht<br>
+                        - Status: {{ order.get_status_display }}<br>
+                        - Pick up option: {{ order.get_delivery_option_display }}<br>
+
+                        <!-- เพิ่มปุ่มเพิ่มหรือลดจำนวนอาหาร -->
+                        <form action="{% url 'update_order_quantity' order.id %}" method="POST">
+                            {% csrf_token %}
+                            <button type="submit" name="action" value="increase">เพิ่ม</button>
+                            <button type="submit" name="action" value="decrease">ลด</button>
+                        </form>
+
+                        <form action="{% url 'delete_order' order.id %}" method="POST">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">ลบเมนู</button>
+                        </form>
+                    </li>
+                {% endfor %}
+            </ul>
+
+            <h3>Total Price: {{ total_amount }} Baht</h3>
+
+            <h3>เลือกรับอาหาร</h3>
+            <form action="{% url 'update_delivery_option' %}" method="POST">
+                {% csrf_token %}
+                <input type="radio" id="in_store" name="delivery_option" value="in_store" {% if orders.0.delivery_option == 'in_store' %}checked{% endif %}>
+                <label for="in_store">ทานที่ร้าน</label><br>
+                <input type="radio" id="takeaway" name="delivery_option" value="takeaway" {% if orders.0.delivery_option == 'takeaway' %}checked{% endif %}>
+                <label for="takeaway">ใส่กล่อง</label><br>
+                <button type="submit">ยืนยันการเลือก</button>
+            </form>
+
+            <form action="{% url 'confirm_order' %}" method="POST">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-success">ยืนยันการสั่ง</button>
+            </form>
+        {% endfor %}
+    {% else %}
+        <p>You have not placed any orders yet.</p>
+    {% endif %}
+{% endblock %}

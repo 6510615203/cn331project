@@ -80,5 +80,32 @@ class PaymentMethod(models.Model):
     def __str__(self):
         return f"{self.bank_name} : {self.account_number}"
 
+from django.db import models
+from django.utils import timezone
 
+class Order(models.Model):
+    restaurant_profile = models.ForeignKey(RestaurantProfile, null=True, blank=True, on_delete=models.CASCADE)
+    user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='orders')
+    menu = models.ForeignKey(Menu, on_delete=models.CASCADE, related_name='orders')
+    quantity = models.PositiveIntegerField(default=1)
+    total_price = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    order_date = models.DateTimeField(default=timezone.now)
+    status_choices = [
+        ('cooking', 'Cooking'),
+        ('waiting_for_payment', 'Waiting for Payment'),
+        ('paid', 'Paid'),
+        ('completed', 'Completed'),
+    ]
+    status = models.CharField(max_length=20, choices=status_choices, default='pending')
+    delivery_option_choices = [
+        ('in_store', 'Pick up in store'),
+        ('takeaway', 'Takeaway')
+    ]
+    delivery_option = models.CharField(max_length=10, choices=delivery_option_choices, default='in_store')
+    payment_slip = models.ImageField(upload_to='payment_slips/', null=True, blank=True)  # ฟิลด์สำหรับอัพโหลดสลิปการชำระเงิน
     
+    def __str__(self):
+        return f"Order #{self.id} by {self.user_profile.user.username} - {self.menu.food_name}"
+
+    def calculate_total(self):
+        return self.menu.price * self.quantity

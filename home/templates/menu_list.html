@@ -22,7 +22,8 @@
             <p class="card-description">รายละเอียด: {{ menu.about }}</p>
             <p class="card-price">{{ menu.price }} บาท</p>
             {% if user.is_authenticated %}
-            <button class="button button-primary">เพิ่ม</button>
+            <!-- Add link to add to order -->
+            <a href="{% url 'add_to_order' menu.id %}" class="button button-primary">เพิ่ม</a>
             {% endif %}
         </div>
         {% endfor %}
@@ -32,3 +33,4 @@
     </div>
 </div>
 {% endblock %}
+
