@@ -19,6 +19,8 @@ class UserProfile(models.Model):
   
     def __str__(self):
         return self.user.username
+    def is_restaurant(self):
+        return self.user_type == 'restaurant'
     
     
 class RestaurantProfile(models.Model):
@@ -101,7 +103,7 @@ class Order(models.Model):
         ('completed', 'Completed'),
     ]
     status = models.CharField(max_length=20, choices=status_choices, default='waiting_for_payment')
-
+    payment_slip = models.ImageField(upload_to='payment_slips/', null=True, blank=True)
     def calculate_total(self):
         return sum(item.total_price for item in self.order_items.all())
 

@@ -3,13 +3,14 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.hashers import check_password
 from django.contrib import messages
 from django.urls import reverse
-from .models import UserProfile, RestaurantProfile, Menu, PaymentMethod
+from .models import  RestaurantProfile, Menu, PaymentMethod, UserProfile
 from restaurant.models import PaymentMethod, RestaurantProfile
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 from django.core.files.storage import FileSystemStorage
-
+from home.models import Order, UserProfile
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def index(request):
@@ -198,4 +199,33 @@ def edit_only_menu(request):
             "is_editing": is_editing,
         },
     )
+    
+@login_required
+def restaurant_order_list(request):
+    # ตรวจสอบข้อมูล restaurant ของผู้ใช้ที่ล็อกอิน
+    user_profile = request.user.userprofile
+    if user_profile.is_restaurant():
+        restaurant = user_profile.restaurantprofile
+        print(f"Restaurant ID: {restaurant.id}")  # ตรวจสอบ ID ของร้าน
+        orders = Order.objects.filter(restaurant=restaurant).order_by('-order_date')
+        print(f"Orders found: {orders.count()}")  # ตรวจสอบจำนวนคำสั่งซื้อ
+        return render(request, 'restaurant_order_list.html', {'orders': orders})
+    else:
+        return redirect('home')  # หรือแสดง error message ถ้าไม่ใช่ restaurant
 
+   
+@login_required
+def order_confirmation(request, order_id):
+    order = get_object_or_404(Order, id=order_id, restaurant=request.user.userprofile.restaurantprofile)
+
+    if request.method == 'POST':
+        status = request.POST.get('status')
+
+        if status == 'received':
+            order.status = 'cooking'  # เปลี่ยนสถานะเป็น "กำลังทำอาหาร"
+        elif status == 'completed':
+            order.status = 'completed'  # เปลี่ยนสถานะเป็น "อาหารเสร็จแล้ว"
+        
+        order.save()
+
+    return redirect('restaurant_order_list')

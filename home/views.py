@@ -301,15 +301,16 @@ def order_status(request):
 
 @login_required
 def upload_payment_slip(request, order_id):
+    # ดึงออเดอร์ที่เราต้องการ
     order = get_object_or_404(Order, id=order_id)
     
     if request.method == 'POST' and 'payment_slip' in request.FILES:
         payment_slip = request.FILES['payment_slip']
         order.payment_slip = payment_slip
-        order.status = 'paid'
-        order.save()
+        order.status = 'paid' 
+        order.save() 
         messages.success(request, "ชำระเงินเรียบร้อยแล้ว")
-        
+    
     return redirect('order_status')
 
 
@@ -329,3 +330,5 @@ def order_confirmation(request):
 def order_status(request):
     orders = Order.objects.filter(user_profile=request.user.userprofile)
     return render(request, "order_status.html", {"orders": orders})
+
+
