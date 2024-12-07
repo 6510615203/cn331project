@@ -139,6 +139,7 @@ def register(request):
         password = request.POST.get("password")
         phone_number = request.POST.get("phone_number")
         email = request.POST.get("email")
+        name = request.POST.get("name")
         user_type = request.POST.get("user_type")
 
         # หากไม่มีการเลือก user_type, กำหนดค่า default จาก query parameter
@@ -154,7 +155,9 @@ def register(request):
     
         user = User.objects.create_user(username=username, password=password, email=email)
         profile = UserProfile.objects.create(
-            user=user, 
+            user=user,
+            name=name,
+            email=email, 
             phone_number=phone_number, 
             user_type=user_type
         )
