@@ -60,8 +60,16 @@ def manage(request):
 def about(request):      
     return render(request, "about_kinkorn.html")
 
-def order_list(request):      
-    return render(request, "order_list.html")
+def order_list(request):
+    username = request.user.username
+    restaurant = get_object_or_404(RestaurantProfile, user_profile__user__username=username) 
+    user_profile = request.user.userprofile
+    if user_profile.is_restaurant():
+        print(f"Restaurant ID: {restaurant.id}")  # ตรวจสอบ ID ของร้าน
+        orders = Order.objects.filter(restaurant=restaurant).order_by('-order_date')
+        print(f"Orders found: {orders.count()}")  # ตรวจสอบจำนวนคำสั่งซื้อ
+        return render(request, 'order_list.html', {'orders': orders, 'restaurant': restaurant})     
+    return render(request, "order_list.html", {'restaurant': restaurant})
 
 def sales_report(request):      
     return render(request, "sales.html")
@@ -199,7 +207,8 @@ def edit_only_menu(request):
             "is_editing": is_editing,
         },
     )
-    
+
+"""   
 @login_required
 def restaurant_order_list(request):
     # ตรวจสอบข้อมูล restaurant ของผู้ใช้ที่ล็อกอิน
@@ -212,7 +221,7 @@ def restaurant_order_list(request):
         return render(request, 'restaurant_order_list.html', {'orders': orders})
     else:
         return redirect('home')  # หรือแสดง error message ถ้าไม่ใช่ restaurant
-
+"""
    
 @login_required
 def order_confirmation(request, order_id):

@@ -15,7 +15,7 @@ urlpatterns = [
     path('add_menu_res', views.add_menu_res, name='add_menu_res'),
     path('add_payment', views.add_payment, name='add_payment'),
     path('edit_only_menu', views.edit_only_menu, name='edit_only_menu'),
-    path('orders/', views.restaurant_order_list, name='restaurant_order_list'),
+    #path('orders/', views.restaurant_order_list, name='restaurant_order_list'),
     path('order_confirmation/<int:order_id>/', views.order_confirmation, name='order_confirmation'),
 ]
 

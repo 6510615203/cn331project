@@ -5,31 +5,31 @@
 {% endblock %}
 
 {% block content %}
-<h1>รายการคำสั่งซื้อของร้าน {{ request.user.userprofile.restaurantprofile.restaurant_name }}</h1>
+<h1>รายการคำสั่งซื้อของร้าน {{ restaurant.restaurant_name }}</h1>
 
 {% for order in orders %}
-    <div class="order-card">
-        <p><strong>หมายเลขคำสั่งซื้อ:</strong> {{ order.id }}</p>
-        <p><strong>ชื่อลูกค้า:</strong> {{ order.user_profile.name }}</p>
-        <p><strong>เวลาที่มารับ:</strong> {{ order.pickup_time }}</p>
-        <p><strong>สถานะ:</strong> {{ order.get_status_display }}</p>
-        
-        <h3>เมนูที่สั่ง:</h3>
-        <ul>
-            {% for item in order.order_items.all %}
-                <li>{{ item.restaurant_menu.food_name }} - จำนวน: {{ item.quantity }} - ราคา: {{ item.total_price }} บาท</li>
-            {% endfor %}
-        </ul>
+<div class="order-card">
+    <p><strong>หมายเลขคำสั่งซื้อ:</strong> {{ order.id }}</p>
+    <p><strong>ชื่อลูกค้า:</strong> {{ order.user_profile.name }}</p>
+    <p><strong>เวลาที่มารับ:</strong> {{ order.pickup_time }}</p>
+    <p><strong>สถานะ:</strong> {{ order.get_status_display }}</p>
 
-        <p><strong>ยอดรวม:</strong> {{ order.total_price }} บาท</p>
-        <!-- ตรวจสอบการแสดงผลการอัพโหลดสลิป -->
-        {% if order.payment_slip %}
-            <p><strong>สลิปการชำระเงิน:</strong></p>
-            <img src="{{ order.payment_slip.url }}" alt="Payment Slip" style="width: 200px;">
-        {% endif %}
-    </div>
+    <h3>เมนูที่สั่ง:</h3>
+    <ul>
+        {% for item in order.order_items.all %}
+        <li>{{ item.restaurant_menu.food_name }} - จำนวน: {{ item.quantity }} - ราคา: {{ item.total_price }} บาท</li>
+        {% endfor %}
+    </ul>
+
+    <p><strong>ยอดรวม:</strong> {{ order.total_price }} บาท</p>
+    <!-- ตรวจสอบการแสดงผลการอัพโหลดสลิป -->
+    {% if order.payment_slip %}
+    <p><strong>สลิปการชำระเงิน:</strong></p>
+    <img src="{{ order.payment_slip.url }}" alt="Payment Slip" style="width: 200px;">
+    {% endif %}
+</div>
 {% empty %}
-    <p>ไม่พบคำสั่งซื้อ</p>
+<p>ไม่พบคำสั่งซื้อ</p>
 {% endfor %}
 
 {% endblock %}
