@@ -43,6 +43,35 @@ body {
 
 }
 
+.payment-title {
+    display: flex;
+    text-align: center;
+    text-align: left;
+    width: 59%;
+    height: 50px;
+    padding-left: 20px;
+    border-radius: 5px;
+    color: white;
+    background-color: #AF1F1F;
+    display: flex;
+    align-items: center;
+    /* จัดกึ่งกลางแนวตั้ง */
+    font-family: inherit;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.payment-table {
+    margin-top: 20px;
+    width: 60%;
+    height: 70%;
+    margin-left: 0;
+    margin-right: auto;
+    border-radius: 25px;
+    font-family: inherit;
+    line-height: 1.6;
+    background-color: #e2e2e2;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+}
 .table,
 .table th,
 .table td,
@@ -219,3 +248,4 @@ body {
     background-color: #fdf4c3;
     color: black;
 }
+

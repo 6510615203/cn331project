@@ -10,8 +10,8 @@
 
 {% block content %}
 
-
-<div class="container mt-5">
+<div class="main-container d-flex">
+    <div class="container mt-5">
     <h2 class="menu-title">เมนูของร้าน: {{ restaurant.restaurant_name }}</h2>
 
     <div class="menu-table">
@@ -60,6 +60,32 @@
         <p>ยังไม่มีเมนูในร้านนี้</p>
         {% endif %}
     </div>
+    <!-- ส่วนแสดงข้อมูลช่องทางการชำระเงิน -->
+    <div class="container mt-5">
+        <h3 class="payment-title">Your Restaurant Payment</h3>
+        <div class="payment-table">
+            {% if payment_methods %}
+            <table border="1" class="table">
+            <thead>
+                <tr>
+                    <th>ชื่อธนาคาร</th>
+                    <th>เลขบัญชี</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for payment in payment_methods %}
+                <tr>
+                    <td>{{ payment.bank_name }}</td>
+                    <td>{{ payment.account_number }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            </table>
+            {% else %}
+                <p>No payment methods added yet.</p>
+            {% endif %}
+        </div>
+    </div>
 </div>
 
 
@@ -88,4 +114,6 @@
         </div>
     </div>
 </div>
+
+
 {% endblock %}
