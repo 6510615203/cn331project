@@ -80,7 +80,8 @@ def edit_menu_payment(request):
 
     menu_items = Menu.objects.filter(restaurant_profile=restaurant)
 
-    return render(request, 'edit_menu_payment.html',{'restaurant': restaurant, 'menu_items': menu_items})
+    payment_methods = PaymentMethod.objects.filter(restaurant_profile=restaurant)  # ดึงข้อมูลการชำระเงิน
+    return render(request, 'edit_menu_payment.html',{'restaurant': restaurant, 'menu_items': menu_items, 'payment_methods': payment_methods})
 
 
 def add_menu_res(request):
@@ -142,7 +143,8 @@ def add_payment(request):
                 account_number=account_number
             )
          
-            return redirect('restaurant:add_payment')
+            #return redirect('restaurant:add_payment')
+            return redirect('restaurant:edit_menu_payment')
 
 
     payment_methods = PaymentMethod.objects.filter(restaurant_profile=restaurant_profile)
