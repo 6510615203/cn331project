@@ -1,0 +1,39 @@
+{% extends "base_restaurant.html" %}
+
+{% block title %}
+<title>รายงานการขาย</title>
+{% endblock %}
+
+{% block content %}
+<h1>รายงานการขายสำหรับร้าน {{ restaurant.restaurant_name }}</h1>
+
+<form method="GET" class="date-filter-form">
+    <label for="start_date">เริ่มวันที่:</label>
+    <input type="date" id="start_date" name="start_date" value="{{ start_date|date:'Y-m-d' }}">
+    
+    <label for="end_date">ถึงวันที่:</label>
+    <input type="date" id="end_date" name="end_date" value="{{ end_date|date:'Y-m-d' }}">
+    
+    <button type="submit" class="btn btn-primary">กรอง</button>
+</form>
+
+<h2>ยอดขายทั้งหมด: {{ total_sales }} บาท</h2>
+
+<div class="orders-container">
+    {% for order in orders %}
+    <div class="order-card">
+        <p><strong>หมายเลขคำสั่งซื้อ:</strong> {{ order.id }}</p>
+        <p><strong>เวลาที่สร้างคำสั่งซื้อ:</strong> {{ order.order_date|date:"d M Y, H:i" }}</p>
+        <h3>เมนูที่สั่ง:</h3>
+        <ul>
+            {% for item in order.order_items.all %}
+            <li>{{ item.restaurant_menu.food_name }} - จำนวน: {{ item.quantity }} - ราคา: {{ item.total_price }} บาท</li>
+            {% endfor %}
+        </ul>
+        <p><strong>ยอดรวม:</strong> {{ order.total_price }} บาท</p>
+    </div>
+    {% empty %}
+    <p>ไม่มีคำสั่งซื้อในช่วงเวลานี้</p>
+    {% endfor %}
+</div>
+{% endblock %}

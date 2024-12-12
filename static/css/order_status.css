@@ -1,0 +1,7 @@
+.btn-large {
+    font-size: 1.5rem; /* ขนาดตัวอักษรใหญ่ขึ้น */
+    padding: 15px 30px; /* เพิ่มขนาดของปุ่ม */
+    border-radius: 8px; /* ขอบมน */
+    text-align: center;
+    display: inline-block;
+}

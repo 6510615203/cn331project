@@ -5,50 +5,55 @@
 <title>Your Order</title>
 {% endblock %}
 
-{% block style %}
-<link rel="stylesheet" type="text/css" href="{% static 'css/your_order.css' %}">
-{% endblock %}
-
 {% block content %}
 <div class="container mt-5">
     <h2 class="header">คำสั่งซื้อของคุณ</h2>
 
-    <div class="order-summary">
-        {% if order %}
-        <h3>รายการเมนู</h3>
-        <ul>
-            {% for item in order.order_items.all %}
-            <li>
-                {{ item.restaurant_menu.food_name }} x {{ item.quantity }} - {{ item.total_price }} บาท
-            </li>
-            {% endfor %}
-        </ul>
-        <hr>
-        <p><strong>รวมทั้งหมด: {{ order.total_price }} บาท</strong></p>
-        <p>เลือกเวลารับ: {{ order.pickup_time }}</p>
-        <p>วิธีการรับ: {{ order.delivery_option }}</p>
-        {% else %}
-        <p>ยังไม่มีคำสั่งซื้อ</p>
-        {% endif %}
-    </div>
+    {% if orders.exists %}  {# ตรวจสอบว่ามีคำสั่งซื้อหรือไม่ #}
+        {% for order in orders %}
+        <div class="order-summary">
+            <h3>รายการจากร้าน: {{ order.restaurant.restaurant_name }}</h3>
+            <ul>
+                {% for item in order.order_items.all %}
+                <li>
+                    {{ item.restaurant_menu.food_name }} x {{ item.quantity }} - {{ item.total_price }} บาท
+                    <form method="POST" action="" style="display:inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="item_id" value="{{ item.id }}">
+                        <button type="submit" name="delete_item" class="button button-danger">ลบ</button>
+                    </form>
+                </li>
+                {% endfor %}
+            </ul>
+            <hr>
+            <p><strong>รวมทั้งหมด: {{ order.total_price }} บาท</strong></p>
 
-    <form method="POST" action="">
-        {% csrf_token %}
-        <h3>เลือกเวลารับและวิธีการรับ</h3>
-        <label for="pickup_time">เวลาที่ต้องการรับ:</label>
-        <input type="datetime-local" id="pickup_time" name="pickup_time" required>
-        
-        <label for="delivery_option">วิธีการรับ:</label>
-        <select name="delivery_option" id="delivery_option" required>
-            <option value="in_store">ทานที่ร้าน</option>
-            <option value="takeaway">รับไปทานที่บ้าน</option>
-        </select>
-        
-        <button type="submit" name="save_order" class="button button-primary">บันทึก</button>
-    </form>
+            <!-- ฟอร์มบันทึกเวลารับและวิธีการรับ -->
+            <form method="POST" action="">
+                {% csrf_token %}
+                <input type="hidden" name="order_id" value="{{ order.id }}">
+            
+                <label for="pickup_time_{{ order.id }}">เวลาที่ต้องการรับ:</label>
+                <input type="datetime-local" id="pickup_time_{{ order.id }}" name="pickup_time" 
+                    value="{{ order.pickup_time|date:'Y-m-d\\TH:i' }}" required>
+            
+                <label for="delivery_option_{{ order.id }}">วิธีการรับ:</label>
+                <select name="delivery_option" id="delivery_option_{{ order.id }}" required>
+                    <option value="in_store" {% if order.delivery_option == 'in_store' %}selected{% endif %}>ทานที่ร้าน</option>
+                    <option value="takeaway" {% if order.delivery_option == 'takeaway' %}selected{% endif %}>รับไปทานที่บ้าน</option>
+                </select>
+            
+                <button type="submit" name="save_order" class="button button-primary">บันทึก</button>
+            </form>
+        </div>
+        {% endfor %}
+    {% else %}
+        <p>ยังไม่มีคำสั่งซื้อ</p>
+    {% endif %}
 
     <div class="actions">
         <a href="{% url 'order_status' %}" class="button button-primary">ยืนยันการสั่งซื้อ</a>
+        <a href="{% url 'order_status' %}" class="button button-secondary">Check Order Status</a>
     </div>
 </div>
 {% endblock %}

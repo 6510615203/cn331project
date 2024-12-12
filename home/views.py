@@ -239,37 +239,67 @@ def menu_list(request, restaurant_id):
 
 @login_required
 def your_order(request):
-    # ดึงคำสั่งซื้อที่รอการชำระเงิน
-    restaurant = RestaurantProfile.objects.first()  
-    order = Order.objects.filter(user_profile=request.user.userprofile, status='waiting_for_payment').first()
-
-    if not order:
-        # ถ้าไม่พบคำสั่งซื้อที่มีสถานะ 'waiting_for_payment' ให้สร้างคำสั่งซื้อใหม่
-        order = Order.objects.create(
-            user_profile=request.user.userprofile,
-            status='waiting_for_payment',  # กำหนดสถานะเริ่มต้น
-            total_price=0,  # ราคาเริ่มต้น
-            pickup_time=None,  # เวลารับสามารถเพิ่มเติมได้
-            restaurant=restaurant  # กำหนดร้านอาหาร
-        )
-
     if request.method == 'POST':
-        if 'save_order' in request.POST:  # ถ้าผู้ใช้กดบันทึกการเลือก
+        if 'save_order' in request.POST:  # เมื่อกดปุ่ม "บันทึก"
+            order_id = request.POST.get('order_id')
             pickup_time = request.POST.get('pickup_time')
             delivery_option = request.POST.get('delivery_option')
-            
-            # อัพเดทคำสั่งซื้อ
-            order.pickup_time = pickup_time
-            order.delivery_option = delivery_option
-            order.save()
-            
-            return redirect('your_order')  # ไปที่หน้ารายการคำสั่งซื้อ
 
-        else:  # ถ้าผู้ใช้เพิ่มเมนูในคำสั่งซื้อ
+            try:
+                # อัปเดตคำสั่งซื้อในฐานข้อมูล
+                order = Order.objects.get(
+                    id=order_id, 
+                    user_profile=request.user.userprofile, 
+                    status='waiting_for_payment'
+                )
+                order.pickup_time = pickup_time
+                order.delivery_option = delivery_option
+                order.save()  # บันทึกข้อมูลลงฐานข้อมูล
+            except Order.DoesNotExist:
+                messages.error(request, "ไม่พบคำสั่งซื้อที่ต้องการบันทึก")
+            return redirect('your_order')  # รีเฟรชหน้าใหม่เพื่อแสดงค่าที่อัปเดตแล้ว
+
+        elif 'delete_item' in request.POST:  # เมื่อลบเมนู
+            item_id = request.POST.get('item_id')
+            try:
+            # ลบรายการเมนู
+                item = OrderItem.objects.get(id=item_id)
+                order = item.order
+                item.delete()
+
+                # ตรวจสอบว่าคำสั่งซื้อมีรายการเมนูเหลืออยู่หรือไม่
+                if not order.order_items.exists():
+                # หากไม่มีเมนูเหลือ ให้ลบคำสั่งซื้อ
+                    order.delete()
+                else:
+                    # หากยังมีเมนูเหลือ ให้คำนวณราคารวมใหม่
+                    order.total_price = sum(i.total_price for i in order.order_items.all())
+                    order.save()
+            except OrderItem.DoesNotExist:
+                messages.error(request, "ไม่พบรายการที่ต้องการลบ")
+            return redirect('your_order')
+
+        else:  # เมื่อเพิ่มเมนูใหม่
             menu_id = request.POST.get('menu_id')
             if menu_id:
                 try:
+                    # เพิ่มเมนูในคำสั่งซื้อ
                     menu = Menu.objects.get(id=menu_id)
+                    restaurant = menu.restaurant_profile
+                    order = Order.objects.filter(
+                        user_profile=request.user.userprofile,
+                        restaurant=restaurant,
+                        status='waiting_for_payment'
+                    ).first()
+
+                    if not order:
+                        order = Order.objects.create(
+                            user_profile=request.user.userprofile,
+                            restaurant=restaurant,
+                            status='waiting_for_payment',
+                            total_price=0
+                        )
+
                     existing_item = order.order_items.filter(restaurant_menu=menu).first()
                     if existing_item:
                         existing_item.quantity += 1
@@ -282,19 +312,17 @@ def your_order(request):
                             quantity=1,
                             total_price=menu.price
                         )
-                    
-                    # คำนวณราคาทั้งหมด
-                    total_price = sum(item.total_price for item in order.order_items.all())
-                    order.total_price = total_price
+
+                    order.total_price = sum(item.total_price for item in order.order_items.all())
                     order.save()
 
                 except Menu.DoesNotExist:
-                    pass
+                    messages.error(request, "เมนูที่เลือกไม่มีอยู่ในระบบ")
+                return redirect('your_order')
 
-            return redirect('your_order')  # รีเฟรชหน้า
-
-    # หากไม่ใช่ POST ให้แสดงข้อมูลคำสั่งซื้อ
-    return render(request, 'your_order.html', {'order': order})
+    # ดึงคำสั่งซื้อทั้งหมดเฉพาะร้านที่มีคำสั่งซื้อในสถานะ 'waiting_for_payment'
+    orders = Order.objects.filter(user_profile=request.user.userprofile, status='waiting_for_payment')
+    return render(request, 'your_order.html', {'orders': orders})
 
 @login_required
 def order_status(request):
@@ -319,15 +347,26 @@ def upload_payment_slip(request, order_id):
 
 @login_required
 def order_confirmation(request):
-    # ดึงออร์เดอร์ที่ผู้ใช้กำลังทำการยืนยัน
-    order = Order.objects.get(id=request.POST.get('order_id'), user_profile=request.user.userprofile)
+    order_id = request.POST.get('order_id')
+    try:
+        # ดึงคำสั่งซื้อที่ต้องการยืนยัน
+        order = Order.objects.get(id=order_id, user_profile=request.user.userprofile, status='waiting_for_payment')
 
-    # เปลี่ยนสถานะออร์เดอร์เมื่อยืนยัน
-    order.status = 'paid'  # หรือ 'completed' ขึ้นอยู่กับขั้นตอน
-    order.save()
+        # ตรวจสอบว่ามีรายการเมนูในคำสั่งซื้อหรือไม่
+        if order.order_items.exists():
+            # เปลี่ยนสถานะคำสั่งซื้อ
+            order.status = 'paid'  # หรือ 'completed'
+            order.save()
+            messages.success(request, "ยืนยันคำสั่งซื้อเรียบร้อยแล้ว!")
+        else:
+            # ลบคำสั่งซื้อที่ไม่มีรายการเมนู
+            order.delete()
+            messages.error(request, "ไม่สามารถยืนยันคำสั่งซื้อที่ไม่มีเมนูได้")
+    except Order.DoesNotExist:
+        messages.error(request, "ไม่พบคำสั่งซื้อที่ต้องการยืนยัน")
 
-    # กลับไปยังหน้าแสดงสถานะออร์เดอร์
     return redirect('order_status')
+
 
 @login_required
 def order_status(request):

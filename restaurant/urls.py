@@ -17,6 +17,7 @@ urlpatterns = [
     path('edit_only_menu', views.edit_only_menu, name='edit_only_menu'),
     #path('orders/', views.restaurant_order_list, name='restaurant_order_list'),
     path('order_confirmation/<int:order_id>/', views.order_confirmation, name='order_confirmation'),
+    path('sales_report/', views.sales_report, name='sales_report'),
 ]
 
 if settings.DEBUG:  # ใช้เฉพาะในโหมด debug (development server)
