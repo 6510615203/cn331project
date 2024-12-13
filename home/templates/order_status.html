@@ -22,6 +22,15 @@
     </ul>
     <p><strong>ยอดรวม:</strong> {{ order.total_price }} บาท</p>
 
+    <h3>วิธีการชำระเงิน:</h3>
+    <ul>
+        {% for payment in order.restaurant.payment.all %}
+        <li>ธนาคาร: {{ payment.bank_name }} - เลขบัญชี: {{ payment.account_number }}</li>
+        {% empty %}
+        <li>ไม่มีข้อมูลการชำระเงิน</li>
+        {% endfor %}
+    </ul>
+
     {% if order.status == 'waiting_for_payment' %}
     <p style="color: orange;">สถานะ: รอการชำระเงิน</p>
     <form action="{% url 'upload_payment_slip' order.id %}" method="POST" enctype="multipart/form-data">
