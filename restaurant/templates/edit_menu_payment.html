@@ -12,112 +12,112 @@
 {% block content %}
 <div class="main-container">
     <div class="container">
-    <!-----------------คลาสชื่อตาราง 2 อัน------------------>
-    <div class="grid-title">
-        <h2 class="menu-title">เมนูของร้าน: {{ restaurant.restaurant_name }}</h2>
-        <h2 class="payment-title">Your Restaurant Payment</h2>
-    </div>
-    
-    <!-----------------คลาสตาราง 2 อัน------------------>
-    <div class="grid-tables">
-        <!----------------คลาส menu table------------------->
-        <div class="menu-table">
-            {% if menu_items %}
-            <table border="1" class="menutable">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>ชื่ออาหาร</th>
-                        <th>ประเภทอาหาร</th>
-                        <th>ราคา (บาท)</th>
-                        <th>รายละเอียด</th>
-                        <th>รูปภาพ</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for menu in menu_items %}
-                    <tr>
-                        <td>{{ forloop.counter }}</td>
-                        <td>{{ menu.food_name }}</td>
-                        <td>{{ menu.get_food_category_display }}</td>
-                        <td><span class="bordered-text">{{ menu.price }}</span></td>
-                        <td>{{ menu.about }}</td>
-                        <td>
-                            {% if menu.menu_picture %}
-                            <img src="{{ menu.menu_picture.url }}" alt="{{ menu.food_name }}" width="100">
-                            {% else %}
-                            ไม่มีรูปภาพ
-                            {% endif %}
-                        </td>
-                        <td>
-                            <form action="{% url 'restaurant:edit_only_menu' %}" method="POST">
-                                {% csrf_token %}
-                                <input type="hidden" name="menu_id" value="{{ menu.id }}">
-                                <div class="enroll-container">
-                                    <button type="submit" class="btn btn-primary">edit</button>
-                                </div>
-                            </form>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-            {% else %}
-            <p>ยังไม่มีเมนูในร้านนี้</p>
-            {% endif %}
+        <!-----------------คลาสชื่อตาราง 2 อัน------------------>
+        <div class="grid-title">
+            <h2 class="menu-title">เมนูของร้าน: {{ restaurant.restaurant_name }}</h2>
+            <h2 class="payment-title">Your Restaurant Payment</h2>
         </div>
-        <!----------------คลาส menu payment------------------->
-        <div class="container">
-            <div class="payment-table">
-                {% if payment_methods %}
-                <table border="1" class="paymenttable">
+
+        <!-----------------คลาสตาราง 2 อัน------------------>
+        <div class="grid-tables">
+            <!----------------คลาส menu table------------------->
+            <div class="menu-table">
+                {% if menu_items %}
+                <table border="1" class="menutable">
                     <thead>
                         <tr>
-                            <th>ชื่อธนาคาร</th>
-                            <th>เลขบัญชี</th>
+                            <th>#</th>
+                            <th>ชื่ออาหาร</th>
+                            <th>ประเภทอาหาร</th>
+                            <th>ราคา (บาท)</th>
+                            <th>รายละเอียด</th>
+                            <th>รูปภาพ</th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for payment in payment_methods %}
+                        {% for menu in menu_items %}
                         <tr>
-                            <td>{{ payment.bank_name }}</td>
-                            <td>{{ payment.account_number }}</td>
+                            <td>{{ forloop.counter }}</td>
+                            <td>{{ menu.food_name }}</td>
+                            <td>{{ menu.get_food_category_display }}</td>
+                            <td><span class="bordered-text">{{ menu.price }}</span></td>
+                            <td>{{ menu.about }}</td>
+                            <td>
+                                {% if menu.menu_picture %}
+                                <img src="{{ menu.menu_picture.url }}" alt="{{ menu.food_name }}" width="100">
+                                {% else %}
+                                ไม่มีรูปภาพ
+                                {% endif %}
+                            </td>
+                            <td>
+                                <form action="{% url 'restaurant:edit_only_menu' %}" method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="menu_id" value="{{ menu.id }}">
+                                    <div class="enroll-container">
+                                        <button type="submit" class="btn btn-primary">edit</button>
+                                    </div>
+                                </form>
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
-                    </table>
+                </table>
                 {% else %}
-                    <p>No payment methods added yet.</p>
+                <p>ยังไม่มีเมนูในร้านนี้</p>
                 {% endif %}
             </div>
-        </div>    
+            <!----------------คลาส menu payment------------------->
+            <div class="container">
+                <div class="payment-table">
+                    {% if payment_methods %}
+                    <table border="1" class="paymenttable">
+                        <thead>
+                            <tr>
+                                <th>ชื่อธนาคาร</th>
+                                <th>เลขบัญชี</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for payment in payment_methods %}
+                            <tr>
+                                <td>{{ payment.bank_name }}</td>
+                                <td>{{ payment.account_number }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <p>No payment methods added yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
     </div>
-</div>
 
 
-<!----------------คลาสปุ่ม 3 ปุ่ม------------------->
+    <!----------------คลาสปุ่ม 3 ปุ่ม------------------->
 
-<div class="restaurantbutton">
-    <div class="res-button">
-        <form method="GET" action="{% url 'restaurant:add_payment'%}">
-            <button type="submit" class="button">Add your payment</button>
-        </form>
-    </div>
-    <!----------------คลาส group ปุ่ม เพิ่มเมนู + เพิ่มช่องทางชำระเงิน------------------->
-    <div class="button-group">
+    <div class="restaurantbutton">
         <div class="res-button">
-            <form method="GET" action="{% url 'restaurant:manage'%}">
-                <button type="submit" class="button">Edit Profile</button>
+            <form method="GET" action="{% url 'restaurant:add_payment'%}">
+                <button type="submit" class="button">Add your payment</button>
             </form>
         </div>
-        <div class="res-button">
-            <form method="GET" action="{% url 'restaurant:add_menu_res'%}">
-                <button type="submit" class="button">Add menu</button>
-            </form>
+        <!----------------คลาส group ปุ่ม เพิ่มเมนู + เพิ่มช่องทางชำระเงิน------------------->
+        <div class="button-group">
+            <div class="res-button">
+                <form method="GET" action="{% url 'restaurant:manage'%}">
+                    <button type="submit" class="button">Edit Profile</button>
+                </form>
+            </div>
+            <div class="res-button">
+                <form method="GET" action="{% url 'restaurant:add_menu_res'%}">
+                    <button type="submit" class="button">Add menu</button>
+                </form>
+            </div>
         </div>
     </div>
-</div>
 
 
-{% endblock %}
+    {% endblock %}

@@ -220,6 +220,7 @@ def edit_only_menu(request):
             menu_item = get_object_or_404(Menu, id=menu_id)
             if request.POST.get('delete_menu') == 'true':
                 menu_item.delete()
+                messages.success(request, f"Menu '{menu_item.food_name}' deleted successfully.")
                 return redirect('restaurant:edit_menu_payment')
             if "food_name" in request.POST:
                 food_name = request.POST.get("food_name").strip()
