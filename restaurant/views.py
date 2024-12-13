@@ -216,6 +216,9 @@ def edit_only_menu(request):
         print("Menu ID received:", menu_id)
         if menu_id:
             menu_item = get_object_or_404(Menu, id=menu_id)
+            if request.POST.get('delete_menu') == 'true':
+                menu_item.delete()
+                return redirect('restaurant:edit_menu_payment')
             if "food_name" in request.POST:
                 food_name = request.POST.get("food_name").strip()
                 menu_item.food_name = food_name
@@ -235,6 +238,7 @@ def edit_only_menu(request):
                 menu_item.menu_picture = menu_picture
                 messages.success(request, "Menu picture updated successfully!")
             menu_item.save()
+
             return render(request, "edit_only_menu.html", {"restaurant": restaurant, "menu_item": menu_item, "menu_id": menu_id})
             
     
@@ -242,6 +246,7 @@ def edit_only_menu(request):
         menu_id = request.GET.get("menu_id")
         if menu_id:
             menu_item = get_object_or_404(Menu, id=menu_id)
+    
     
 
     return render(
@@ -321,3 +326,6 @@ def sales_report(request):
         'start_date': start_date,
         'end_date': end_date,
     })
+
+
+
