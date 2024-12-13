@@ -50,6 +50,11 @@
                 </form>
             </div>
             <div class="res-button">
+                <form method="GET" action="{% url 'restaurant:order_list'%}">
+                    <button type="submit" class="button">จัดการออเดอร์</button>
+                </form>
+            </div>
+            <div class="res-button">
                 <form method="GET" action="{% url 'restaurant:sales_report'%}">
                     <button type="submit" class="button">รายรับทั้งหมด</button>
                 </form>
