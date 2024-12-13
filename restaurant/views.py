@@ -1,3 +1,4 @@
+from email.utils import parsedate
 from django.shortcuts import render,redirect, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib.auth.hashers import check_password
@@ -11,7 +12,7 @@ from django.contrib.auth.models import User
 from django.core.files.storage import FileSystemStorage
 from home.models import Order, UserProfile
 from django.contrib.auth.decorators import login_required
-
+from django.db.models import Sum
 # Create your views here.
 def index(request):
     username = request.user.username
@@ -60,16 +61,41 @@ def manage(request):
 def about(request):      
     return render(request, "about_kinkorn.html")
 
+@login_required
 def order_list(request):
     username = request.user.username
-    restaurant = get_object_or_404(RestaurantProfile, user_profile__user__username=username) 
-    user_profile = request.user.userprofile
-    if user_profile.is_restaurant():
-        print(f"Restaurant ID: {restaurant.id}")  # ตรวจสอบ ID ของร้าน
-        orders = Order.objects.filter(restaurant=restaurant).order_by('-order_date')
-        print(f"Orders found: {orders.count()}")  # ตรวจสอบจำนวนคำสั่งซื้อ
-        return render(request, 'order_list.html', {'orders': orders, 'restaurant': restaurant})     
-    return render(request, "order_list.html", {'restaurant': restaurant})
+    restaurant = get_object_or_404(RestaurantProfile, user_profile__user__username=username)
+
+    if request.method == 'POST':
+        order_id = request.POST.get('order_id')
+        action = request.POST.get('action')
+
+        try:
+            order = Order.objects.get(id=order_id, restaurant=restaurant)
+
+            if action == 'confirm_payment':
+                # ยืนยันการชำระเงิน
+                order.status = 'paid'
+                messages.success(request, f"Order {order.id}: Payment confirmed.")
+            elif action == 'mark_in_progress':
+                # เริ่มทำอาหาร
+                order.status = 'cooking'
+                messages.success(request, f"Order {order.id}: Order is now in progress.")
+            elif action == 'mark_completed':
+                # ออร์เดอร์เสร็จสมบูรณ์
+                order.status = 'completed'
+                messages.success(request, f"Order {order.id}: Order completed.")
+            order.save()
+
+        except Order.DoesNotExist:
+            messages.error(request, "Order not found.")
+
+        return redirect('restaurant:order_list')  # เปลี่ยนเส้นทางไปยังหน้า order_list หลังจากอัปเดต
+
+    # ดึงคำสั่งซื้อทั้งหมดของร้านอาหาร
+    orders = Order.objects.filter(restaurant=restaurant).order_by('-order_date')
+
+    return render(request, 'order_list.html', {'orders': orders, 'restaurant': restaurant})
 
 def sales_report(request):      
     return render(request, "sales.html")
@@ -236,7 +262,42 @@ def order_confirmation(request, order_id):
             order.status = 'cooking'  # เปลี่ยนสถานะเป็น "กำลังทำอาหาร"
         elif status == 'completed':
             order.status = 'completed'  # เปลี่ยนสถานะเป็น "อาหารเสร็จแล้ว"
+            order.completed_at = timezone.now()  # บันทึกเวลาเสร็จสมบูรณ์
         
         order.save()
 
     return redirect('restaurant_order_list')
+
+
+from django.db.models import Sum
+from django.utils.dateparse import parse_date
+
+@login_required
+def sales_report(request):
+    username = request.user.username
+    restaurant = get_object_or_404(RestaurantProfile, user_profile__user__username=username)
+
+    start_date = request.GET.get('start_date')
+    end_date = request.GET.get('end_date')
+
+    # ดึงคำสั่งซื้อที่สถานะเป็น completed
+    orders = Order.objects.filter(restaurant=restaurant, status='completed')
+
+    if start_date:
+        start_date = parse_date(start_date)
+        orders = orders.filter(order_date__date__gte=start_date)  # ใช้ฟิลด์ order_date ในการกรอง
+
+    if end_date:
+        end_date = parse_date(end_date)
+        orders = orders.filter(order_date__date__lte=end_date)
+
+    # คำนวณยอดขายรวม
+    total_sales = orders.aggregate(Sum('total_price'))['total_price__sum'] or 0
+
+    return render(request, 'sales_report.html', {
+        'restaurant': restaurant,
+        'orders': orders,
+        'total_sales': total_sales,
+        'start_date': start_date,
+        'end_date': end_date,
+    })

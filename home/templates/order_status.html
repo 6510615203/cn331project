@@ -1,27 +1,49 @@
 {% extends "base.html" %}
 
-{% block content %}
-    <h1>Order Status</h1>
-    {% for order in orders %}
-    <p>Order ID: {{ order.id }} - Status: {{ order.status }}</p>
-        <ul>
-            {% for item in order.order_items.all %}
-                <li>{{ item.restaurant_menu.menu_item.name }} - Quantity: {{ item.quantity }} - Price: {{ item.total_price }} Baht</li>
-            {% endfor %}
-        </ul>
-        <p>Total Price: {{ order.total_price }} Baht</p>
-        <p>Status: {{ order.get_status_display }}</p>
+{% load static %}
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/order_status.css' %}">
+{% endblock %}
 
-        {% if order.status == 'waiting_for_payment' %}
-        <form action="{% url 'upload_payment_slip' order.id %}" method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            <label for="payment_slip">Upload Payment Slip:</label>
-            <input type="file" name="payment_slip" accept="image/*">
-            <button type="submit">Upload</button>
-        </form>
-        
-        {% elif order.status == 'paid' %}
-            <p style="color: green;">Payment Completed. Waiting for Approval...</p>
-        {% endif %}
-    {% endfor %}
+{% block content %}
+<h1>สถานะคำสั่งซื้อของคุณ</h1>
+
+{% for order in orders %}
+<div class="order-card">
+    <h2>ร้านอาหาร: {{ order.restaurant.restaurant_name }}</h2>
+    <p><strong>หมายเลขคำสั่งซื้อ:</strong> {{ order.id }}</p>
+    <p><strong>สถานะ:</strong> {{ order.get_status_display }}</p>
+
+    <h3>รายละเอียดเมนู:</h3>
+    <ul>
+        {% for item in order.order_items.all %}
+        <li>{{ item.restaurant_menu.food_name }} - จำนวน: {{ item.quantity }} - ราคา: {{ item.total_price }} บาท</li>
+        {% endfor %}
+    </ul>
+    <p><strong>ยอดรวม:</strong> {{ order.total_price }} บาท</p>
+
+    {% if order.status == 'waiting_for_payment' %}
+    <p style="color: orange;">สถานะ: รอการชำระเงิน</p>
+    <form action="{% url 'upload_payment_slip' order.id %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label for="payment_slip_{{ order.id }}">อัปโหลดหลักฐานการชำระเงิน:</label>
+        <input type="file" name="payment_slip" id="payment_slip_{{ order.id }}" accept="image/*">
+        <button type="submit" class="btn btn-primary">อัปโหลด</button>
+    </form>
+    {% elif order.status == 'paid' %}
+    <p style="color: blue;">อัพเดท: ร้านกำลังตรวจสอบการชำระเงิน</p>
+    {% elif order.status == 'cooking' %}
+    <p style="color: green;">อัพเดท: กำลังทำอาหาร</p>
+    {% elif order.status == 'completed' %}
+    <p style="color: darkgreen;">อัพเดท: อาหารเสร็จแล้ว</p>
+    {% endif %}
+</div>
+<hr>
+{% empty %}
+<p class="text-center">ไม่มีคำสั่งซื้อ</p>
+{% endfor %}
+
+<div class="actions mt-5">
+    <a href="{% url 'your_order' %}" class="btn-large">กลับไปสั่งซื้อ</a>
+</div>
 {% endblock %}
