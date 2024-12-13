@@ -17,7 +17,13 @@
         {% for restaurant in restaurants %}
         <div class="card restaurant-card">
             <h3>{{ restaurant.restaurant_name }}</h3>
+            
+            {% if restaurant.restaurant_picture %}
             <img src="{{ restaurant.restaurant_picture.url }}" alt="{{ restaurant.restaurant_name }}" class="restaurant-image">
+            {% else %}
+            <div class="no-image">ไม่มีรูป</div>
+            {% endif %}
+            
             <p>เวลาเปิด-ปิด: {{ restaurant.open_close_time }}</p>
             
             <a href="{% url 'menu_list' restaurant.id %}" class="button button-primary">ดูเมนู</a>
@@ -30,4 +36,3 @@
     </div>
 </div>
 {% endblock %}
-
