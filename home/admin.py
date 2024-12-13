@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import UserProfile ,RestaurantProfile ,Menu, PaymentMethod
+from .models import UserProfile ,RestaurantProfile ,Menu, PaymentMethod, Order, OrderItem
 # Register your models here.
 
 
@@ -17,8 +17,12 @@ class PaymentInline(admin.TabularInline):
 
 class RestaurantProfileAdmin(admin.ModelAdmin):
     inlines = [MenuInline, PaymentInline]
+    
+
 
 admin.site.register(UserProfile)
 admin.site.register(RestaurantProfile, RestaurantProfileAdmin)
 admin.site.register(Menu)
 admin.site.register(PaymentMethod)
+admin.site.register(Order)
+admin.site.register(OrderItem)

@@ -1,0 +1,74 @@
+.total-sales-container {
+    display: flex;
+    /* ใช้ Flexbox */
+    justify-content: center;
+    /* จัดให้อยู่ตรงกลางแนวนอน */
+    align-items: center;
+    /* จัดให้อยู่ตรงกลางแนวตั้ง (ถ้าจำเป็น) */
+    margin: 20px 0;
+    /* ระยะห่างด้านบนและล่าง */
+}
+
+.total-sales-box {
+    text-align: center;
+    /* จัดข้อความให้อยู่ตรงกลาง */
+    border: 3px solid red;
+    /* เส้นขอบสีแดง */
+    border-radius: 10px;
+    /* มุมโค้งมน */
+    padding: 15px 20px;
+    /* ระยะห่างภายใน */
+    background-color: #ffe6e6;
+    /* สีพื้นหลัง */
+    font-size: 24px;
+    /* ขนาดตัวอักษร */
+    font-weight: bold;
+    /* ตัวอักษรหนา */
+    display: inline-block;
+    /* ให้กรอบพอดีกับข้อความ */
+    width: fit-content;
+    /* ขนาดกรอบพอดีกับเนื้อหา */
+}
+
+/* หมายเลขคำสั่งซื้อ */
+.order-id {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+/* กรอบสำหรับข้อมูลคำสั่งซื้อ */
+.order-wrapper {
+    margin-bottom: 30px;
+}
+
+.order-card {
+    border: 2px solid #333;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.order-card p {
+    font-size: 18px;
+    color: red;
+}
+
+/* ตารางในคำสั่งซื้อ */
+.order-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.order-table thead th {
+    background-color: #cdcccc;
+    padding: 10px;
+    border-bottom: 2px solid #333;
+}
+
+.order-table tbody td {
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+}
