@@ -3,7 +3,7 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth.hashers import check_password
 from django.contrib import messages
 from django.urls import reverse
-from .models import UserProfile, RestaurantProfile, Menu, Order, OrderItem
+from .models import PaymentMethod, UserProfile, RestaurantProfile, Menu, Order, OrderItem
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
@@ -371,6 +371,6 @@ def order_confirmation(request):
 @login_required
 def order_status(request):
     orders = Order.objects.filter(user_profile=request.user.userprofile)
-    return render(request, "order_status.html", {"orders": orders})
+    return render(request, "order_status.html", {"orders": orders,})
 
 
