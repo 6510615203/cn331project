@@ -72,6 +72,7 @@ def restaurant_register(request):
         open_close_time = request.POST.get("open_close_time")
 
         # รับไฟล์รูปภาพจากฟอร์ม
+        restaurant_picture = None 
         if 'restaurant_picture' in request.FILES:
             restaurant_picture = request.FILES['restaurant_picture']
             fs = FileSystemStorage()
@@ -105,7 +106,6 @@ def add_menu(request):
         food_category = request.POST.get("food_category")
         about = request.POST.get("about")
         price = request.POST.get("price")
-        user_type = request.POST.get("user_type")
 
         # ค้นหา RestaurantProfile
         restaurant_profile = get_object_or_404(RestaurantProfile, restaurant_name=restaurant_name)
@@ -151,7 +151,7 @@ def register(request):
             messages.error(request, "ชื่อผู้ใช้นี้มีอยู่แล้วในระบบ")
             return render(request, "register.html", {"user_type": user_type})
 
-        profile_picture = request.FILES.get("profile_picture", None)
+        profile_picture = request.FILES.get("profile_picture", None)  # ตรวจสอบว่ามีการอัปโหลดรูปหรือไม่
     
         user = User.objects.create_user(username=username, password=password, email=email)
         profile = UserProfile.objects.create(
