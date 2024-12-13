@@ -64,11 +64,11 @@
                 <input type="hidden" name="restaurant_name" id="restaurant_name" value="{{ restaurant_name }}">
 
                 <div class="confirmbutton">
+
                     <div class="form-button">
-                        <form method="GET" action="{% url 'restaurant:edit_menu_payment'%}">
-                            <button type="submit" class="button">ยกเลิก</button>
-                        </form>
+                        <a href="{% url 'restaurant:edit_menu_payment' %}" class="button">ยกเลิก</a>
                     </div>
+
                     <div class="form-button">
                         <button type="submit" class="button">ยืนยัน</button>
                     </div>
@@ -76,6 +76,7 @@
             </div>
         </div>
     </form>
+
 </div>
 <script>
     // ฟังก์ชันที่ใช้แสดงรูปพรีวิวเมื่อมีการเลือกไฟล์
