@@ -16,6 +16,7 @@ urlpatterns = [
     path('add_payment', views.add_payment, name='add_payment'),
     path('edit_only_menu/', views.edit_only_menu, name='edit_only_menu'),
     #path('orders/', views.restaurant_order_list, name='restaurant_order_list'),
+    path('edit_only_payment/', views.edit_only_payment, name='edit_only_payment'),
     path('order_confirmation/<int:order_id>/', views.order_confirmation, name='order_confirmation'),
     path('sales_report/', views.sales_report, name='sales_report'),
     #path('delete_menu', views.delete_menu, name='delete_menu'),

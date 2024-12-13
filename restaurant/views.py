@@ -330,5 +330,79 @@ def sales_report(request):
         'end_date': end_date,
     })
 
+def add_payment(request):
+    restaurant_profile = RestaurantProfile.objects.get(user_profile__user=request.user)
+  
+    error_message = None
 
+    if request.method == 'POST':
+        bank_name = request.POST.get('bank_name', '').strip()
+        account_number = request.POST.get('account_number', '').strip()
+
+        if not bank_name or not account_number:
+            error_message = "กรุณากรอกชื่อธนาคารและเลขบัญชีให้ครบถ้วน"
+        else:
+
+            PaymentMethod.objects.create(
+                restaurant_profile=restaurant_profile,
+                bank_name=bank_name,
+                account_number=account_number
+            )
+         
+            #return redirect('restaurant:add_payment')
+            return redirect('restaurant:edit_menu_payment')
+
+
+    payment_methods = PaymentMethod.objects.filter(restaurant_profile=restaurant_profile)
+    
+
+    return render(request, "add_payment.html", {
+        'payment_methods': payment_methods,
+        'error_message': error_message
+    })
+
+def edit_only_payment(request):
+    username = request.user.username
+    restaurant = get_object_or_404(RestaurantProfile, user_profile__user__username=username)
+    is_editing = request.GET.get("edit")
+
+    payment_id = None
+    payment_item = None
+
+    if request.method == "POST":
+        payment_id = request.POST.get("payment_id")
+        print("POST data:", request.POST)
+        print("Payment ID received:", payment_id)
+        if payment_id:
+            payment_item = get_object_or_404(PaymentMethod, id=payment_id)
+            if request.POST.get('delete_payment_method') == 'true':
+                payment_item.delete()
+                return redirect('restaurant:edit_menu_payment')
+            if "bank_name" in request.POST:
+                bank_name = request.POST.get("bank_name").strip()
+                payment_item.bank_name = bank_name
+            elif "account_number" in request.POST:
+                account_number = request.POST.get("account_number", "").strip()
+                payment_item.account_number = account_number
+            payment_item.save()
+
+            return render(request, "edit_only_payment.html", {"restaurant": restaurant, "payment_item": payment_item, "payment_id": payment_id})
+
+    elif request.method == "GET":
+        payment_id = request.GET.get("payment_id")
+        if payment_id:
+            payment_item = get_object_or_404(PaymentMethod, id=payment_id)
+    
+    
+
+    return render(
+        request,
+        "edit_only_payment.html",
+        {
+            "restaurant": restaurant,
+            "payment_item": payment_item,
+            "payment_id": payment_id,
+            "is_editing": is_editing,
+        },
+    )
 

@@ -83,6 +83,15 @@
                             <tr>
                                 <td>{{ payment.bank_name }}</td>
                                 <td>{{ payment.account_number }}</td>
+                                <td>
+                                    <form action="{% url 'restaurant:edit_only_payment' %}" method="POST">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="payment_id" value="{{ payment.id }}">
+                                        <div class="enroll-container">
+                                            <button type="submit" class="btn btn-primary">edit</button>
+                                        </div>
+                                    </form>
+                                </td>
                             </tr>
                             {% endfor %}
                         </tbody>
