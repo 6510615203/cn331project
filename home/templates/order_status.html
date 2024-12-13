@@ -1,58 +1,64 @@
 {% extends "base.html" %}
-
 {% load static %}
+
+{% block title %}
+<title>Your Order Status</title>
+{% endblock %}
+
 {% block style %}
 <link rel="stylesheet" type="text/css" href="{% static 'css/order_status.css' %}">
 {% endblock %}
 
 {% block content %}
-<h1>สถานะคำสั่งซื้อของคุณ</h1>
+<div class="container mt-5">
+    <h1 class="header">สถานะคำสั่งซื้อของคุณ</h1>
 
-{% for order in orders %}
-<div class="order-card">
-    <h2>ร้านอาหาร: {{ order.restaurant.restaurant_name }}</h2>
-    <p><strong>หมายเลขคำสั่งซื้อ:</strong> {{ order.id }}</p>
-    <p><strong>สถานะ:</strong> {{ order.get_status_display }}</p>
+    {% for order in orders %}
+    <div class="order-card">
+        <h2>ร้านอาหาร : {{ order.restaurant.restaurant_name }}</h2>
+        <p><strong>หมายเลขคำสั่งซื้อ :</strong> {{ order.id }}</p>
+        <p><strong>สถานะ :</strong> {{ order.get_status_display }}</p>
 
-    <h3>รายละเอียดเมนู:</h3>
-    <ul>
-        {% for item in order.order_items.all %}
-        <li>{{ item.restaurant_menu.food_name }} - จำนวน: {{ item.quantity }} - ราคา: {{ item.total_price }} บาท</li>
-        {% endfor %}
-    </ul>
-    <p><strong>ยอดรวม:</strong> {{ order.total_price }} บาท</p>
+        <h3>รายละเอียดเมนู :</h3>
+        <ul>
+            {% for item in order.order_items.all %}
+            <li>{{ item.restaurant_menu.food_name }} - จำนวน : {{ item.quantity }} - ราคา: {{ item.total_price }} บาท</li>
+            {% endfor %}
+        </ul>
+        <p><strong>ยอดรวม :</strong> {{ order.total_price }} บาท</p>
 
-    <h3>วิธีการชำระเงิน:</h3>
-    <ul>
-        {% for payment in order.restaurant.payment.all %}
-        <li>ธนาคาร: {{ payment.bank_name }} - เลขบัญชี: {{ payment.account_number }}</li>
-        {% empty %}
-        <li>ไม่มีข้อมูลการชำระเงิน</li>
-        {% endfor %}
-    </ul>
+        <h3>วิธีการชำระเงิน :</h3>
+        <ul>
+            {% for payment in order.restaurant.payment.all %}
+            <li>ธนาคาร : {{ payment.bank_name }} - เลขบัญชี : {{ payment.account_number }}</li>
+            {% empty %}
+            <li>ไม่มีข้อมูลการชำระเงิน</li>
+            {% endfor %}
+        </ul>
 
-    {% if order.status == 'waiting_for_payment' %}
-    <p style="color: orange;">สถานะ: รอการชำระเงิน</p>
-    <form action="{% url 'upload_payment_slip' order.id %}" method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        <label for="payment_slip_{{ order.id }}">อัปโหลดหลักฐานการชำระเงิน:</label>
-        <input type="file" name="payment_slip" id="payment_slip_{{ order.id }}" accept="image/*">
-        <button type="submit" class="btn btn-primary">อัปโหลด</button>
-    </form>
-    {% elif order.status == 'paid' %}
-    <p style="color: blue;">อัพเดท: ร้านกำลังตรวจสอบการชำระเงิน</p>
-    {% elif order.status == 'cooking' %}
-    <p style="color: green;">อัพเดท: กำลังทำอาหาร</p>
-    {% elif order.status == 'completed' %}
-    <p style="color: darkgreen;">อัพเดท: อาหารเสร็จแล้ว</p>
-    {% endif %}
-</div>
-<hr>
-{% empty %}
-<p class="text-center">ไม่มีคำสั่งซื้อ</p>
-{% endfor %}
+        {% if order.status == 'waiting_for_payment' %}
+        <p style="color: orange;">สถานะ: รอการชำระเงิน</p>
+        <form action="{% url 'upload_payment_slip' order.id %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <label for="payment_slip_{{ order.id }}">อัปโหลดหลักฐานการชำระเงิน:</label>
+            <input type="file" name="payment_slip" id="payment_slip_{{ order.id }}" accept="image/*">
+            <button type="submit" class="btn btn-primary">อัปโหลด</button>
+        </form>
+        {% elif order.status == 'paid' %}
+        <p style="color: blue;">อัพเดท: ร้านกำลังตรวจสอบการชำระเงิน</p>
+        {% elif order.status == 'cooking' %}
+        <p style="color: green;">อัพเดท: กำลังทำอาหาร</p>
+        {% elif order.status == 'completed' %}
+        <p style="color: darkgreen;">อัพเดท: อาหารเสร็จแล้ว</p>
+        {% endif %}
+    </div>
+    <hr>
+    {% empty %}
+    <p class="text-center">ไม่มีคำสั่งซื้อ</p>
+    {% endfor %}
 
-<div class="actions mt-5">
-    <a href="{% url 'your_order' %}" class="btn-large">กลับไปสั่งซื้อ</a>
+    <div class="actions mt-5">
+        <a href="{% url 'your_order' %}" class="btn-large">กลับไปสั่งซื้อ</a>
+    </div>
 </div>
 {% endblock %}
