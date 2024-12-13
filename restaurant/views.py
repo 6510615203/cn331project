@@ -13,11 +13,31 @@ from django.core.files.storage import FileSystemStorage
 from home.models import Order, UserProfile
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
+from django.db.models import Count
 # Create your views here.
 def index(request):
     username = request.user.username
-    restaurant = get_object_or_404(RestaurantProfile, user_profile__user__username=username)      
-    return render(request, "index_restaurant.html",  {'restaurant': restaurant})
+    restaurant = get_object_or_404(RestaurantProfile, user_profile__user__username=username)
+    order_counts = (
+        Order.objects.filter(restaurant=restaurant)
+        .values('status')
+        .annotate(count=Count('id'))
+    )
+
+    waiting_payment_counts = Order.objects.filter(restaurant=restaurant, status='waiting_for_payment').count()
+    cooking_counts = Order.objects.filter(restaurant=restaurant, status='cooking').count()
+    completed_counts = Order.objects.filter(restaurant=restaurant, status='completed').count()
+
+    context = {
+        'restaurant': restaurant,
+        'order_counts': order_counts,
+        'waiting_payment_counts': waiting_payment_counts,
+        'cooking_counts': cooking_counts,
+        'completed_counts': completed_counts
+
+    }
+
+    return render(request, "index_restaurant.html",  context)
 
 def manage(request): 
     username = request.user.username
