@@ -1,3 +1,4 @@
+from datetime import timezone
 from email.utils import parsedate
 from django.shortcuts import render,redirect, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse
@@ -13,11 +14,31 @@ from django.core.files.storage import FileSystemStorage
 from home.models import Order, UserProfile
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
+from django.db.models import Count
 # Create your views here.
 def index(request):
     username = request.user.username
-    restaurant = get_object_or_404(RestaurantProfile, user_profile__user__username=username)      
-    return render(request, "index_restaurant.html",  {'restaurant': restaurant})
+    restaurant = get_object_or_404(RestaurantProfile, user_profile__user__username=username)
+    order_counts = (
+        Order.objects.filter(restaurant=restaurant)
+        .values('status')
+        .annotate(count=Count('id'))
+    )
+
+    waiting_payment_counts = Order.objects.filter(restaurant=restaurant, status='waiting_for_payment').count()
+    cooking_counts = Order.objects.filter(restaurant=restaurant, status='cooking').count()
+    completed_counts = Order.objects.filter(restaurant=restaurant, status='completed').count()
+
+    context = {
+        'restaurant': restaurant,
+        'order_counts': order_counts,
+        'waiting_payment_counts': waiting_payment_counts,
+        'cooking_counts': cooking_counts,
+        'completed_counts': completed_counts
+
+    }
+
+    return render(request, "index_restaurant.html",  context)
 
 def manage(request): 
     username = request.user.username
@@ -115,6 +136,7 @@ def add_menu_res(request):
     restaurant = get_object_or_404(RestaurantProfile, user_profile__user__username=username)
     restaurant_name = restaurant.restaurant_name
     food_categories = RestaurantProfile.Foodcate.choices
+    
     if request.method == "POST":
         food_name = request.POST.get("food_name")
         food_category = request.POST.get("food_category")
@@ -122,7 +144,7 @@ def add_menu_res(request):
         price = request.POST.get("price")
         user_type = request.POST.get("user_type")
         
-        
+        menu_picture = None 
         # รับไฟล์รูปภาพจากฟอร์ม
         if 'menu_picture' in request.FILES:
             menu_picture = request.FILES['menu_picture']
@@ -196,6 +218,10 @@ def edit_only_menu(request):
         print("Menu ID received:", menu_id)
         if menu_id:
             menu_item = get_object_or_404(Menu, id=menu_id)
+            if request.POST.get('delete_menu') == 'true':
+                menu_item.delete()
+                messages.success(request, f"Menu '{menu_item.food_name}' deleted successfully.")
+                return redirect('restaurant:edit_menu_payment')
             if "food_name" in request.POST:
                 food_name = request.POST.get("food_name").strip()
                 menu_item.food_name = food_name
@@ -215,6 +241,7 @@ def edit_only_menu(request):
                 menu_item.menu_picture = menu_picture
                 messages.success(request, "Menu picture updated successfully!")
             menu_item.save()
+
             return render(request, "edit_only_menu.html", {"restaurant": restaurant, "menu_item": menu_item, "menu_id": menu_id})
             
     
@@ -222,6 +249,7 @@ def edit_only_menu(request):
         menu_id = request.GET.get("menu_id")
         if menu_id:
             menu_item = get_object_or_404(Menu, id=menu_id)
+    
     
 
     return render(
@@ -301,3 +329,80 @@ def sales_report(request):
         'start_date': start_date,
         'end_date': end_date,
     })
+
+def add_payment(request):
+    restaurant_profile = RestaurantProfile.objects.get(user_profile__user=request.user)
+  
+    error_message = None
+
+    if request.method == 'POST':
+        bank_name = request.POST.get('bank_name', '').strip()
+        account_number = request.POST.get('account_number', '').strip()
+
+        if not bank_name or not account_number:
+            error_message = "กรุณากรอกชื่อธนาคารและเลขบัญชีให้ครบถ้วน"
+        else:
+
+            PaymentMethod.objects.create(
+                restaurant_profile=restaurant_profile,
+                bank_name=bank_name,
+                account_number=account_number
+            )
+         
+            #return redirect('restaurant:add_payment')
+            return redirect('restaurant:edit_menu_payment')
+
+
+    payment_methods = PaymentMethod.objects.filter(restaurant_profile=restaurant_profile)
+    
+
+    return render(request, "add_payment.html", {
+        'payment_methods': payment_methods,
+        'error_message': error_message
+    })
+
+def edit_only_payment(request):
+    username = request.user.username
+    restaurant = get_object_or_404(RestaurantProfile, user_profile__user__username=username)
+    is_editing = request.GET.get("edit")
+
+    payment_id = None
+    payment_item = None
+
+    if request.method == "POST":
+        payment_id = request.POST.get("payment_id")
+        print("POST data:", request.POST)
+        print("Payment ID received:", payment_id)
+        if payment_id:
+            payment_item = get_object_or_404(PaymentMethod, id=payment_id)
+            if request.POST.get('delete_payment_method') == 'true':
+                payment_item.delete()
+                return redirect('restaurant:edit_menu_payment')
+            if "bank_name" in request.POST:
+                bank_name = request.POST.get("bank_name").strip()
+                payment_item.bank_name = bank_name
+            elif "account_number" in request.POST:
+                account_number = request.POST.get("account_number", "").strip()
+                payment_item.account_number = account_number
+            payment_item.save()
+
+            return render(request, "edit_only_payment.html", {"restaurant": restaurant, "payment_item": payment_item, "payment_id": payment_id})
+
+    elif request.method == "GET":
+        payment_id = request.GET.get("payment_id")
+        if payment_id:
+            payment_item = get_object_or_404(PaymentMethod, id=payment_id)
+    
+    
+
+    return render(
+        request,
+        "edit_only_payment.html",
+        {
+            "restaurant": restaurant,
+            "payment_item": payment_item,
+            "payment_id": payment_id,
+            "is_editing": is_editing,
+        },
+    )
+

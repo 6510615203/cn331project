@@ -18,28 +18,40 @@
         <div class="nav-con">
             <p1>Status</p1>
             <div class="step">
+
                 <div class="statusbox">
-                    <p2>0</p2> <!-- รับออเดอร์จากลูกค้า -->
+                    <p2>{{waiting_payment_counts}}</p2>
                     <p>ออเดอร์เข้าใหม่</p>
                 </div>
+
                 <div class="statusbox">
-                    <p2>0</p2> <!-- รับออเดอร์จากลูกค้า -->
+                    <p2>{{cooking_counts}}</p2>
                     <p>ที่กำลังทำ</p>
                 </div>
+
                 <div class="statusbox">
-                    <p2>0</p2> <!-- รับออเดอร์จากลูกค้า -->
+                    <p2>{{completed_counts}}</p2>
                     <p>ส่งมอบเสร็จสิ้น</p>
                 </div>
+
                 <div class="statusbox">
-                    <p2>0</p2> <!-- รับออเดอร์จากลูกค้า -->
+                    <p2>0</p2>
                     <p>รีวิวร้านของฉัน</p>
                 </div>
+
+
+
             </div>
         </div>
         <div class="restaurantbutton">
             <div class="res-button">
                 <form method="GET" action="{% url 'restaurant:manage'%}">
                     <button type="submit" class="button">จัดการร้านอาหาร</button>
+                </form>
+            </div>
+            <div class="res-button">
+                <form method="GET" action="{% url 'restaurant:order_list'%}">
+                    <button type="submit" class="button">จัดการออเดอร์</button>
                 </form>
             </div>
             <div class="res-button">
