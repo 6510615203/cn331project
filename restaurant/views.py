@@ -1,3 +1,4 @@
+from datetime import timezone
 from email.utils import parsedate
 from django.shortcuts import render,redirect, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse
@@ -135,6 +136,7 @@ def add_menu_res(request):
     restaurant = get_object_or_404(RestaurantProfile, user_profile__user__username=username)
     restaurant_name = restaurant.restaurant_name
     food_categories = RestaurantProfile.Foodcate.choices
+    
     if request.method == "POST":
         food_name = request.POST.get("food_name")
         food_category = request.POST.get("food_category")
@@ -142,7 +144,7 @@ def add_menu_res(request):
         price = request.POST.get("price")
         user_type = request.POST.get("user_type")
         
-        
+        menu_picture = None 
         # รับไฟล์รูปภาพจากฟอร์ม
         if 'menu_picture' in request.FILES:
             menu_picture = request.FILES['menu_picture']
