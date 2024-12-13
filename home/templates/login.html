@@ -12,6 +12,7 @@
 <div class="container">
     <h1>Login for start your meal !</h1>
     <div class="login-container">
+        <!-- 
         {% if messages %}
         {% for message in messages %}
         <div class="alert alert-warning" role="alert">
@@ -19,6 +20,7 @@
         </div>
         {% endfor %}
         {% endif %}
+        -->
         <form action="/login/" method="post">
             {% csrf_token %}
             <div class="input-group">
