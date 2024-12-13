@@ -1,0 +1,105 @@
+body {
+    background-color: #ffffff;
+    margin: 0;
+    padding: 0;
+}
+
+.header {
+    color: #AF1F1F;
+    font-family: inherit;
+    font-size: 30px;
+}
+
+.order-summary {
+    background-color: #f5f5f5;
+    border-radius: 20px;
+    padding: 20px 40px 30px 50px;
+    margin-top: 20px;
+    font-family: inherit;
+}
+
+.order-summary h3 {
+    color: #AF1F1F;
+    font-family: inherit;
+}
+
+.order-summary li {
+    border: #AF1F1F;
+    font-family: inherit;
+}
+
+.information {
+    gap: 50px;
+    font-family: inherit;
+}
+
+.information button {
+    width: 60px;
+    height: 100%;
+    background-color: #FFFAB7;
+    color: black;
+    text-decoration: none;
+    border-radius: 30px;
+    font-size: 12px;
+    font-weight: normal;
+    text-align: center;
+    cursor: pointer;
+    margin-bottom: 10px;
+    margin-left: 10px;
+}
+
+.information label {
+    margin-left: 20px;
+}
+
+.information input[type="datetime-local"],
+.information select {
+    width: 180px;
+    height: 25px;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 12px;
+    box-sizing: border-box; 
+}
+
+.information input[type="datetime-local"]:focus,
+.information select:focus {
+    border-color: #AF1F1F;
+    outline: none;
+}
+
+.button:hover {
+    background-color: #AF1F1F;
+    color: white;
+}
+
+.actions {
+    display: flex;
+    gap: 50px;
+    margin-top: 50px;
+    margin-bottom: 50px;
+    justify-content: center;
+    font-family: 'Kanit';
+}
+
+.actions a {
+    width: 200px; 
+    background-color: #AF1F1F;
+    border-radius: 20px;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    padding: 10px;
+    text-align: center;
+    display: flex;
+    flex-direction: column; 
+    justify-content: space-between;
+    height: 100%; 
+    text-decoration: none;
+    color: #ffffff;
+}
+
+.actions a:hover {
+    background-color: #fdf4c3;
+    color: black;
+}

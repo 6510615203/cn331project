@@ -1,66 +1,73 @@
 {% extends "base_restaurant.html" %}
+{% load static %}
 
 {% block title %}
 <title>รายการคำสั่งซื้อร้านอาหาร</title>
 {% endblock %}
 
+{% block style %}
+<link rel="stylesheet" type="text/css" href="{% static 'css/order_list.css' %}">
+{% endblock %}
+
 {% block content %}
-<h1>รายการคำสั่งซื้อของร้าน {{ restaurant.restaurant_name }}</h1>
+<div class="container mt-5">
+    <h1 class="header">รายการคำสั่งซื้อของร้าน {{ restaurant.restaurant_name }}</h1>
 
-<div class="orders-container">
-    {% for order in orders %}
-    <div class="order-card">
-        <p><strong>หมายเลขคำสั่งซื้อ:</strong> {{ order.id }}</p>
-        <p><strong>ชื่อลูกค้า:</strong> {{ order.user_profile.name }}</p>
-        <p><strong>เวลาที่มารับ:</strong> 
-            {% if order.pickup_time %}
-                {{ order.pickup_time|date:"d M Y, H:i" }}
-            {% else %}
-                <em>ยังไม่ได้เลือกเวลา</em>
+    <div class="orders-container">
+        {% for order in orders %}
+        <div class="order-card">
+            <p><strong>หมายเลขคำสั่งซื้อ :</strong> {{ order.id }}</p>
+            <p><strong>ชื่อลูกค้า :</strong> {{ order.user_profile.name }}</p>
+            <p><strong>เวลาที่มารับ :</strong> 
+                {% if order.pickup_time %}
+                    {{ order.pickup_time|date:"d M Y, H:i" }}
+                {% else %}
+                    <em>ยังไม่ได้เลือกเวลา</em>
+                {% endif %}
+            </p>
+            <p><strong>สถานะ :</strong> {{ order.get_status_display }}</p>
+
+            <h3>เมนูที่สั่ง :</h3>
+            <ul>
+                {% for item in order.order_items.all %}
+                <li>{{ item.restaurant_menu.food_name }} - จำนวน : {{ item.quantity }} - ราคา : {{ item.total_price }} บาท</li>
+                {% endfor %}
+            </ul>
+
+            <p><strong>ยอดรวม :</strong> {{ order.total_price }} บาท</p>
+
+            {% if order.payment_slip %}
+            <p><strong>สลิปการชำระเงิน :</strong></p>
+            <img src="{{ order.payment_slip.url }}" alt="Payment Slip" style="max-width: 150px; height: auto; border: 1px solid #ccc; border-radius: 5px; margin-top: 10px;">
             {% endif %}
-        </p>
-        <p><strong>สถานะ:</strong> {{ order.get_status_display }}</p>
-
-        <h3>เมนูที่สั่ง:</h3>
-        <ul>
-            {% for item in order.order_items.all %}
-            <li>{{ item.restaurant_menu.food_name }} - จำนวน: {{ item.quantity }} - ราคา: {{ item.total_price }} บาท</li>
-            {% endfor %}
-        </ul>
-
-        <p><strong>ยอดรวม:</strong> {{ order.total_price }} บาท</p>
-
-        {% if order.payment_slip %}
-        <p><strong>สลิปการชำระเงิน:</strong></p>
-        <img src="{{ order.payment_slip.url }}" alt="Payment Slip" style="max-width: 150px; height: auto; border: 1px solid #ccc; border-radius: 5px; margin-top: 10px;">
-        {% endif %}
 
 
 
-        <div class="order-actions">
-            {% if order.status == 'waiting_for_payment' %}
-            <form method="POST" action="">
-                {% csrf_token %}
-                <input type="hidden" name="order_id" value="{{ order.id }}">
-                <button type="submit" name="action" value="confirm_payment" class="btn btn-primary">ยืนยันการชำระเงิน</button>
-            </form>
-            {% elif order.status == 'paid' %}
-            <form method="POST" action="">
-                {% csrf_token %}
-                <input type="hidden" name="order_id" value="{{ order.id }}">
-                <button type="submit" name="action" value="mark_in_progress" class="btn btn-warning">กำลังทำอาหาร</button>
-            </form>
-            {% elif order.status == 'cooking' %}
-            <form method="POST" action="">
-                {% csrf_token %}
-                <input type="hidden" name="order_id" value="{{ order.id }}">
-                <button type="submit" name="action" value="mark_completed" class="btn btn-success">ออร์เดอร์เสร็จสมบูรณ์</button>
-            </form>
-            {% endif %}
+            <div class="order-actions">
+                {% if order.status == 'waiting_for_payment' %}
+                <form method="POST" action="">
+                    {% csrf_token %}
+                    <input type="hidden" name="order_id" value="{{ order.id }}">
+                    <button type="submit" name="action" value="confirm_payment" class="btn btn-primary">ยืนยันการชำระเงิน</button>
+                </form>
+                {% elif order.status == 'paid' %}
+                <form method="POST" action="">
+                    {% csrf_token %}
+                    <input type="hidden" name="order_id" value="{{ order.id }}">
+                    <button type="submit" name="action" value="mark_in_progress" class="btn btn-warning">กำลังทำอาหาร</button>
+                </form>
+                {% elif order.status == 'cooking' %}
+                <form method="POST" action="">
+                    {% csrf_token %}
+                    <input type="hidden" name="order_id" value="{{ order.id }}">
+                    <button type="submit" name="action" value="mark_completed" class="btn btn-success">ออร์เดอร์เสร็จสมบูรณ์</button>
+                </form>
+                {% endif %}
+            </div>
         </div>
+        {% empty %}
+        <p class="text-center">ไม่พบคำสั่งซื้อ</p>
+        {% endfor %}
     </div>
-    {% empty %}
-    <p class="text-center">ไม่พบคำสั่งซื้อ</p>
-    {% endfor %}
 </div>
 {% endblock %}
