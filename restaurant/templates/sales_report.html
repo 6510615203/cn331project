@@ -11,7 +11,7 @@
 
 {% block content %}
 <div class="container">
-    <h1>รายงานการขายสำหรับร้าน {{ restaurant.restaurant_name }}23</h1>
+    <h1>รายงานการขายสำหรับร้าน {{ restaurant.restaurant_name }}</h1>
     <form method="GET" class="date-filter-form">
         <label for="start_date">เริ่มวันที่:</label>
         <input type="date" id="start_date" name="start_date" value="{{ start_date|date:'Y-m-d' }}">
