@@ -5,12 +5,11 @@ body {
 }
 
 .welcometitle {
-    text-align:left;
-    margin-top: 100px;
+    text-align: left;
+    margin-top: 50px;
     font-family: inherit;
     color: #AF1F1F;
     font-weight: 1000;
-    margin-top: 0px;
     margin-left: 20px;
 }
 
@@ -29,7 +28,7 @@ status {
 .statuscontainer {
     width: 100%;
     height: 230px;
-    margin: 0 auto;
+    margin-top: 5%;
     padding: 0 15px;
     background-color: #ffffff;
 }
@@ -86,11 +85,12 @@ status {
 }
 
 .restaurantbutton {
-    justify-content: center;
+    justify-content: flex-end;
     align-items: center;
     display: flex;
-    margin-top: 5%;
-    gap: 10%;
+    margin-top: 10%;
+    gap: 5%;
+    margin-right: 7%;
 }
 
 .restaurantbutton button {

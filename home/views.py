@@ -388,7 +388,7 @@ def order_confirmation(request):
     return redirect('order_status')
 
 
-@login_required
+
 @login_required
 def order_status(request):
     user_profile = request.user.userprofile

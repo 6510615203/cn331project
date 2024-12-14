@@ -5,91 +5,41 @@ body {
 
 }
 
+h1 {
+    color: #AF1F1F;
+    font-size: 30px;
+}
+
+.image-container label {
+    width: 100%;
+    height: 30px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 20px;
+    font-size: 18px;
+    color: #fff;
+    background-color: #AF1F1F;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
 .title {
     display: flex;
     justify-content: center;
     text-align: center;
+    color: #AF1F1F;
+    font-size: 30px;
 }
 
-.title h2 {
-    color: #AF1F1F;
-    font-size: 20px;
-    margin-top: 0px;
-    padding: 15px;
-    width: 120px;
-    display: inline-block;
-    font-family: inherit;
-    background-color: #FFFAB7;
-    border-radius: 100px;
-    text-align: center;
-}
 
 .signup-container {
     text-align: center;
     margin-top: 30px;
-}
-
-.stepline {
-    width: 1000%;
-    height: 10px;
-    background-color: #FFFAB7;
-    display: block;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    top: 22px;
-    left: 0;
-}
-
-.steplinecustomer {
-    width: 100%;
-    height: 10px;
-    background-color: #FFFAB7;
-    display: block;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    top: 22px;
-    left: 0;
-}
-
-.step {
-    display: flex;
-    gap: 120px;
-    justify-content: center;
-    align-items: center;
-    margin-top: 0;
-    position: relative;
-    top: 0px;
-    left: 0;
-}
-
-.circleiconnow {
-    width: 25px;
-    height: 25px;
-    background-color: #AF1F1F;
-    border-radius: 50%;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 5px;
-    margin-left: 40%;
-}
-
-.circleicon {
-    width: 25px;
-    height: 25px;
-    background-color: #FFFAB7;
-    border-radius: 50%;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 5px;
-    margin-left: 40%;
-}
-
-.stepicon {
-    display: block;
-    align-items: center;
-
 }
 
 .form-section {

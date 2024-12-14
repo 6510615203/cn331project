@@ -227,6 +227,33 @@ body {
     color: #000000;
 }
 
+.image-container label {
+    width: 90%;
+    height: 30px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 20px;
+    font-size: 18px;
+    color: #fff;
+    background-color: #AF1F1F;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.image-container label:hover {
+    background-color: #fdf4c3;
+    color: black;
+}
+
+.image-container label:active {
+    background-color: #3e8e41;
+}
+
 .signup-options {
     display: flex;
     justify-content: center;
@@ -295,7 +322,7 @@ body {
     justify-content: left;
     align-items: center;
     position: absolute;
-    top: 35%;
+    top: 30%;
     left: 25%;
 }
 
@@ -391,8 +418,10 @@ body {
     appearance: none;
     cursor: pointer;
     outline: none;
+
+
     text-align: center;
-    
+
     font-family: inherit;
 }
 
