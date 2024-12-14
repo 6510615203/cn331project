@@ -200,7 +200,7 @@ body {
 }
 
 .image-container label {
-    width: 60%;
+    width: 90%;
     height: 30px;
     display: inline-flex;
     justify-content: center;
@@ -224,10 +224,6 @@ body {
 
 .image-container label:active {
     background-color: #3e8e41;
-}
-
-.form-title-optional label {
-    font-size: 16px;
 }
 
 .signup-options {

@@ -294,11 +294,21 @@ body {
 }
 
 .image-container label {
+    width: 50%;
+    height: 30px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px 20px;
+    font-size: 18px;
+    color: #fff;
     background-color: #AF1F1F;
-    width: 200px;
-    height: 50px;
-    border-radius: 20px;
-    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: center;
+    text-decoration: none;
+    transition: background-color 0.3s;
 }
 
 .image-container label:hover {
@@ -327,13 +337,13 @@ body {
 
 .savebutton {
     background-color: #AF1F1F;
-    width: 200px;
+    width: 180px;
     height: 50px;
-    border-radius: 20px;
+    border-radius: 10px;
     color: white;
     cursor: pointer;
     border: none;
-    font-size: 20px;
+    font-size: 18px;
     font-family: inherit;
     margin-top: 0px;
 }
