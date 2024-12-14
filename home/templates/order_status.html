@@ -16,7 +16,7 @@
     <!-- ฟอร์มเลือกวันที่ -->
     <div class="filter-container mb-4">
         <form method="GET" action="{% url 'order_status' %}">
-            <label for="selected_date">เลือกวันที่:</label>
+            <label for="selected_date">เลือกวันที่ :</label>
             <input type="date" id="selected_date" name="selected_date" value="{{ selected_date|date:'Y-m-d' }}">
             <button type="submit" class="btn btn-primary">ค้นหา</button>
         </form>
@@ -64,14 +64,13 @@
                 <div class="slip">
                     <form action="{% url 'upload_payment_slip' order.id %}" method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
-                        <label for="payment_slip_{{ order.id }} class="
-                            custom-upload-label">อัปโหลดหลักฐานการชำระเงิน:</label>
+                        <label for="payment_slip_{{ order.id }} class="custom-upload-label">อัปโหลดหลักฐานการชำระเงิน :</label>
                         <input type="file" name="payment_slip" id="payment_slip_{{ order.id }}" accept="image/*"
                             class="custom-file-input">
                         <button type="submit" class="btn btn-primary">อัปโหลด</button>
                     </form>
                 </div>
-                {% elif order.status == 'paid' %}
+                {% elif order.status == 'waiting_for_approve' %}
                 <p style="color: blue;">อัพเดท: ร้านกำลังตรวจสอบการชำระเงิน</p>
                 {% elif order.status == 'cooking' %}
                 <p style="color: green;">อัพเดท: กำลังทำอาหาร</p>

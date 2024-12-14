@@ -10,7 +10,7 @@
 
 {% block content %}
 
-<h1>แก้ไขเมนูได้ที่นี่</h1>
+<h1 class="title">แก้ไขเมนูได้ที่นี่</h1>
 <div class="container mt-5 signup-container">
     <div class="position">
         <div class="image-container" style="display: flex; flex-direction: column; align-items: center;">
@@ -27,9 +27,7 @@
                     {% csrf_token %}
                     <input type="hidden" name="menu_id" value="{{ menu_item.id }}">
                     <input type="file" id="menu_picture" name="menu_picture" onchange="previewImage();" style="display: none;" required>
-                    <label for="menu_picture" class="form-title" style="margin-top: 10px; cursor: pointer; background-color: #d9534f; color: white; padding: 10px 20px; border-radius: 5px;">
-                        Choose a new logo
-                    </label>
+                    <label for="menu_picture" class="form-title" style="margin-top: 50px;">Choose a new logo</label>
                     <button type="submit" class="savebutton" style="margin-top: 10px;">Save</button>
                 </form>
             {% else %}

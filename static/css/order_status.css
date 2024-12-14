@@ -3,7 +3,8 @@ body {
     margin: 0;
     padding: 0;
 }
-.container mt-5{
+
+.container mt-5 {
     font-family: inherit;
 }
 
@@ -12,6 +13,52 @@ body {
     font-family: inherit;
     font-size: 30px;
 }
+
+.filter-container input {
+    color: black;
+    justify-content: center;
+    align-items: center;
+    font-family: inherit;
+    border-radius: 7px;
+    background-color: #f0f0f0;
+    border: none;
+    font-weight: 200;
+    font-size: 14px;
+    width: 150px;
+    height: 30px;
+    margin-left: 5px;
+    margin-right: 5px;
+    appearance: none;
+    cursor: pointer;
+    text-align: center;
+}
+
+.filter-container input:hover {
+    background-color: #fdf4c3;
+}
+
+.filter-container button {
+    width: 60px;
+    height: 30px;
+    background-color: #FFFAB7;
+    color: black;
+    text-decoration: none;
+    border-radius: 30px;
+    border: none;
+    font-size: 12px;
+    font-weight: normal;
+    text-align: center;
+    cursor: pointer;
+    margin-bottom: 10px;
+    margin-left: 10px;
+    font-family: inherit;
+}
+
+.filter-container button:hover {
+    background-color: #AF1F1F;
+    color: white;
+}
+
 /******************************กริดหลัก************************************/
 .grid-status {
     display: grid;
@@ -22,153 +69,173 @@ body {
     background-color: #f0f0f0;
     border-radius: 25px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    padding: 10px ;
+    padding: 10px;
     border: 2px solid #333;
 
 }
 
 /******************************หมายเลขคำสั่งซื้อ********************************/
-.number{
+.number {
     width: 100%;
     margin: 0 auto;
-    border-right: 2px solid #9c9c9c; 
+    border-right: 2px solid #9c9c9c;
 }
-.number p{
+
+.number p {
     font-size: 18px;
-    margin: 10px 0; 
+    margin: 10px 0;
     padding-top: 10px;
-    
+
 }
+
 .number p strong {
-    font-weight: bold; 
-    color: #333; 
+    font-weight: bold;
+    color: #333;
 }
+
 /*********************************สถานะ******************************/
-.status{
+.status {
     width: 100%;
     margin: 0 auto;
     text-align: center;
-    border-right: 2px solid #9c9c9c; 
+    border-right: 2px solid #9c9c9c;
 }
-.status p{
+
+.status p {
     font-size: 18px;
-    margin: 10px 0; 
+    margin: 10px 0;
     padding-top: 10px;
-    
+
 }
+
 .status p strong {
-    font-weight: bold; 
-    color: #333; 
+    font-weight: bold;
+    color: #333;
 }
 
 /*****************************ช่องรายละเอียดเมนู**************************************/
-.menu-data{
-    width: 100%; 
+.menu-data {
+    width: 100%;
     margin: 0 auto;
-    border-right: 2px solid #9c9c9c; 
+    border-right: 2px solid #9c9c9c;
 }
+
 .menu-data h3 {
     font-size: 18px;
     padding-top: 0px;
     color: #AF1F1F;
 }
+
 .menu-data ul li {
     text-align: left;
     padding: 5px;
 }
+
 /**************************** ยอดรวม **********************************/
-.total-price{
+.total-price {
     width: 90%;
     margin: 0 auto;
-    border-right: 2px solid #9c9c9c; 
+    border-right: 2px solid #9c9c9c;
 }
-.total-price p{
+
+.total-price p {
     font-size: 18px;
-    margin: 10px 0; 
+    margin: 10px 0;
     padding-top: 10px;
 }
+
 /****************************** วิธีชำระเงิน ************************************/
-.payment{
-    width: 100%; 
+.payment {
+    width: 100%;
     margin: 0 auto;
-    border-right: 2px solid #9c9c9c; 
+    border-right: 2px solid #9c9c9c;
 }
-.payment h3{
+
+.payment h3 {
     font-size: 18px;
-    margin: 10px 0; 
+    margin: 10px 0;
     padding-top: 10px;
 }
 
 /**************************สถานะชำระเงิน*********************************/
-.paymentstatus{
-    width: 100%; 
+.paymentstatus {
+    width: 100%;
     margin: auto;
 }
-.paymentstatus p{
+
+.paymentstatus p {
     font-size: 18px;
-    margin: 10px 0; 
+    margin: 10px 0;
     padding-top: 10px;
 }
 
-.slip label{
+.slip label {
     padding: 5px;
     background-color: #AF1F1F;
     color: #ffffff;
     border-radius: 5px;
 }
 
-.slip input{
+.slip input {
     padding: 15px;
-
+    margin-left: 25%;
+    display: inline;
+    justify-content: center;
+    align-content: center;
+    cursor: pointer;
 }
+
 /*.slip input id{
     padding: 5px;
     text-align: center;
 }*/
 
-
-.slip button{
+.slip button {
     padding: 5px;
-    background-color: #fdf4c3; 
-    color: black;  
-    border: none; 
+    background-color: #fdf4c3;
+    color: black;
+    border: none;
     border-radius: 10px;
-    font-family: inherit; 
-    font-size: 15px; 
+    font-family: inherit;
+    font-size: 14px;
     cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
-    transition: background-color 0.3s, transform 0.2s;   
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, transform 0.2s;
 }
+
 .slip button:hover {
-    background-color: #AF1F1F; 
-    transform: scale(1.05); 
+    background-color: #AF1F1F;
+    transform: scale(1.05);
 }
 
 .slip button:active {
-    background-color: #AF1F1F; 
-    transform: scale(0.95); 
+    background-color: #AF1F1F;
+    transform: scale(0.95);
 }
+
 .actions {
-    margin-top: 40px; /* เพิ่มระยะห่างมากขึ้น */
+    margin-top: 40px;
+    /* เพิ่มระยะห่างมากขึ้น */
     width: 100%;
     text-align: left;
 }
-.btn-large{
-    width: auto; 
+
+.btn-large {
+    width: 120px;
     text-align: center;
-    height: auto;
+    height: 20px;
     background-color: #AF1F1F;
     padding: 15px;
-    font-size: 20px;
+    font-size: 18px;
     font-family: inherit;
     color: white;
-    border-radius: 25px;
+    border-radius: 10px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s ease;    
-
+    text-decoration: none;
+    margin-bottom: 20px;
 }
 
-.btn-large:hover{
+.btn-large:hover {
     background-color: #fdf4c3;
     color: black;
 }
