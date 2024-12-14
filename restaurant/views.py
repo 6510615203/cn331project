@@ -1,4 +1,5 @@
 from datetime import timezone
+import decimal
 from email.utils import parsedate
 from django.shortcuts import render,redirect, get_object_or_404
 from django.http import HttpResponseRedirect, HttpResponse
@@ -118,8 +119,6 @@ def order_list(request):
 
     return render(request, 'order_list.html', {'orders': orders, 'restaurant': restaurant})
 
-def sales_report(request):      
-    return render(request, "sales.html")
 
 def edit_menu_payment(request):
     username = request.user.username
@@ -235,14 +234,19 @@ def edit_only_menu(request):
             elif "price" in request.POST:
                 price = request.POST.get("price", "").strip()
                 menu_item.price = price
-            elif "restaurant_picture" in request.FILES:
+            elif "menu_picture" in request.FILES:
                 menu_picture = request.FILES["menu_picture"]
-                # Save the new picture
-                menu_item.menu_picture = menu_picture
-                messages.success(request, "Menu picture updated successfully!")
+                print("Menu picture received:", menu_picture)  # ตรวจสอบว่าไฟล์ถูกส่งมาหรือไม่
+                if menu_picture:
+                    menu_item.menu_picture = menu_picture
+                    menu_item.save()
+                    messages.success(request, "Menu picture updated successfully!")
+                else:
+                    messages.error(request, "No picture uploaded!")
+            
             menu_item.save()
 
-            return render(request, "edit_only_menu.html", {"restaurant": restaurant, "menu_item": menu_item, "menu_id": menu_id})
+            
             
     
     elif request.method == "GET":
@@ -405,4 +409,3 @@ def edit_only_payment(request):
             "is_editing": is_editing,
         },
     )
-
