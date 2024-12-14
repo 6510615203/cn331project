@@ -12,7 +12,7 @@
 {% block content %}
 <div class="main-container">
     <div class="container">
-        <!-----------------คลาสชื่อตาราง 2 อัน------------------>
+        <!-----------------คลาสชื่อตาราง 2 อัน + ปุ่มด้วย (ไว้จัดgrid)------------------>
         <div class="grid-title">
             <h2 class="menu-title">เมนูของร้าน: {{ restaurant.restaurant_name }}</h2>
             <h2 class="payment-title">Your Restaurant Payment</h2>
@@ -64,7 +64,7 @@
                     </tbody>
                 </table>
                 {% else %}
-                <p>ยังไม่มีเมนูในร้านนี้</p>
+                <p class="no-menu">ยังไม่มีเมนูในร้านนี้</p>
                 {% endif %}
             </div>
             <!----------------คลาส menu payment------------------->
@@ -88,7 +88,7 @@
                                         {% csrf_token %}
                                         <input type="hidden" name="payment_id" value="{{ payment.id }}">
                                         <div class="enroll-container">
-                                            <button type="submit" class="btn btn-primary">edit</button>
+                                            <button type="submit" class="button">edit</button>
                                         </div>
                                     </form>
                                 </td>
@@ -97,36 +97,39 @@
                         </tbody>
                     </table>
                     {% else %}
-                    <p>No payment methods added yet.</p>
+                    <p class="no-payment">No payment methods added yet.</p>
                     {% endif %}
+                </div>
+            </div>
+
+            <!-------------------------------คลาสปุ่ม 3 ปุ่ม----------------------------------->
+            <div class="restaurantbutton">
+                <div class="res-button">
+                    <form method="GET" action="{% url 'restaurant:add_payment'%}">
+                        <button type="submit" class="button">Add your payment</button>
+                    </form>
+                </div>
+                <!----------------คลาส group ปุ่ม เพิ่มเมนู + เพิ่มช่องทางชำระเงิน------------------->
+                <div class="button-group">
+                    <div class="res-button">
+                        <form method="GET" action="{% url 'restaurant:manage'%}">
+                            <button type="submit" class="button">Edit Profile</button>
+                        </form>
+                    </div>
+                    <div class="res-button">
+                        <form method="GET" action="{% url 'restaurant:add_menu_res'%}">
+                            <button type="submit" class="button">Add menu</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
+
+    
+
+    
 
 
-    <!----------------คลาสปุ่ม 3 ปุ่ม------------------->
-
-    <div class="restaurantbutton">
-        <div class="res-button">
-            <form method="GET" action="{% url 'restaurant:add_payment'%}">
-                <button type="submit" class="button">Add your payment</button>
-            </form>
-        </div>
-        <!----------------คลาส group ปุ่ม เพิ่มเมนู + เพิ่มช่องทางชำระเงิน------------------->
-        <div class="button-group">
-            <div class="res-button">
-                <form method="GET" action="{% url 'restaurant:manage'%}">
-                    <button type="submit" class="button">Edit Profile</button>
-                </form>
-            </div>
-            <div class="res-button">
-                <form method="GET" action="{% url 'restaurant:add_menu_res'%}">
-                    <button type="submit" class="button">Add menu</button>
-                </form>
-            </div>
-        </div>
-    </div>
-
-
-    {% endblock %}
+{% endblock %}
