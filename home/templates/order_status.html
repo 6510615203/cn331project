@@ -13,6 +13,16 @@
 <div class="container mt-5">
     <h1 class="header">สถานะคำสั่งซื้อของคุณ</h1>
 
+    <!-- ฟอร์มเลือกวันที่ -->
+    <div class="filter-container mb-4">
+        <form method="GET" action="{% url 'order_status' %}">
+            <label for="selected_date">เลือกวันที่:</label>
+            <input type="date" id="selected_date" name="selected_date" value="{{ selected_date|date:'Y-m-d' }}">
+            <button type="submit" class="btn btn-primary">ค้นหา</button>
+        </form>
+    </div>
+
+    <!-- แสดงคำสั่งซื้อ -->
     {% for order in orders %}
     <div class="order-card">
         <h2>ร้านอาหาร : {{ order.restaurant.restaurant_name }}</h2>
@@ -44,7 +54,7 @@
             <input type="file" name="payment_slip" id="payment_slip_{{ order.id }}" accept="image/*">
             <button type="submit" class="btn btn-primary">อัปโหลด</button>
         </form>
-        {% elif order.status == 'paid' %}
+        {% elif order.status == 'waiting_for_approve' %}
         <p style="color: blue;">อัพเดท: ร้านกำลังตรวจสอบการชำระเงิน</p>
         {% elif order.status == 'cooking' %}
         <p style="color: green;">อัพเดท: กำลังทำอาหาร</p>
@@ -61,4 +71,5 @@
         <a href="{% url 'your_order' %}" class="btn-large">กลับไปสั่งซื้อ</a>
     </div>
 </div>
+
 {% endblock %}
