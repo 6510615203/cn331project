@@ -243,8 +243,7 @@ def edit_only_menu(request):
                     messages.success(request, "Menu picture updated successfully!")
                 else:
                     messages.error(request, "No picture uploaded!")
-            else:
-                messages.error(request, "No picture file in request.FILES")
+            
             menu_item.save()
 
             
