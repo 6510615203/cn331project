@@ -3,9 +3,172 @@ body {
     margin: 0;
     padding: 0;
 }
+.container mt-5{
+    font-family: inherit;
+}
 
 .header {
     color: #AF1F1F;
     font-family: inherit;
     font-size: 30px;
+}
+/******************************กริดหลัก************************************/
+.grid-status {
+    display: grid;
+    grid-template-columns: 1fr 1fr 3fr 1fr 2fr 3fr;
+    justify-items: center;
+    font-size: 15px;
+    text-align: center;
+    background-color: #f0f0f0;
+    border-radius: 25px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 10px ;
+    border: 2px solid #333;
+
+}
+
+/******************************หมายเลขคำสั่งซื้อ********************************/
+.number{
+    width: 100%;
+    margin: 0 auto;
+    border-right: 2px solid #9c9c9c; 
+}
+.number p{
+    font-size: 18px;
+    margin: 10px 0; 
+    padding-top: 10px;
+    
+}
+.number p strong {
+    font-weight: bold; 
+    color: #333; 
+}
+/*********************************สถานะ******************************/
+.status{
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+    border-right: 2px solid #9c9c9c; 
+}
+.status p{
+    font-size: 18px;
+    margin: 10px 0; 
+    padding-top: 10px;
+    
+}
+.status p strong {
+    font-weight: bold; 
+    color: #333; 
+}
+
+/*****************************ช่องรายละเอียดเมนู**************************************/
+.menu-data{
+    width: 100%; 
+    margin: 0 auto;
+    border-right: 2px solid #9c9c9c; 
+}
+.menu-data h3 {
+    font-size: 18px;
+    padding-top: 0px;
+    color: #AF1F1F;
+}
+.menu-data ul li {
+    text-align: left;
+    padding: 5px;
+}
+/**************************** ยอดรวม **********************************/
+.total-price{
+    width: 90%;
+    margin: 0 auto;
+    border-right: 2px solid #9c9c9c; 
+}
+.total-price p{
+    font-size: 18px;
+    margin: 10px 0; 
+    padding-top: 10px;
+}
+/****************************** วิธีชำระเงิน ************************************/
+.payment{
+    width: 100%; 
+    margin: 0 auto;
+    border-right: 2px solid #9c9c9c; 
+}
+.payment h3{
+    font-size: 18px;
+    margin: 10px 0; 
+    padding-top: 10px;
+}
+
+/**************************สถานะชำระเงิน*********************************/
+.paymentstatus{
+    width: 100%; 
+    margin: auto;
+}
+.paymentstatus p{
+    font-size: 18px;
+    margin: 10px 0; 
+    padding-top: 10px;
+}
+
+.slip label{
+    padding: 5px;
+    background-color: #AF1F1F;
+    color: #ffffff;
+    border-radius: 5px;
+}
+
+.slip input{
+    padding: 15px;
+
+}
+/*.slip input id{
+    padding: 5px;
+    text-align: center;
+}*/
+
+
+.slip button{
+    padding: 5px;
+    background-color: #fdf4c3; 
+    color: black;  
+    border: none; 
+    border-radius: 10px;
+    font-family: inherit; 
+    font-size: 15px; 
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+    transition: background-color 0.3s, transform 0.2s;   
+}
+.slip button:hover {
+    background-color: #AF1F1F; 
+    transform: scale(1.05); 
+}
+
+.slip button:active {
+    background-color: #AF1F1F; 
+    transform: scale(0.95); 
+}
+.actions {
+    margin-top: 40px; /* เพิ่มระยะห่างมากขึ้น */
+    width: 100%;
+    text-align: left;
+}
+.btn-large{
+    width: auto; 
+    text-align: center;
+    height: auto;
+    background-color: #AF1F1F;
+    padding: 15px;
+    font-size: 20px;
+    font-family: inherit;
+    color: white;
+    border-radius: 25px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;    
+
+}
+
+.btn-large:hover{
+    background-color: #fdf4c3;
+    color: black;
 }
