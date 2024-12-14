@@ -481,10 +481,6 @@ input[type="text"]:focus {
     background-repeat: no-repeat;
     background-position: right 10px center;
     background-size: 1rem;
-    <<<<<<< HEAD
-}
-
-=======
 }
 
 .confirmbutton {
@@ -495,5 +491,3 @@ input[type="text"]:focus {
     gap: 5%;
     margin-right: 2%;
 }
-
->>>>>>>00607e2ec723e42b729ab33e8a9475cefd801ea7
