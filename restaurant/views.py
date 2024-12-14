@@ -255,6 +255,7 @@ def edit_only_menu(request):
                     messages.error(request, "No picture uploaded!")
             
             menu_item.save()
+            return render(request, "edit_only_menu.html", {"restaurant": restaurant, "menu_item": menu_item, "menu_id": menu_id})
 
             
             
