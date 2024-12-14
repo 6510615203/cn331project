@@ -27,7 +27,7 @@ body {
 .signup-container {
     text-align: center;
     margin-top: 30px;
-    
+
 }
 
 .stepline {
@@ -86,25 +86,31 @@ body {
     margin-bottom: 5px;
     margin-left: 40%;
 }
+
 /* ไอคอนสำหรับดาว */
 .staricon {
-    width: 40px; /* ความกว้าง */
-    height: 40px; /* ความสูง */
-    background-color: #FFFAB7; /* สีทอง */
+    width: 40px;
+    /* ความกว้าง */
+    height: 40px;
+    /* ความสูง */
+    background-color: #FFFAB7;
+    /* สีทอง */
     clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
     margin: 0 auto;
     display: block;
     margin-right: -14px;
     text-align: auto;
 }
+
 .stariconnow {
     width: 40px;
     height: 40px;
     background-color: #AF1F1F;
     clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-    display: inline-block;
     margin: 0 auto;
-    text-align: center;
+    display: block;
+    margin-right: -14px;
+    text-align: auto;
 }
 
 .stepicon {
@@ -388,7 +394,7 @@ body {
 
 
     text-align: center;
-    
+
     font-family: inherit;
 }
 
