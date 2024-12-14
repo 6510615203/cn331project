@@ -264,9 +264,9 @@ body {
     align-items: center;
     position: absolute;
     top: 25%;
-    left: 30%;
-    width: 900px; 
-    height: 420px; 
+    left: 32%;
+    width: 900px;
+    height: 420px;
     background-color: #f5f5f5;
     border-radius: 20px;
 }
@@ -391,6 +391,7 @@ input[type="text"] {
     display: flex;
     justify-content: center;
     align-items: flex-start;
+    text-align: left;
     padding-left: 10px;
     font-family: inherit;
     border-radius: 7px;
@@ -403,6 +404,10 @@ input[type="text"] {
     margin-top: 10px;
 }
 
+input::placeholder {
+    color: black;
+}
+
 input[type="text"]:hover {
     background-color: #fdf4c3;
 }
@@ -411,24 +416,46 @@ input[type="text"]:focus {
     border-color: #AF1F1F;
 }
 
+.form-input-price {
+    color: black;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    text-align: left;
+    padding-left: 10px;
+    font-family: inherit;
+    border-radius: 7px;
+    background-color: #e2e2e2;
+    border: none;
+    font-weight: 10;
+    font-size: 17px;
+    width: 360px;
+    height: 40px;
+    margin-top: 10px;
+    margin-left: 5px;
+    margin-right: 20px;
+}
+
 .form-section .select-dropdown select {
     color: black;
     display: flex;
     justify-content: center;
     align-items: center;
     padding-left: 10px;
+    text-align: center;
     font-family: inherit;
     border-radius: 7px;
     background-color: #e2e2e2;
     border: none;
-    font-weight: semibold;
+    font-weight: 10;
     font-size: 17px;
-    width: 320px;
+    width: 340px;
     height: 40px;
     margin-top: 10px;
     appearance: none;
     cursor: pointer;
     outline: none;
+    margin-left: 5px;
 }
 
 .form-section .select-dropdown select:hover {
@@ -444,8 +471,9 @@ input[type="text"]:focus {
     background-repeat: no-repeat;
     background-position: right 10px center;
     background-size: 1rem;
-<<<<<<< HEAD
+    <<<<<<< HEAD
 }
+
 =======
 }
 
@@ -457,4 +485,5 @@ input[type="text"]:focus {
     gap: 5%;
     margin-right: 2%;
 }
->>>>>>> 00607e2ec723e42b729ab33e8a9475cefd801ea7
+
+>>>>>>>00607e2ec723e42b729ab33e8a9475cefd801ea7
