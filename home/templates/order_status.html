@@ -70,7 +70,7 @@
                         <button type="submit" class="btn btn-primary">อัปโหลด</button>
                     </form>
                 </div>
-                {% elif order.status == 'paid' %}
+                {% elif order.status == 'waiting_for_approve' %}
                 <p style="color: blue;">อัพเดท: ร้านกำลังตรวจสอบการชำระเงิน</p>
                 {% elif order.status == 'cooking' %}
                 <p style="color: green;">อัพเดท: กำลังทำอาหาร</p>
