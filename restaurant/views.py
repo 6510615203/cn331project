@@ -100,28 +100,26 @@ def order_list(request):
         order_id = request.POST.get('order_id')
         action = request.POST.get('action')
 
-        try:
-            order = Order.objects.get(id=order_id, restaurant=restaurant)
+     
+        order = Order.objects.get(id=order_id, restaurant=restaurant)
 
-            if action == 'confirm_payment':
-                # ยืนยันการชำระเงิน
-                order.status = 'paid'
-                order.save()
-                messages.success(request, f"Order {order.id}: Payment confirmed.")
-            
-            elif action == 'mark_in_progress':
-                # เริ่มทำอาหาร
-                order.status = 'cooking'
-                messages.success(request, f"Order {order.id}: Order is now in progress.")
-            elif action == 'mark_completed':
-                # ออร์เดอร์เสร็จสมบูรณ์
-                order.status = 'completed'
-                messages.success(request, f"Order {order.id}: Order completed.")
+        if action == 'confirm_payment':
+            # ยืนยันการชำระเงิน
+            order.status = 'paid'
             order.save()
+            messages.success(request, f"Order {order.id}: Payment confirmed.")
+            
+        elif action == 'mark_in_progress':
+            # เริ่มทำอาหาร
+            order.status = 'cooking'
+            messages.success(request, f"Order {order.id}: Order is now in progress.")
+        elif action == 'mark_completed':
+            # ออร์เดอร์เสร็จสมบูรณ์
+            order.status = 'completed'
+            messages.success(request, f"Order {order.id}: Order completed.")
+        order.save()
 
-        except Order.DoesNotExist:
-            messages.error(request, "Order not found.")
-
+        
         return redirect('restaurant:order_list')  # เปลี่ยนเส้นทางไปยังหน้า order_list หลังจากอัปเดต
 
     # ดึงคำสั่งซื้อทั้งหมดของร้านอาหาร
@@ -258,8 +256,6 @@ def edit_only_menu(request):
             return render(request, "edit_only_menu.html", {"restaurant": restaurant, "menu_item": menu_item, "menu_id": menu_id})
 
             
-            
-    
     elif request.method == "GET":
         menu_id = request.GET.get("menu_id")
         if menu_id:
@@ -279,21 +275,6 @@ def edit_only_menu(request):
         },
     )
 
-"""   
-@login_required
-def restaurant_order_list(request):
-    # ตรวจสอบข้อมูล restaurant ของผู้ใช้ที่ล็อกอิน
-    user_profile = request.user.userprofile
-    if user_profile.is_restaurant():
-        restaurant = user_profile.restaurantprofile
-        print(f"Restaurant ID: {restaurant.id}")  # ตรวจสอบ ID ของร้าน
-        orders = Order.objects.filter(restaurant=restaurant).order_by('-order_date')
-        print(f"Orders found: {orders.count()}")  # ตรวจสอบจำนวนคำสั่งซื้อ
-        return render(request, 'restaurant_order_list.html', {'orders': orders})
-    else:
-        return redirect('home')  # หรือแสดง error message ถ้าไม่ใช่ restaurant
-"""
-   
 @login_required
 def order_confirmation(request, order_id):
     order = get_object_or_404(Order, id=order_id, restaurant=request.user.userprofile.restaurantprofile)
