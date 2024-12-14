@@ -69,6 +69,15 @@
         </div>
         </div>
     </nav>
+
+    {% if messages %}
+    {% for message in messages %}
+    <script type="text/javascript">
+        alert("{{ message|escapejs }}");
+    </script>
+    {% endfor %}
+    {% endif %}
+
     {% block content %}
     {% endblock %}
 

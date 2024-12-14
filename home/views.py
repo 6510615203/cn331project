@@ -10,6 +10,9 @@ from django.contrib.auth.models import User
 from django.core.files.storage import FileSystemStorage
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone  # เพิ่มการ import timezone
+from django.contrib import messages
+
+
 
 def index(request):      
     return render(request, "index.html")
@@ -211,11 +214,13 @@ def login_view(request):
                 user_type = None
 
             if user_type == "restaurant":
+                messages.success(request, "Login successfully!")
                 return redirect("/restaurant/")  
             else:
+                messages.success(request, "Login successfully!")
                 return redirect("/order/") 
 
-            messages.success(request, "เข้าสู่ระบบสำเร็จ!")
+            
             return redirect("index")  # หากไม่มี user_type ก็ให้ไปหน้า index
 
         else:
@@ -226,6 +231,7 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)  # ล็อกเอาท์ผู้ใช้
+    messages.success(request, "Logout successfully!")
     return redirect('/')  # เปลี่ยนเส้นทางไปที่หน้าแรกหลังจากออกจากระบบ
 
 def restaurant_list(request):
