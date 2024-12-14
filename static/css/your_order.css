@@ -53,22 +53,49 @@ body {
     margin-left: 20px;
 }
 
-.information input[type="datetime-local"],
-.information select {
-    width: 180px;
-    height: 25px;
-    padding: 10px;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 12px;
-    box-sizing: border-box;
+.information input {
+    color: black;
+    justify-content: center;
+    align-items: center;
+    font-family: inherit;
+    border-radius: 7px;
+    background-color: #ffffff;
+    border: none;
+    font-weight: 200;
+    font-size: 14px;
+    width: 200px;
+    height: 40px;
+    margin-left: 5px;
+    appearance: none;
+    cursor: pointer;
+    text-align: center;
 }
 
-.information input[type="datetime-local"]:focus,
-.information select:focus {
-    border-color: #AF1F1F;
-    outline: none;
+.information input:hover {
+    background-color: #fdf4c3;
+}
+
+.information select {
+    color: black;
+    justify-content: center;
+    align-items: center;
+    padding-left: 10px;
+    font-family: inherit;
+    border-radius: 7px;
+    background-color: #ffffff;
+    border: none;
+    font-weight: 200;
+    font-size: 14px;
+    width: 200px;
+    height: 40px;
+    margin-left: 5px;
+    appearance: none;
+    cursor: pointer;
+    text-align: center;
+}
+
+.information select:hover {
+    background-color: #fdf4c3;
 }
 
 .button:hover {

@@ -20,8 +20,9 @@ body {
     gap: 20px;
     justify-items: center;
 }
+
 .menu-title {
-    width: 90%;
+    width: 100%;
     height: auto;
     align-items: left;
     padding: 12px 15px;
@@ -32,6 +33,7 @@ body {
     background-color: #AF1F1F;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
+
 .payment-title {
     width: 90%;
     height: auto;
@@ -55,18 +57,23 @@ body {
 
 .grid-tables {
     display: grid;
-    grid-template-columns: 2fr 1fr;  /* 2 คอลัมน์: คอลัมน์แรกใหญ่กว่า */
-    grid-template-rows: auto 1fr;    /* 2 แถว: แถวแรกและแถวที่สองมีขนาดเท่ากัน */
-    gap: 20px;  
-    height: 100vh; /* กำหนดให้คอนเทนเนอร์เต็มความสูงหน้าจอ */
+    grid-template-columns: 2fr 1fr;
+    /* 2 คอลัมน์: คอลัมน์แรกใหญ่กว่า */
+    grid-template-rows: auto 1fr;
+    /* 2 แถว: แถวแรกและแถวที่สองมีขนาดเท่ากัน */
+    gap: 20px;
+    height: 100vh;
+    /* กำหนดให้คอนเทนเนอร์เต็มความสูงหน้าจอ */
     align-items: start;
 }
 
 .menu-table {
-    grid-column: 1 / 2;  /* ให้ตารางใหญ่ไปที่คอลัมน์แรก */
+    grid-column: 1 / 2;
+    /* ให้ตารางใหญ่ไปที่คอลัมน์แรก */
     grid-row: 1 / 3;
-    width: 100%;           
-    height: auto; /* กำหนดความสูงสูงสุด */
+    width: 100%;
+    height: auto;
+    /* กำหนดความสูงสูงสุด */
     max-height: none;
     overflow-x: auto;
     overflow-y: auto;
@@ -77,11 +84,13 @@ body {
     background-color: #e2e2e2;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
+
 .payment-table {
-    grid-column: 2 / 3;  /* ให้ตารางด้านบนไปที่คอลัมน์ที่สอง */
+    grid-column: 2 / 3;
+    /* ให้ตารางด้านบนไปที่คอลัมน์ที่สอง */
     grid-row: 1 / 2;
     width: 100%;
-    height: auto; 
+    height: auto;
     overflow-x: auto;
     overflow-y: auto;
     margin-left: 0;
@@ -91,6 +100,7 @@ body {
     background-color: #e2e2e2;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
+
 /*ลบเส้นตาราง*/
 .menutable,
 .menutable th,
@@ -102,10 +112,13 @@ body {
     text-align: left;
     width: 100%;
     height: auto;
-    width: max-content; /* ตารางขยายตามเนื้อหา */
-    min-width: 100%;    /* ครอบคลุมความกว้างของพาเรนต์ */
+    width: max-content;
+    /* ตารางขยายตามเนื้อหา */
+    min-width: 100%;
+    /* ครอบคลุมความกว้างของพาเรนต์ */
     border-collapse: collapse
 }
+
 /******************************หัวตารางเมนู***********************/
 .menutable th {
     padding: 12px 15px;
@@ -113,27 +126,31 @@ body {
 }
 
 /*ลำดับเมนู*/
-.menutable th:nth-child(1) { 
+.menutable th:nth-child(1) {
     width: 10%;
 }
+
 /*เมนู*/
 .menutable th:nth-child(2) {
     width: auto;
 }
+
 /*ประเภทอาหาร*/
 .menutable th:nth-child(3) {
     width: auto;
 }
+
 /*ราคา*/
 .menutable th:nth-child(4) {
     width: auto;
 }
+
 /*รูปภาพ*/
 .menutable th:nth-child(5) {
     width: auto;
 }
 
-/******************************ข้อมูลในตารkง*******************************/
+/******************************ข้อมูลในตาราง*******************************/
 .menutable td {
     padding: 12px 15px;
     justify-items: center;
@@ -144,19 +161,22 @@ body {
     font-weight: bold;
     color: #333;
     text-align: center;
-    
+
 }
+
 /*เมนู*/
 .menutable td:nth-child(2) {
     text-align: center;
 }
+
 /*ประเภทอาหาร*/
 .menutable td:nth-child(3) {
     text-align: center;
 }
+
 /*ราคา*/
 .menutable td:nth-child(4) .bordered-text {
-    width: 80%; 
+    width: 80%;
     background-color: #f9f9f9;
     text-align: center;
     padding: 10px 10px;
@@ -164,45 +184,57 @@ body {
     border: 1px solid #767676;
     display: inline-block;
 }
+
 /*รูปภาพ*/
 .menutable td:nth-child(5) {
     text-align: center;
 }
+
 .menutable img {
     max-width: auto;
     border-radius: 5px;
 }
+
 /* ข้อความโชว์เวลาไม่มีรูปภาพ */
 .menutable td img {
     display: block;
     margin: 0 auto;
 }
-.no-menu{
-    padding: 20px; 
+
+.no-menu {
+    padding: 20px;
     color: #ff0000;
     text-align: center;
 }
 
-.enroll-container .btn {
-    background-color: #fdf4c3; 
-    color: black; 
-    padding: 10px 20px; 
-    border: none; 
-    border-radius: 25px;
-    font-family: inherit; 
-    font-size: 16px; 
+.enroll-container button {
+    background-color: #fdf4c3;
+    color: black;
+    height: 30px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    font-family: inherit;
+    font-size: 14px;
     cursor: pointer;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
-    transition: background-color 0.3s, transform 0.2s; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s, transform 0.2s;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
 }
-.enroll-container .btn:hover {
-    background-color: #AF1F1F; /* เปลี่ยนสีพื้นหลังเมื่อโฮเวอร์ */
-    transform: scale(1.05); /* ขยายขนาดปุ่มเล็กน้อย */
+
+.enroll-container button:hover {
+    background-color: #AF1F1F;
+    transform: scale(1.05);
+    color: white;
 }
 
 .enroll-container .btn:active {
-    background-color: #AF1F1F; /* เปลี่ยนสีพื้นหลังเมื่อกด */
-    transform: scale(0.95); /* ลดขนาดปุ่มเล็กน้อยเมื่อกด */
+    background-color: #AF1F1F;
+    /* เปลี่ยนสีพื้นหลังเมื่อกด */
+    transform: scale(0.95);
+    /* ลดขนาดปุ่มเล็กน้อยเมื่อกด */
 }
 
 /**********************************ตารางช่องทางชำระเงิน*************************************/
@@ -223,24 +255,30 @@ body {
     text-align: center;
     width: auto;
 }
+
 .paymenttable th:nth-child(1) {
     width: auto;
 }
+
 .paymenttable th:nth-child(2) {
     width: auto;
 }
+
 .paymenttable td {
     padding: 12px 15px;
     width: auto;
 }
+
 .paymenttable td:nth-child(1) {
     text-align: center;
 }
+
 .paymenttable td:nth-child(2) {
     text-align: center;
 }
+
 .no-payment {
-    padding: 15px; 
+    padding: 15px;
     color: #ff0000;
     text-align: center;
 }
@@ -248,15 +286,20 @@ body {
 /********************************button**************************************/
 /*ปุ่มหลัก*/
 .restaurantbutton {
-    grid-column: 2 / 3;  /* ให้ปุ่มไปที่คอลัมน์ที่สอง */
-    grid-row: 2 / 3;      /* ให้ปุ่มอยู่ในแถวที่สอง */
-    display: flex;        /* ใช้ grid ในการจัดเรียงปุ่ม */
+    grid-column: 2 / 3;
+    /* ให้ปุ่มไปที่คอลัมน์ที่สอง */
+    grid-row: 2 / 3;
+    /* ให้ปุ่มอยู่ในแถวที่สอง */
+    display: flex;
+    /* ใช้ grid ในการจัดเรียงปุ่ม */
     flex-direction: column;
-    gap: 10px;            /* ระยะห่างระหว่างปุ่ม */
+    gap: 10px;
+    /* ระยะห่างระหว่างปุ่ม */
     padding-top: 20px;
     text-align: center;
     font-family: inherit;
-    
+    cursor: pointer;
+
 }
 
 
@@ -274,6 +317,7 @@ body {
     border-radius: 25px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     transition: background-color 0.3s ease;
+    cursor: pointer;
 }
 
 .restaurantbutton .res-button:nth-child(1) .button:hover {
@@ -293,7 +337,8 @@ body {
 
 /* edit profile button*/
 .restaurantbutton .button-group .res-button:nth-child(1) .button {
-    grid-column: 1 / 2;  /* ปุ่มแรกอยู่ที่คอลัมน์ที่หนึ่ง */
+    grid-column: 1 / 2;
+    /* ปุ่มแรกอยู่ที่คอลัมน์ที่หนึ่ง */
     width: 100%;
     text-align: center;
     height: auto;
@@ -305,11 +350,13 @@ body {
     border-radius: 25px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     transition: background-color 0.3s ease;
+    cursor: pointer;
 }
+
 /* add menu button*/
 .restaurantbutton .button-group .res-button:nth-child(2) .button {
     text-align: center;
-    width: 100%; 
+    width: 100%;
     height: auto;
     background-color: #AF1F1F;
     font-size: 20px;
@@ -319,6 +366,7 @@ body {
     border-radius: 25px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     transition: background-color 0.3s ease;
+    cursor: pointer;
 }
 
 .restaurantbutton .button-group .res-button:nth-child(1) .button:hover,
