@@ -131,6 +131,7 @@ def add_menu(request):
         food_info.save()
 
         url = reverse("welcome_registration")
+        messages.success(request, "ลงทะเบียนสำเร็จ!")
         return redirect(f"{url}?user_type=restaurant&restaurant_name={restaurant_name}")     
 
     return render(request, "add_menu.html", {"restaurant_name": restaurant_name, 'food_categories': food_categories})
@@ -141,6 +142,7 @@ def register(request):
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
+        confirmpassword = request.POST.get("confirmpassword")
         phone_number = request.POST.get("phone_number")
         email = request.POST.get("email")
         name = request.POST.get("name")
@@ -152,8 +154,18 @@ def register(request):
 
         # ตรวจสอบว่าชื่อผู้ใช้มีอยู่แล้วในระบบหรือไม่
         if User.objects.filter(username=username).exists():
-            messages.error(request, "ชื่อผู้ใช้นี้มีอยู่แล้วในระบบ")
+            messages.error(request, "This username is already used.")
             return render(request, "register.html", {"user_type": user_type})
+        elif UserProfile.objects.filter(email=email).exists():
+            messages.error(request, "This email is already used.")
+            return render(request, "register.html", {"user_type": user_type})      
+        elif UserProfile.objects.filter(phone_number=phone_number).exists():
+            messages.error(request, "This phone number is already used.")
+            return render(request, "register.html", {"user_type": user_type})
+        elif (password != confirmpassword):
+            messages.error(request, "Password do not match.")
+            return render(request, "register.html", {"user_type": user_type})
+        
 
         profile_picture = request.FILES.get("profile_picture", None)  # ตรวจสอบว่ามีการอัปโหลดรูปหรือไม่
     
@@ -170,12 +182,13 @@ def register(request):
             profile.profile_picture = profile_picture
             profile.save()
 
-        messages.success(request, "ลงทะเบียนสำเร็จ!")
+        
         login(request, user)
         if user_type == "restaurant":
             return redirect("restaurant_register")
         else:
             url = reverse("welcome_registration")
+            messages.success(request, "ลงทะเบียนสำเร็จ!")
             return redirect(f"{url}?user_type=customer&username={username}")
 
     user_type = request.GET.get("user_type", "customer")
