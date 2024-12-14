@@ -44,7 +44,7 @@
 
 
             <div class="order-actions">
-                {% if order.status == 'waiting_for_payment' %}
+                {% if order.status == 'waiting_for_approve' %}
                 <form method="POST" action="">
                     {% csrf_token %}
                     <input type="hidden" name="order_id" value="{{ order.id }}">

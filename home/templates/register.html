@@ -63,7 +63,7 @@
                         </div>
                         <label for="profile_picture" class="form-title" style="margin-top: 10px;">Add your
                             picture here !</label>
-                        <label for="restaurant_picture" class="form-title" style="margin-top: 10px;">required</label>
+
 
                     </div>
                     <input type="file" class="form-input" id="profile_picture" name="profile_picture"
@@ -94,8 +94,8 @@
                     <div class="form-section-pass">
                         <input type="password" placeholder="Create your password" class="form-input" id="password"
                             name="password" required>
-                        <input type="password" placeholder="Enter your password again" class="form-input" id="password"
-                            name="password" required>
+                        <input type="password" placeholder="Enter your password again" class="form-input"
+                            id="confirmpassword" name="confirmpassword" required>
                     </div>
                 </div>
 
@@ -132,5 +132,17 @@
             reader.readAsDataURL(file);
         }
     }
+
+    document.getElementById('password').addEventListener('input', function () {
+        const password = this.value;
+        const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{8,}$/;
+        if (!regex.test(password)) {
+            this.setCustomValidity("Password must include at least 8 characters, an uppercase letter, a lowercase letter, a number, and a special character.");
+        } else {
+            this.setCustomValidity('');
+        }
+    });
+
+
 </script>
 {% endblock %}

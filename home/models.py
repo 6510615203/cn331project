@@ -98,6 +98,7 @@ class Order(models.Model):
     delivery_option = models.CharField(max_length=10, choices=delivery_option_choices, default='in_store')
     status_choices = [
         ('waiting_for_payment', 'Waiting for Payment'),
+        ('waiting_for_approve', 'Waiting for Approve'),
         ('paid', 'Paid'),
         ('cooking', 'Cooking'),
         ('completed', 'Completed'),

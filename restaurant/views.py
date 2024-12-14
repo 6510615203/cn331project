@@ -16,6 +16,7 @@ from home.models import Order, UserProfile
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 from django.db.models import Count
+from django.db.models import Q
 # Create your views here.
 def index(request):
     username = request.user.username
@@ -26,8 +27,15 @@ def index(request):
         .annotate(count=Count('id'))
     )
 
-    waiting_payment_counts = Order.objects.filter(restaurant=restaurant, status='waiting_for_payment').count()
-    cooking_counts = Order.objects.filter(restaurant=restaurant, status='cooking').count()
+    waiting_payment_counts = Order.objects.filter(
+        Q(restaurant=restaurant) & (
+            Q(status='waiting_for_payment') | 
+            Q(status='waiting_for_approve') | 
+            Q(status='paid')
+        )
+    ).exclude(id__in=Order.objects.filter(status='cooking').values('id')).count()
+    paid_orders_not_started = Order.objects.filter(Q(restaurant=restaurant) & Q(status='paid')).count()
+    cooking_counts = Order.objects.filter(Q(restaurant=restaurant) & (Q(status='cooking') )).count()
     completed_counts = Order.objects.filter(restaurant=restaurant, status='completed').count()
 
     context = {
@@ -98,7 +106,9 @@ def order_list(request):
             if action == 'confirm_payment':
                 # ยืนยันการชำระเงิน
                 order.status = 'paid'
+                order.save()
                 messages.success(request, f"Order {order.id}: Payment confirmed.")
+            
             elif action == 'mark_in_progress':
                 # เริ่มทำอาหาร
                 order.status = 'cooking'
@@ -289,9 +299,11 @@ def order_confirmation(request, order_id):
 
     if request.method == 'POST':
         status = request.POST.get('status')
-
-        if status == 'received':
-            order.status = 'cooking'  # เปลี่ยนสถานะเป็น "กำลังทำอาหาร"
+        
+        if status == 'paid':
+            order.status = 'paid'  # เปลี่ยนสถานะเป็น "ชำระเงินแล้ว"
+        elif status == 'cooking':
+            order.status = 'cooking'  # เปลี่ยนสถานะเป็น "กำลังทำอาหาร" 
         elif status == 'completed':
             order.status = 'completed'  # เปลี่ยนสถานะเป็น "อาหารเสร็จแล้ว"
             order.completed_at = timezone.now()  # บันทึกเวลาเสร็จสมบูรณ์

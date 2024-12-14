@@ -11,7 +11,8 @@ from django.core.files.storage import FileSystemStorage
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone  # เพิ่มการ import timezone
 from django.contrib import messages
-
+from datetime import date
+from datetime import datetime
 
 
 def index(request):      
@@ -130,6 +131,7 @@ def add_menu(request):
         food_info.save()
 
         url = reverse("welcome_registration")
+        messages.success(request, "ลงทะเบียนสำเร็จ!")
         return redirect(f"{url}?user_type=restaurant&restaurant_name={restaurant_name}")     
 
     return render(request, "add_menu.html", {"restaurant_name": restaurant_name, 'food_categories': food_categories})
@@ -140,6 +142,7 @@ def register(request):
     if request.method == "POST":
         username = request.POST.get("username")
         password = request.POST.get("password")
+        confirmpassword = request.POST.get("confirmpassword")
         phone_number = request.POST.get("phone_number")
         email = request.POST.get("email")
         name = request.POST.get("name")
@@ -151,8 +154,18 @@ def register(request):
 
         # ตรวจสอบว่าชื่อผู้ใช้มีอยู่แล้วในระบบหรือไม่
         if User.objects.filter(username=username).exists():
-            messages.error(request, "ชื่อผู้ใช้นี้มีอยู่แล้วในระบบ")
+            messages.error(request, "This username is already used.")
             return render(request, "register.html", {"user_type": user_type})
+        elif UserProfile.objects.filter(email=email).exists():
+            messages.error(request, "This email is already used.")
+            return render(request, "register.html", {"user_type": user_type})      
+        elif UserProfile.objects.filter(phone_number=phone_number).exists():
+            messages.error(request, "This phone number is already used.")
+            return render(request, "register.html", {"user_type": user_type})
+        elif (password != confirmpassword):
+            messages.error(request, "Password do not match.")
+            return render(request, "register.html", {"user_type": user_type})
+        
 
         profile_picture = request.FILES.get("profile_picture", None)  # ตรวจสอบว่ามีการอัปโหลดรูปหรือไม่
     
@@ -169,12 +182,13 @@ def register(request):
             profile.profile_picture = profile_picture
             profile.save()
 
-        messages.success(request, "ลงทะเบียนสำเร็จ!")
+        
         login(request, user)
         if user_type == "restaurant":
             return redirect("restaurant_register")
         else:
             url = reverse("welcome_registration")
+            messages.success(request, "ลงทะเบียนสำเร็จ!")
             return redirect(f"{url}?user_type=customer&username={username}")
 
     user_type = request.GET.get("user_type", "customer")
@@ -344,7 +358,7 @@ def upload_payment_slip(request, order_id):
     if request.method == 'POST' and 'payment_slip' in request.FILES:
         payment_slip = request.FILES['payment_slip']
         order.payment_slip = payment_slip
-        order.status = 'paid' 
+        order.status = 'waiting_for_approve' 
         order.save() 
         messages.success(request, "ชำระเงินเรียบร้อยแล้ว")
     
@@ -375,8 +389,36 @@ def order_confirmation(request):
 
 
 @login_required
+@login_required
 def order_status(request):
-    orders = Order.objects.filter(user_profile=request.user.userprofile)
-    return render(request, "order_status.html", {"orders": orders,})
+    user_profile = request.user.userprofile
 
+    # รับวันที่ปัจจุบัน
+    today = date.today()
 
+    # รับค่าจาก GET ถ้ามีการเลือกวันที่
+    selected_date = request.GET.get('selected_date')
+
+    if selected_date:
+        try:
+            # แปลง selected_date เป็น date object
+            selected_date = datetime.strptime(selected_date, "%Y-%m-%d").date()
+        except ValueError:
+            # หากการแปลงล้มเหลว ให้แจ้งข้อความผิดพลาด
+            messages.error(request, "รูปแบบวันที่ไม่ถูกต้อง กรุณาเลือกวันที่อีกครั้ง.")
+            selected_date = today
+    else:
+        # ถ้าไม่มี selected_date ให้ใช้ today เป็นค่าเริ่มต้น
+        selected_date = today
+
+    # ดึงคำสั่งซื้อที่ตรงกับ selected_date
+    orders = Order.objects.filter(
+        user_profile=user_profile,
+        order_date__date=selected_date
+    ).order_by('-order_date')
+
+    # ส่งค่า context ไปยัง template
+    return render(request, 'order_status.html', {
+        'orders': orders,
+        'selected_date': selected_date,
+    })
