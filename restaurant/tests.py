@@ -1,3 +1,4 @@
+import os
 from django.test import Client, TestCase
 from django.test import TestCase
 from django.urls import reverse
@@ -184,26 +185,20 @@ class AddMenuResTest(TestCase):
 
 class EditOnlyMenuTest(TestCase):
     def setUp(self):
-        # สร้างข้อมูลผู้ใช้และร้านอาหาร
-        self.user = User.objects.create_user(username="testuser", password="password")
-        self.user_profile = UserProfile.objects.create(
-            user=self.user,
-            user_type="restaurant",
-            name="Test User"
-        )
-        self.restaurant = RestaurantProfile.objects.create(
-            user_profile=self.user_profile,
-            restaurant_name="Test Restaurant",
-            food_category="ข้าวราดแกง",
-            about="This is a test restaurant",
-            open_close_time="09:00-20:00"
-        )
-        # สร้างข้อมูลเมนู
-        self.menu_item = Menu.objects.create(
-            restaurant_profile=self.restaurant,
-            food_name="Test Food",
-            about="Delicious test food",
-            price=50.00
+        # สร้าง User
+        self.user = User.objects.create_user(username="testuser", password="password123")
+
+        # สร้าง UserProfile (ถ้ามี)
+        self.user_profile = UserProfile.objects.create(user=self.user)
+
+        # สร้าง RestaurantProfile
+        self.restaurant_profile = RestaurantProfile.objects.create(user_profile=self.user_profile)
+
+        # สร้าง PaymentMethod
+        self.payment_method = PaymentMethod.objects.create(
+            bank_name="Test Bank",
+            account_number="123456789",
+            restaurant=self.restaurant_profile
         )
         # ล็อกอินผู้ใช้
         self.client.login(username="testuser", password="password")
@@ -460,3 +455,368 @@ class EditOnlyMenuViewTest(TestCase):
         self.assertFalse(Menu.objects.filter(id=self.menu.id).exists())
 
 
+class EditOnlyMenuTest(TestCase):
+    def setUp(self):
+        # สร้างผู้ใช้และข้อมูลที่เกี่ยวข้อง
+        self.user = User.objects.create_user(username="testuser", password="testpassword")
+        self.user_profile = UserProfile.objects.create(user=self.user, user_type="restaurant")
+        self.restaurant = RestaurantProfile.objects.create(
+            user_profile=self.user_profile,
+            restaurant_name="Test Restaurant",
+        )
+        self.menu = Menu.objects.create(
+            restaurant_profile=self.restaurant,
+            food_name="Test Menu",
+            food_category="ข้าวราดแกง",
+            about="Test About",
+            price=100.00,
+        )
+
+        # ล็อกอินผู้ใช้
+        self.client.login(username="testuser", password="testpassword")
+
+    def test_get_menu_item(self):
+        """ทดสอบการดึงข้อมูลเมนูผ่าน GET"""
+        response = self.client.get(reverse("restaurant:edit_only_menu") + f"?menu_id={self.menu.id}")
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "edit_only_menu.html")
+        self.assertEqual(response.context["menu_item"], self.menu)
+
+    def test_update_food_name(self):
+        """ทดสอบการแก้ไขชื่อเมนู"""
+        response = self.client.post(reverse("restaurant:edit_only_menu"), {
+            "menu_id": self.menu.id,
+            "food_name": "Updated Menu Name",
+        })
+        self.menu.refresh_from_db()
+        self.assertEqual(self.menu.food_name, "Updated Menu Name")
+
+    def test_update_food_category(self):
+        """ทดสอบการแก้ไขประเภทเมนู"""
+        response = self.client.post(reverse("restaurant:edit_only_menu"), {
+            "menu_id": self.menu.id,
+            "food_category": "ก๋วยเตี๋ยว",
+        })
+        self.menu.refresh_from_db()
+        self.assertEqual(self.menu.food_category, "ก๋วยเตี๋ยว")
+
+    def test_update_about(self):
+        """ทดสอบการแก้ไขรายละเอียดเมนู"""
+        response = self.client.post(reverse("restaurant:edit_only_menu"), {
+            "menu_id": self.menu.id,
+            "about": "Updated About",
+        })
+        self.menu.refresh_from_db()
+        self.assertEqual(self.menu.about, "Updated About")
+
+    def test_update_price(self):
+        """ทดสอบการแก้ไขราคาเมนู"""
+        response = self.client.post(reverse("restaurant:edit_only_menu"), {
+            "menu_id": self.menu.id,
+            "price": "200.00",
+        })
+        self.menu.refresh_from_db()
+        self.assertEqual(self.menu.price, 200.00)
+
+    def test_update_menu_picture(self):
+        """ทดสอบการอัปโหลดรูปภาพเมนู"""
+        with open("test_image.jpg", "wb") as f:
+            f.write(b"Test image content")
+
+        with open("test_image.jpg", "rb") as image_file:
+            response = self.client.post(
+                reverse("restaurant:edit_only_menu"),
+                {"menu_id": self.menu.id, "menu_picture": image_file},
+            )
+    
+        self.assertEqual(response.status_code, 200)
+    
+        # Refresh the menu object to get the updated picture
+        self.menu.refresh_from_db()
+
+        # Check if the file name starts with the original file name
+        uploaded_file_name = self.menu.menu_picture.name.split("/")[-1]
+        self.assertTrue(uploaded_file_name.startswith("test_image"))
+        self.assertTrue(uploaded_file_name.endswith(".jpg"))
+
+    def test_delete_menu(self):
+        """ทดสอบการลบเมนู"""
+        response = self.client.post(reverse("restaurant:edit_only_menu"), {
+            "menu_id": self.menu.id,
+            "delete_menu": "true",
+        })
+        self.assertRedirects(response, reverse("restaurant:edit_menu_payment"))
+        with self.assertRaises(Menu.DoesNotExist):
+            Menu.objects.get(id=self.menu.id)
+
+    def test_missing_menu_id(self):
+        """ทดสอบการส่งคำขอโดยไม่มี menu_id"""
+        response = self.client.post(reverse("restaurant:edit_only_menu"))
+        self.assertEqual(response.status_code, 404)
+
+    def test_invalid_menu_id(self):
+        """ทดสอบการส่งคำขอด้วย menu_id ที่ไม่มีในระบบ"""
+        response = self.client.post(reverse("restaurant:edit_only_menu"), {
+            "menu_id": 999,
+        })
+        self.assertEqual(response.status_code, 404)
+
+class EditOnlyPaymentTestCase(TestCase):
+    def setUp(self):
+     
+        self.user = User.objects.create_user(username="testuser", password="password123")
+        self.user_profile = UserProfile.objects.create(
+            user=self.user,
+            user_type="restaurant"
+        )
+ 
+        self.restaurant_profile = RestaurantProfile.objects.create(
+            user_profile=self.user_profile,
+            restaurant_name="Test Restaurant"
+        )
+
+        self.payment_method = PaymentMethod.objects.create(
+            bank_name="Test Bank",
+            account_number="123456789",
+            restaurant_profile=self.restaurant_profile
+        )
+
+        # Login ด้วย Client
+        self.client = Client()
+        self.client.login(username="testuser", password="password123")
+        
+    def test_get_request_without_payment_id(self):
+        response = self.client.get(reverse("restaurant:edit_only_payment"))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("restaurant", response.context)
+        self.assertIsNone(response.context["payment_item"])
+
+    def test_get_request_with_payment_id(self):
+        response = self.client.get(reverse("restaurant:edit_only_payment"), {"payment_id": self.payment_method.id})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["payment_item"], self.payment_method)
+
+    def test_post_request_to_update_bank_name(self):
+        response = self.client.post(reverse("restaurant:edit_only_payment"), {
+            "payment_id": self.payment_method.id,
+            "bank_name": "Updated Bank"
+        })
+        self.assertEqual(response.status_code, 200)
+        self.payment_method.refresh_from_db()
+        self.assertEqual(self.payment_method.bank_name, "Updated Bank")
+
+    def test_post_request_to_update_account_number(self):
+        response = self.client.post(reverse("restaurant:edit_only_payment"), {
+            "payment_id": self.payment_method.id,
+            "account_number": "987654321"
+        })
+        self.assertEqual(response.status_code, 200)
+        self.payment_method.refresh_from_db()
+        self.assertEqual(self.payment_method.account_number, "987654321")
+
+    def test_post_request_to_delete_payment_method(self):
+        response = self.client.post(reverse("restaurant:edit_only_payment"), {
+            "payment_id": self.payment_method.id,
+            "delete_payment_method": "true"
+        })
+        self.assertRedirects(response, reverse("restaurant:edit_menu_payment"))
+        with self.assertRaises(PaymentMethod.DoesNotExist):
+            PaymentMethod.objects.get(id=self.payment_method.id)
+
+    def test_post_request_with_invalid_payment_id(self):
+        response = self.client.post(reverse("restaurant:edit_only_payment"), {
+            "payment_id": 9999,  # Non-existent ID
+        })
+        self.assertEqual(response.status_code, 404)
+
+    def test_get_request_with_invalid_payment_id(self):
+        response = self.client.get(reverse("restaurant:edit_only_payment"), {"payment_id": 9999})
+        self.assertEqual(response.status_code, 404)
+
+from pytz import timezone
+from datetime import datetime
+from django.utils.timezone import make_aware
+class SalesReportTestCase(TestCase):
+    def setUp(self):
+        local_tz = timezone("Asia/Bangkok")   
+
+        self.user = User.objects.create_user(username="testuser", password="password123")
+        self.user_profile = UserProfile.objects.create(user=self.user, user_type="restaurant")
+        self.restaurant = RestaurantProfile.objects.create(
+            user_profile=self.user_profile,
+            restaurant_name="Test Restaurant"
+        )
+
+        self.order1 = Order.objects.create(
+            user_profile=self.user_profile,
+            restaurant=self.restaurant,
+            total_price=100.00,
+            order_date=make_aware(datetime(2024, 12, 10, 10, 0, 0), local_tz),
+            status='completed'
+        )
+        self.order2 = Order.objects.create(
+            user_profile=self.user_profile,
+            restaurant=self.restaurant,
+            total_price=200.00,
+            order_date=make_aware(datetime(2024, 12, 12, 14, 0, 0), local_tz),
+            status='completed'
+        )
+        self.order3 = Order.objects.create(
+            user_profile=self.user_profile,
+            restaurant=self.restaurant,
+            total_price=50.00,
+            order_date=make_aware(datetime(2024, 12, 8, 0, 0, 0), local_tz),
+            status='completed'
+        )
+
+        self.client = Client()
+        self.client.login(username="testuser", password="password123")
+        
+    def test_sales_report(self):
+        response = self.client.get(reverse("restaurant:sales_report"))
+        
+    def test_sales_report_without_date_filter(self):
+        response = self.client.get(reverse("restaurant:sales_report"))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["total_sales"], 350.00)  # Total of completed orders
+        self.assertEqual(len(response.context["orders"]), 3)  # Completed orders only
+        self.assertEqual(response.context["restaurant"], self.restaurant)
+
+    def test_sales_report_no_completed_orders(self):
+        # Set all orders to a non-completed status
+        Order.objects.filter(status='completed').update(status='cooking')
+        response = self.client.get(reverse("restaurant:sales_report"))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context["total_sales"], 0)  # No completed orders
+        self.assertEqual(len(response.context["orders"]), 0)  # No orders in context
+
+class AddPaymentTestCase(TestCase):
+    def setUp(self):
+        # สร้าง user และ restaurant profile
+        self.user = User.objects.create_user(username="testuser", password="password123")
+        self.user_profile = UserProfile.objects.create(user=self.user, user_type="restaurant")
+        self.restaurant_profile = RestaurantProfile.objects.create(
+            user_profile=self.user_profile,
+            restaurant_name="Test Restaurant"
+        )
+
+        self.client = Client()
+
+    def test_add_payment_success(self):
+        """ทดสอบการเพิ่มบัญชีธนาคารเมื่อข้อมูลถูกต้อง"""
+        self.client.login(username="testuser", password="password123")
+
+        response = self.client.post(reverse('restaurant:add_payment'), {
+            'bank_name': 'Test Bank',
+            'account_number': '1234567890',
+        })
+
+        # ตรวจสอบการสร้างข้อมูล PaymentMethod
+        self.assertTrue(PaymentMethod.objects.filter(bank_name='Test Bank', account_number='1234567890').exists())
+
+        # ตรวจสอบ redirect
+        self.assertRedirects(response, reverse('restaurant:edit_menu_payment'))
+
+    def test_add_payment_missing_fields(self):
+        """ทดสอบการเพิ่มบัญชีธนาคารเมื่อข้อมูลไม่ครบถ้วน"""
+        self.client.login(username="testuser", password="password123")
+
+        response = self.client.post(reverse('restaurant:add_payment'), {
+            'bank_name': '',  # ไม่ใส่ชื่อธนาคาร
+            'account_number': '',
+        })
+
+        # ตรวจสอบว่าไม่มีการสร้าง PaymentMethod
+        self.assertFalse(PaymentMethod.objects.exists())
+
+        # ตรวจสอบ error message
+        self.assertContains(response, "กรุณากรอกชื่อธนาคารและเลขบัญชีให้ครบถ้วน")
+
+    def test_add_payment_get_request(self):
+        """ทดสอบการแสดงรายการบัญชีธนาคารเมื่อใช้ GET"""
+        self.client.login(username="testuser", password="password123")
+
+        # เพิ่มข้อมูล PaymentMethod ล่วงหน้า
+        PaymentMethod.objects.create(
+            restaurant_profile=self.restaurant_profile,
+            bank_name="Test Bank 1",
+            account_number="1234567890"
+        )
+
+        response = self.client.get(reverse('restaurant:add_payment'))
+
+        # ตรวจสอบการแสดงผล
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Test Bank 1")
+        self.assertContains(response, "1234567890")
+
+    def test_add_payment_duplicate_entry(self):
+        """ทดสอบการเพิ่มบัญชีธนาคารซ้ำกัน"""
+        self.client.login(username="testuser", password="password123")
+
+        # เพิ่มบัญชีธนาคารครั้งแรก
+        PaymentMethod.objects.create(
+            restaurant_profile=self.restaurant_profile,
+            bank_name="Test Bank",
+            account_number="1234567890"
+        )
+
+        # ส่งข้อมูลซ้ำ
+        response = self.client.post(reverse('restaurant:add_payment'), {
+            'bank_name': 'Test Bank',
+            'account_number': '1234567890',
+        })
+
+        # ตรวจสอบว่าไม่มีการสร้างบัญชีซ้ำ
+        self.assertEqual(PaymentMethod.objects.filter(
+            bank_name='Test Bank',
+            account_number='1234567890'
+        ).count(), 1)
+
+        # ตรวจสอบ error message (เพิ่ม validation ใน view ถ้าจำเป็น)
+        self.assertContains(response, "บัญชีนี้มีอยู่แล้ว")
+    
+    def test_add_payment_invalid_account_number(self):
+        """ทดสอบการเพิ่มบัญชีธนาคารที่เลขบัญชีไม่ใช่ตัวเลข"""
+        self.client.login(username="testuser", password="password123")
+
+        response = self.client.post(reverse('restaurant:add_payment'), {
+            'bank_name': 'Test Bank',
+            'account_number': 'invalid123',
+        })
+
+        # ตรวจสอบว่าไม่มีการสร้าง PaymentMethod
+        self.assertFalse(PaymentMethod.objects.exists())
+
+        # ตรวจสอบ error message
+        self.assertContains(response, "กรุณากรอกเลขบัญชีที่ถูกต้อง")
+    def test_add_payment_only_show_user_methods(self):
+        """ทดสอบว่าแสดงเฉพาะบัญชีธนาคารของผู้ใช้งานปัจจุบัน"""
+        other_user = User.objects.create_user(username="otheruser", password="password456")
+        other_user_profile = UserProfile.objects.create(user=other_user, user_type="restaurant")
+        other_restaurant_profile = RestaurantProfile.objects.create(
+            user_profile=other_user_profile,
+            restaurant_name="Other Restaurant"
+        )
+
+        # เพิ่มบัญชีธนาคารของผู้ใช้อื่น
+        PaymentMethod.objects.create(
+            restaurant_profile=other_restaurant_profile,
+            bank_name="Other Bank",
+            account_number="999999999"
+        )
+
+        # เพิ่มบัญชีธนาคารของผู้ใช้ปัจจุบัน
+        PaymentMethod.objects.create(
+            restaurant_profile=self.restaurant_profile,
+            bank_name="My Bank",
+            account_number="1234567890"
+        )
+
+        self.client.login(username="testuser", password="password123")
+        response = self.client.get(reverse('restaurant:add_payment'))
+
+        # ตรวจสอบการแสดงผล
+        self.assertContains(response, "My Bank")
+        self.assertContains(response, "1234567890")
+        self.assertNotContains(response, "Other Bank")
