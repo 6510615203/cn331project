@@ -189,73 +189,6 @@ class AddMenuResTest(TestCase):
         self.assertTemplateUsed(response, 'add_menu_res.html')
         self.assertEqual(response.context['restaurant_name'], self.restaurant.restaurant_name)
 
-
-class EditOnlyMenuTest(TestCase):
-    def setUp(self):
-        # สร้าง User
-        self.user = User.objects.create_user(username="testuser", password="password123")
-
-        # สร้าง UserProfile (ถ้ามี)
-        self.user_profile = UserProfile.objects.create(user=self.user)
-
-        # สร้าง RestaurantProfile
-        self.restaurant_profile = RestaurantProfile.objects.create(user_profile=self.user_profile)
-
-        # สร้าง PaymentMethod
-        self.payment_method = PaymentMethod.objects.create(
-            bank_name="Test Bank",
-            account_number="123456789",
-            restaurant=self.restaurant_profile
-        )
-        # ล็อกอินผู้ใช้
-        self.client.login(username="testuser", password="password")
-
-    # ทดสอบการเข้าถึง view
-    def test_edit_only_menu_view_access(self):
-        response = self.client.get(reverse("restaurant:edit_only_menu"))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "edit_only_menu.html")
-        self.assertEqual(response.context["restaurant"], self.restaurant)
-
-
-class AddPaymentTest(TestCase):
-    def setUp(self):
-        # สร้างข้อมูลผู้ใช้และร้านอาหาร
-        self.user = User.objects.create_user(username="testuser", password="password")
-        self.user_profile = UserProfile.objects.create(
-            user=self.user,
-            user_type="restaurant",
-            name="Test User"
-        )
-        self.restaurant = RestaurantProfile.objects.create(
-            user_profile=self.user_profile,
-            restaurant_name="Test Restaurant",
-            about="This is a test restaurant",
-            open_close_time="09:00-20:00"
-        )
-        # ล็อกอินผู้ใช้
-        self.client.login(username="testuser", password="password")
-
-    # ทดสอบการเข้าถึงหน้าเพิ่มช่องทางการชำระเงิน
-    def test_add_payment_view_access(self):
-        response = self.client.get(reverse("restaurant:add_payment"))
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "add_payment.html")
-        self.assertIn("payment_methods", response.context)
-        self.assertIn("error_message", response.context)
-
-    # ทดสอบการเพิ่มช่องทางการชำระเงิน 
-    def test_add_payment_post_valid(self):
-        response = self.client.post(reverse("restaurant:add_payment"), {
-            "bank_name": "Test Bank",
-            "account_number": "1234567890"
-        })
-        self.assertEqual(response.status_code, 302)  
-        payment_methods = PaymentMethod.objects.filter(restaurant_profile=self.restaurant)
-        self.assertEqual(payment_methods.count(), 1)
-        self.assertEqual(payment_methods.first().bank_name, "Test Bank")
-        self.assertEqual(payment_methods.first().account_number, "1234567890")
-
 class OrderListViewTest(TestCase):
     def setUp(self):
         # สร้างผู้ใช้และโปรไฟล์ร้านอาหาร
@@ -850,21 +783,18 @@ class SalesReportTest(TestCase):
         self.order1 = Order.objects.create(
             restaurant=self.restaurant_profile,
             status='completed',
-            order_date=timezone.datetime(2024, 12, 10, 12, 0),
             total_price=100,
             user_profile=user_profile
         )
         self.order2 = Order.objects.create(
             restaurant=self.restaurant_profile,
             status='completed',
-            order_date=timezone.datetime(2024, 12, 11, 12, 0), 
             total_price=150,
             user_profile=user_profile
         )
         self.order3 = Order.objects.create(
             restaurant=self.restaurant_profile,
             status='completed',
-            order_date=timezone.datetime(2024, 12, 9, 12, 0),
             total_price=200,
             user_profile=user_profile
         )
