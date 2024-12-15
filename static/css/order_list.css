@@ -3,6 +3,9 @@ body {
     margin: 0;
     padding: 0;
 }
+.container mt-5{
+    font-family: inherit;
+}
 
 .header {
     color: #AF1F1F;
@@ -10,40 +13,189 @@ body {
     font-size: 30px;
 }
 
-.order-card {
-    background-color: #f5f5f5;
-    border-radius: 20px;
-    padding: 20px 40px 40px 50px;
-    margin-top: 20px;
-    font-family: inherit;
-    margin-bottom: 20px;
-    line-height: 20px;
+.order-card{
+    padding: 10px 20px;
 }
-
-.order-card p {
-    font-size: 16px;
-}
-
-.order-card img {
-    margin-bottom: 20px;
-}
-
-.btn {
-    width: 150px;
-    height: 40px;
-    background-color: #FFFAB7;
-    color: black;
-    text-decoration: none;
-    border-radius: 30px;
-    font-size: 14px;
-    font-weight: normal;
+/******************************กริดหลัก***********************************/
+.grid-orderlist{
+    display: grid;
+    grid-template-columns: 1fr 2fr 3fr 1fr 1fr 2fr 1fr;
+    justify-items: center;
+    font-size: 15px;
     text-align: center;
-    cursor: pointer;
-    margin-bottom: 10px;
-    font-family: inherit;
+    background-color: #f0f0f0;
+    border-radius: 25px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 10px ;
+    border: 2px solid #333;
 }
 
-.btn:hover {
-    background-color: #AF1F1F;
-    color: white;
+/***************************เลขคำสั่งซื้อ******************************/
+.number{
+    width: 100%;
+    margin: 0 auto;
+    border-right: 2px solid #9c9c9c; 
+    padding: 3px;
 }
+.number p{
+    font-size: 18px;
+    margin: 10px 0; 
+    padding-top: 10px;
+    
+}
+.number p strong {
+    font-weight: bold; 
+    color: #333; 
+}
+/***************************ชื่อลูกค้า******************************/
+.name{
+    width: 100%;
+    margin: 0 auto;
+    border-right: 2px solid #9c9c9c;
+    padding: 3px; 
+}
+.name p{
+    font-size: 18px;
+    margin: 10px 0; 
+    padding-top: 10px;
+    
+    
+}
+.name p strong {
+    font-weight: bold; 
+    color: #333; 
+}
+
+/***************************เวลามารับอาหาร******************************/
+.time{
+    width: 100%;
+    margin: 0 auto;
+    padding: 0px 3px; 
+}
+.time p{
+    font-size: 18px;
+    margin: 10px 0; 
+    padding-top: 10px;
+    
+    
+}
+.time p strong {
+    font-weight: bold; 
+    color: #333; 
+}
+
+.time em{
+    color: #AF1F1F;
+}
+/***************************สถานะการจ่ายเงิน******************************/
+.status{
+    width: 100%;
+    margin: 0 auto;
+    border-right: 2px solid #9c9c9c;
+    padding: 3px;
+    
+}
+.status p{
+    font-size: 18px;
+    margin: 10px 0; 
+    padding-top: 10px;
+    
+    
+}
+.status p strong {
+    font-weight: bold; 
+    color: #333; 
+}
+
+/***************************รายละเอียดเมนู******************************/
+.menu-data{
+    width: 100%; 
+    margin: 0 auto;
+    border-right: 2px solid #9c9c9c; 
+    padding:3px;
+}
+.menu-data h3 {
+    font-size: 18px;
+    padding-top: 5px;
+    color: #AF1F1F;
+}
+.menu-data ul li {
+    text-align: left;
+    padding: 5px;
+}
+
+/***************************ราคารวม******************************/
+.total-price{
+    width: 90%;
+    margin: 0 auto;
+    border-right: 2px solid #9c9c9c; 
+    padding: 3px;
+    
+
+}
+.total-price p{
+    font-size: 18px;
+    margin: 10px 0; 
+    padding-top: 10px;
+}
+.total-price p strong {
+    font-weight: bold; 
+    color: #333; 
+}
+
+.slip{
+    width: 100%;
+    margin: 0 auto;
+    border-right: 2px solid #9c9c9c; 
+}
+.slip p{
+    font-size: 18px;
+    margin: 10px 0; 
+    padding-top: 10px;
+}
+.slip p strong {
+    font-weight: bold; 
+    color: #333; 
+}
+
+/***********************ปุ่ม************************/
+.order-actions {
+    display: flex;
+    justify-content: center; /* จัดตำแหน่งปุ่มให้อยู่กลางแนวนอน */
+    align-items: center; /* จัดตำแหน่งปุ่มให้อยู่กลางในแนวตั้ง */
+    height: 100%; /* ให้พื้นที่เพียงพอในการจัดตำแหน่งในแนวตั้ง */
+}
+
+.order-actions form {
+    display: inline-block; 
+    margin: 10px;
+    
+}
+.order-actions button{
+    padding: 5px;
+    background-color: #fdf4c3; 
+    color: black;  
+    border: 2px solid black;
+    border-radius: 20px;
+    font-family: inherit; 
+    font-size: 15px; 
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+    transition: background-color 0.3s, transform 0.2s;
+    display: flex;
+    justify-content: center; /* จัดตำแหน่งปุ่มให้อยู่กลางแนวนอน */
+    align-items: center; /* จัดตำแหน่งปุ่มให้อยู่กลางแนวตั้ง */
+    height: 100%; 
+}
+
+.order-actions button:hover {
+    background-color: #AF1F1F;
+    color: #ffffff; 
+    transform: scale(1.05); 
+}
+
+.order-actions button:active {
+    background-color: #AF1F1F; 
+    transform: scale(0.95); 
+}
+
