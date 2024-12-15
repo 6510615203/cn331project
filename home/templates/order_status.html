@@ -38,8 +38,7 @@
                 <h3>รายละเอียดเมนู :</h3>
                 <ul>
                     {% for item in order.order_items.all %}
-                    <li>{{ item.restaurant_menu.food_name }} - จำนวน : {{ item.quantity }} - ราคา: {{ item.total_price
-                        }} บาท</li>
+                    <li>{{ item.restaurant_menu.food_name }} - จำนวน : {{ item.quantity }} - ราคา: {{ item.total_price}} บาท</li>
                     {% endfor %}
                 </ul>
             </div>
