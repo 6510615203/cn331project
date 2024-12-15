@@ -229,7 +229,7 @@ def login_view(request):
 
             if user_type == "restaurant":
                 messages.success(request, "Login successfully!")
-                return redirect("/restaurant/")  
+                return redirect("restaurant:index")  
             else:
                 messages.success(request, "Login successfully!")
                 return redirect("/order/") 
