@@ -10,6 +10,9 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from datetime import datetime, timedelta
 from django.utils import timezone
 from django.contrib.messages import get_messages
+from datetime import date, datetime
+from django.utils import timezone
+
 
 
 class GeneralViewTest(TestCase):
@@ -56,6 +59,12 @@ class ManageViewTest(TestCase):
             about='A test restaurant',
             open_close_time='10:00-22:00',
         )
+        self.client.login(username='testuser', password='testpassword')
+    
+    def test_manage_restaurant_page(self):
+        response = self.client.get(reverse('restaurant:manage'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "manage_restaurant.html")
         
     #ส่งคำขอ http ไป view พร้อมกับข้อมูล และดึงข้อมูลล่าสุดมาตรวจสอบว่าตรงกันไหม
     def test_update_restaurant_name(self):
@@ -832,43 +841,61 @@ class OrderConfirmationTestCase(TestCase):
         self.assertEqual(self.order.status, 'pending')  # สถานะไม่ควรถูกเปลี่ยน
         self.assertEqual(response.status_code, 302)  # Redirect สำเร็จ
 
-from django.utils import timezone
-
 class SalesReportTest(TestCase):
-    
     def setUp(self):
-        # สร้างผู้ใช้
         self.user = User.objects.create_user(username='testuser', password='password')
-        
-        # สร้าง UserProfile ที่เชื่อมโยงกับ User
         user_profile = UserProfile.objects.create(user=self.user)
-
-        # สร้าง RestaurantProfile ที่เชื่อมโยงกับ UserProfile
         self.restaurant_profile = RestaurantProfile.objects.create(user_profile=user_profile)
 
-        # สร้างคำสั่งซื้อจำลองที่มีการเชื่อมโยงกับ UserProfile
         self.order1 = Order.objects.create(
             restaurant=self.restaurant_profile,
             status='completed',
-            order_date=timezone.now() - timezone.timedelta(days=1),  # วันที่ในช่วงกรอง
+            order_date=timezone.datetime(2024, 12, 10, 12, 0),
             total_price=100,
             user_profile=user_profile
         )
         self.order2 = Order.objects.create(
             restaurant=self.restaurant_profile,
             status='completed',
-            order_date=timezone.now() - timezone.timedelta(days=2),  # วันที่ในช่วงกรอง
+            order_date=timezone.datetime(2024, 12, 11, 12, 0), 
             total_price=150,
+            user_profile=user_profile
+        )
+        self.order3 = Order.objects.create(
+            restaurant=self.restaurant_profile,
+            status='completed',
+            order_date=timezone.datetime(2024, 12, 9, 12, 0),
+            total_price=200,
             user_profile=user_profile
         )
 
         self.client.login(username='testuser', password='password')
-        
+
     def test_sales_report_with_start_date(self):
-        # กำหนด start_date เป็นวันที่ 1 วันก่อนหน้านี้
-        start_date = (timezone.now() - timezone.timedelta(days=2)).date()  # ตั้ง `start_date` ให้ตรงกับคำสั่งซื้อที่ต้องการให้กรอง
-        response = self.client.get(reverse('restaurant:sales_report'), {'start_date': start_date})
+        start_date = timezone.datetime(2024, 12, 10,).date()
+        end_date = timezone.datetime(2024, 12, 10,).date()
+        order_date1 = timezone.make_aware(timezone.datetime(2024, 12, 10, 12,), timezone.get_current_timezone())
+        self.order1.order_date = order_date1
+        self.order1.save()
+        order_date2 = timezone.make_aware(timezone.datetime(2024, 12, 11, 12,), timezone.get_current_timezone())
+        self.order2.order_date = order_date2
+        self.order2.save()
+        order_date3 = timezone.make_aware(timezone.datetime(2024, 12, 9, 12,), timezone.get_current_timezone())
+        self.order3.order_date = order_date3
+        self.order3.save()
+
+        
+        response = self.client.get(reverse('restaurant:sales_report'), {'start_date': start_date, 'end_date': end_date})
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.context['orders']), 1)  # คำสั่งซื้อที่กรองจะต้องเหลือแค่ 1 คำสั่ง
-        self.assertEqual(response.context['orders'][0].total_price, 150)  # คำสั่งซื้อที่กรองออกมาควรมีราคา 150 (order2)
+        orders = response.context['orders']
+        self.assertEqual(len(orders), 1)
+        self.assertEqual(orders[0].total_price, 100) 
+
+
+
+
+
+    
+
+    
