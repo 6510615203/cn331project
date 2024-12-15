@@ -5,10 +5,15 @@ body {
 
 }
 
-h1 {
-    color: #AF1F1F;
-    font-size: 30px;
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
+
 
 .image-container label {
     width: 100%;
@@ -34,7 +39,12 @@ h1 {
     text-align: center;
     color: #AF1F1F;
     font-size: 30px;
+    margin-top: 20px; /* เพิ่มความห่างจากด้านบน */
+    margin-left: 20px
+    
 }
+
+
 
 
 .signup-container {
@@ -78,10 +88,23 @@ h1 {
     font-family: inherit;
 }
 
+.form-button-container {
+    position: absolute; /* ดันให้ไปอยู่ด้านล่าง */
+    bottom: 400px; /* ระยะห่างจากด้านล่าง */
+    left: 50%; /* กึ่งกลางหน้าจอ */
+    transform: translateX(-50%); /* จัดให้อยู่ตรงกลาง */
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: center;
+}
+
+
+
 .form-button {
     text-align: right;
     font-family: inherit;
-    margin-right: 30px;
+    margin-right: 0px;
 }
 
 .form-button button {
@@ -219,12 +242,15 @@ h1 {
     justify-content: left;
     align-items: center;
     position: absolute;
-    top: 30%;
+    top: 20%;
     left: 30%;
-    width: 900px;
-    height: 50%;
+    width: 750px;
+    height: 30%;
     background-color: #f5f5f5;
     border-radius: 10px;
+    padding: 10px; /* ระยะห่างภายใน */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* เงาของกรอบ */
+    
 }
 
 .welcometitle {
@@ -271,14 +297,14 @@ h1 {
     flex-direction: column;
 }
 
-.image-container {
+.image-section {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 20px;
+    
 }
-
-.image-container label {
+.image-section label {
     background-color: #AF1F1F;
     width: 200px;
     height: 50px;
@@ -286,7 +312,7 @@ h1 {
     color: white;
 }
 
-.image-container label:hover {
+.image-section label:hover {
     background-color: #FFFAB7;
     color: black;
 }
@@ -296,7 +322,7 @@ h1 {
     height: 150px;
     border-radius: 50%;
     overflow: hidden;
-    margin-top: 10px;
+    margin-top: 30px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -322,7 +348,7 @@ h1 {
     color: black;
     text-decoration: none;
     border-radius: 30px;
-    font-size: 12px;
+    font-size: 16px;
     font-weight: normal;
     text-align: center;
     margin-left: 10px;
@@ -332,6 +358,7 @@ h1 {
     background-color: #AF1F1F;
     color: white;
 }
+
 
 .box {
     color: black;
@@ -377,4 +404,59 @@ input[type="text"]:focus {
     border-color: #AF1F1F;
     /* สีขอบเมื่อ focus */
 
+}
+
+.select-dropdown select {
+    width: 50%; /* ความกว้างเหมือน input field */
+    padding: 10px;
+    border: 1px solid #e2e2e2;
+    background-color: #e2e2e2;
+    border-radius: 5px;
+    font-size: 16px;
+    appearance: none;
+    text-align: center;
+    width: 250px;
+    font-family: inherit;
+}
+
+.choose-logo-btn {
+    display: block; /* ทำให้ปุ่มอยู่บรรทัดเดียว */
+    margin: 10px auto; /* ทำให้ปุ่มอยู่กึ่งกลาง */
+    background-color: #AF1F1F;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.save-logo-btn {
+    display: block; /* แยกบรรทัดปุ่มออกจาก "Choose a new logo" */
+    margin: 10px auto; /* ทำให้ปุ่มอยู่กึ่งกลาง */
+    background-color: #FFFAB7;
+    color: black;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    font-family: inherit;
+}
+.save-logo-btn:hover {
+    background-color: #AF1F1F;
+    color: white;
+}
+
+.image-edit{
+    display: block;
+    margin: 10px auto;
+    background-color: #AF1F1F;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    font-family: inherit;
 }
