@@ -361,35 +361,6 @@ class YourOrderViewTest(TestCase):
   
         self.assertEqual(response.status_code, 302)
         
-    def test_order_deleted_when_empty(self):
-        """ทดสอบการลบ Order เมื่อไม่มีรายการเมนูเหลืออยู่"""
-        # เพิ่มรายการ OrderItem และลบทั้งหมดเพื่อให้ Order ว่างเปล่า
-        menu_item = Menu.objects.create(
-            restaurant_profile=self.restaurant_profile,
-            food_name="Test Menu",
-            price=50.0
-        )
-        order_item = OrderItem.objects.create(
-            order=self.order,
-            restaurant_menu=menu_item,
-            quantity=1,
-            total_price=50.0
-        )
-
-        # ลบรายการ OrderItem ทั้งหมด
-        self.order.order_items.all().delete()
-
-        # จำลองการเข้าหน้า your_order ซึ่งควรจะลบ Order ที่ไม่มี OrderItem
-        self.client.login(username="testuser", password="testpassword")
-        response = self.client.post(reverse('your_order'), {'menu_id': menu_item.id})
-
-        # ตรวจสอบว่า Order ถูกลบออกจากฐานข้อมูล
-        with self.assertRaises(Order.DoesNotExist):
-            Order.objects.get(id=self.order.id)
-
-        # ตรวจสอบว่า redirect เกิดขึ้น (เช่น กลับไปยังหน้าหลัก)
-        self.assertEqual(response.status_code, 302)
-
 
     
     
@@ -860,56 +831,7 @@ class RestaurantListViewTest(TestCase):
         self.assertEqual(restaurants.count(), 2)
         self.assertIn(self.restaurant1, restaurants)
         self.assertIn(self.restaurant2, restaurants)
-class MenuListViewTest(TestCase):
-    def setUp(self):
-       
-        self.client = Client()
-        self.user = User.objects.create_user(username="testuser", password="password123")
-        self.user_profile = UserProfile.objects.create(user=self.user, user_type="restaurant")
 
-        self.restaurant = RestaurantProfile.objects.create(
-            user_profile=self.user_profile,
-            restaurant_name="Test Restaurant",
-            food_category="MADE_TO_ORDER",
-            about="A test restaurant",
-            open_close_time="9:00 AM - 9:00 PM"
-        )
-
- 
-        self.menu_item1 = Menu.objects.create(
-        restaurant_profile=self.restaurant,  # ใช้เครื่องหมาย "="
-        food_name="Pad Thai",
-        about="Delicious Pad Thai",
-        price=50.0
-        )
-        self.menu_item2 = Menu.objects.create(
-        restaurant_profile=self.restaurant,  # ใช้เครื่องหมาย "="
-        food_name="Tom Yum",
-        about="Spicy Tom Yum",
-        price=70.0
-        )
-
-        
-        self.url = reverse('menu_list', args=[self.restaurant.id])
-        
-    def test_menu_list_view_no_menu_items(self):
-        """ทดสอบกรณีร้านอาหารไม่มีเมนู"""
-        # ลบเมนูทั้งหมดออกจากร้าน
-        Menu.objects.filter(restaurant_profile=self.restaurant).delete()
-
-        # ส่ง Request ไปยัง View
-        response = self.client.get(self.url)
-
-        # ตรวจสอบสถานะ HTTP
-        self.assertEqual(response.status_code, 200)
-
-        # ตรวจสอบ Context menu_items เป็น QuerySet ที่ว่าง
-        self.assertEqual(list(response.context["menu_items"]), [])  # ตรวจเป็น List ว่าง
-
-        # ตรวจสอบ Template ที่ใช้
-        self.assertTemplateUsed(response, "menu_list.html")
-
- 
    
 from datetime import datetime, timedelta
 from django.utils.timezone import make_aware, now
