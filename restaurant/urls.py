@@ -8,7 +8,7 @@ app_name = "restaurant"
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('manage', views.manage, name='manage'),
+    path('manage/', views.manage, name='manage'),
     path('about_kinkorn', views.about, name='about'),
     path('order_list', views.order_list, name='order_list'),
     path('sales_report', views.sales_report, name='sales_report'),
@@ -22,6 +22,7 @@ urlpatterns = [
     path('sales_report/', views.sales_report, name='sales_report'),
     #path('delete_menu', views.delete_menu, name='delete_menu'),
     path('accounts/login/', auth_views.LoginView.as_view(), name='login'),
+    
 ]
 
 if settings.DEBUG:  # ใช้เฉพาะในโหมด debug (development server)

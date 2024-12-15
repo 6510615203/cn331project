@@ -103,6 +103,7 @@ class Order(models.Model):
         ('cooking', 'Cooking'),
         ('completed', 'Completed'),
     ]
+    completed_at = models.DateTimeField(null=True, blank=True)
     status = models.CharField(max_length=20, choices=status_choices, default='waiting_for_payment')
     payment_slip = models.ImageField(upload_to='payment_slips/', null=True, blank=True)
     def calculate_total(self):

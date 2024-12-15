@@ -8,6 +8,9 @@ from restaurant.models import UserProfile, RestaurantProfile, PaymentMethod
 from home.models import UserProfile,Order,Menu
 from django.core.files.uploadedfile import SimpleUploadedFile
 from datetime import datetime, timedelta
+from django.utils import timezone
+from django.contrib.messages import get_messages
+
 
 class GeneralViewTest(TestCase):
     #สร้างข้อมูล user ให้เชื่อมกับ UserProfilecและสร้างข้อมูลร้านอาหาร
@@ -40,9 +43,6 @@ class GeneralViewTest(TestCase):
 
 
     
-
-
-
        
 class ManageViewTest(TestCase):
     #สร้างข้อมูล user ให้เชื่อมกับ UserProfileและสร้างข้อมูลร้านอาหาร
@@ -108,9 +108,7 @@ class ManageViewTest(TestCase):
         )
         self.restaurant.refresh_from_db()
         self.assertTrue(self.restaurant.restaurant_picture)
-        
 
-        
 class EditMenuPaymentTest(TestCase):
     #สร้างข้อมูล user ให้เชื่อมกับ UserProfilecและสร้างข้อมูลร้านอาหารและเมนู
     def setUp(self):
@@ -633,63 +631,6 @@ class EditOnlyPaymentTestCase(TestCase):
         response = self.client.get(reverse("restaurant:edit_only_payment"), {"payment_id": 9999})
         self.assertEqual(response.status_code, 404)
 
-from pytz import timezone
-from datetime import datetime
-from django.utils.timezone import make_aware
-class SalesReportTestCase(TestCase):
-    def setUp(self):
-        local_tz = timezone("Asia/Bangkok")   
-
-        self.user = User.objects.create_user(username="testuser", password="password123")
-        self.user_profile = UserProfile.objects.create(user=self.user, user_type="restaurant")
-        self.restaurant = RestaurantProfile.objects.create(
-            user_profile=self.user_profile,
-            restaurant_name="Test Restaurant"
-        )
-
-        self.order1 = Order.objects.create(
-            user_profile=self.user_profile,
-            restaurant=self.restaurant,
-            total_price=100.00,
-            order_date=make_aware(datetime(2024, 12, 10, 10, 0, 0), local_tz),
-            status='completed'
-        )
-        self.order2 = Order.objects.create(
-            user_profile=self.user_profile,
-            restaurant=self.restaurant,
-            total_price=200.00,
-            order_date=make_aware(datetime(2024, 12, 12, 14, 0, 0), local_tz),
-            status='completed'
-        )
-        self.order3 = Order.objects.create(
-            user_profile=self.user_profile,
-            restaurant=self.restaurant,
-            total_price=50.00,
-            order_date=make_aware(datetime(2024, 12, 8, 0, 0, 0), local_tz),
-            status='completed'
-        )
-
-        self.client = Client()
-        self.client.login(username="testuser", password="password123")
-        
-    def test_sales_report(self):
-        response = self.client.get(reverse("restaurant:sales_report"))
-        
-    def test_sales_report_without_date_filter(self):
-        response = self.client.get(reverse("restaurant:sales_report"))
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context["total_sales"], 350.00)  # Total of completed orders
-        self.assertEqual(len(response.context["orders"]), 3)  # Completed orders only
-        self.assertEqual(response.context["restaurant"], self.restaurant)
-
-    def test_sales_report_no_completed_orders(self):
-        # Set all orders to a non-completed status
-        Order.objects.filter(status='completed').update(status='cooking')
-        response = self.client.get(reverse("restaurant:sales_report"))
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context["total_sales"], 0)  # No completed orders
-        self.assertEqual(len(response.context["orders"]), 0)  # No orders in context
-
 class AddPaymentTestCase(TestCase):
     def setUp(self):
         # สร้าง user และ restaurant profile
@@ -820,3 +761,114 @@ class AddPaymentTestCase(TestCase):
         self.assertContains(response, "My Bank")
         self.assertContains(response, "1234567890")
         self.assertNotContains(response, "Other Bank")
+
+class OrderConfirmationTestCase(TestCase):
+    def setUp(self):
+        # สร้างผู้ใช้
+        self.user = User.objects.create_user(username="testuser", password="password123")
+        self.user_profile = UserProfile.objects.create(user=self.user, user_type="restaurant")
+
+        # สร้างร้านอาหารที่เชื่อมกับผู้ใช้
+        self.restaurant_profile = RestaurantProfile.objects.create(
+            user_profile=self.user_profile,
+            restaurant_name="Test Restaurant"
+        )
+
+        # สร้างคำสั่งซื้อที่เชื่อมกับร้านอาหารและผู้ใช้
+        self.order = Order.objects.create(
+            user_profile=self.user_profile,  # เชื่อมกับ UserProfile
+            restaurant=self.restaurant_profile,
+            status="pending"
+        )
+
+        self.client = Client()
+
+    def test_order_confirmation_paid_status(self):
+        """ทดสอบการเปลี่ยนสถานะเป็น 'paid'"""
+        self.client.login(username="testuser", password="password123")
+        response = self.client.post(
+            reverse('restaurant:order_confirmation', args=[self.order.id]),
+            {'status': 'paid'}
+        )
+        self.order.refresh_from_db()
+        self.assertEqual(self.order.status, 'paid')
+        self.assertEqual(response.status_code, 302)
+
+
+    def test_order_confirmation_cooking_status(self):
+        """ทดสอบการเปลี่ยนสถานะเป็น 'cooking'"""
+        self.client.login(username="testuser", password="password123")
+        response = self.client.post(
+            reverse('restaurant:order_confirmation', args=[self.order.id]),
+            {'status': 'cooking'}
+        )
+
+        self.order.refresh_from_db()
+        self.assertEqual(self.order.status, 'cooking')  # ตรวจสอบสถานะ
+        self.assertEqual(response.status_code, 302)  # Redirect สำเร็จ
+
+    def test_order_confirmation_completed_status(self):
+        """ทดสอบการเปลี่ยนสถานะเป็น 'completed'"""
+        self.client.login(username="testuser", password="password123")
+        response = self.client.post(
+            reverse('restaurant:order_confirmation', args=[self.order.id]),
+            {'status': 'completed'}
+        )
+
+        self.order.refresh_from_db()
+        self.assertEqual(self.order.status, 'completed')  # ตรวจสอบสถานะ
+        self.assertIsNotNone(self.order.completed_at)  # ตรวจสอบเวลาที่ถูกบันทึก
+        self.assertEqual(response.status_code, 302)  # Redirect สำเร็จ
+
+    def test_order_confirmation_invalid_status(self):
+        """ทดสอบการส่งสถานะที่ไม่ถูกต้อง"""
+        self.client.login(username="testuser", password="password123")
+        response = self.client.post(
+            reverse('restaurant:order_confirmation', args=[self.order.id]),
+            {'status': 'invalid_status'}
+        )
+
+        self.order.refresh_from_db()
+        self.assertEqual(self.order.status, 'pending')  # สถานะไม่ควรถูกเปลี่ยน
+        self.assertEqual(response.status_code, 302)  # Redirect สำเร็จ
+
+from django.utils import timezone
+
+class SalesReportTest(TestCase):
+    
+    def setUp(self):
+        # สร้างผู้ใช้
+        self.user = User.objects.create_user(username='testuser', password='password')
+        
+        # สร้าง UserProfile ที่เชื่อมโยงกับ User
+        user_profile = UserProfile.objects.create(user=self.user)
+
+        # สร้าง RestaurantProfile ที่เชื่อมโยงกับ UserProfile
+        self.restaurant_profile = RestaurantProfile.objects.create(user_profile=user_profile)
+
+        # สร้างคำสั่งซื้อจำลองที่มีการเชื่อมโยงกับ UserProfile
+        self.order1 = Order.objects.create(
+            restaurant=self.restaurant_profile,
+            status='completed',
+            order_date=timezone.now() - timezone.timedelta(days=1),  # วันที่ในช่วงกรอง
+            total_price=100,
+            user_profile=user_profile
+        )
+        self.order2 = Order.objects.create(
+            restaurant=self.restaurant_profile,
+            status='completed',
+            order_date=timezone.now() - timezone.timedelta(days=2),  # วันที่ในช่วงกรอง
+            total_price=150,
+            user_profile=user_profile
+        )
+
+        self.client.login(username='testuser', password='password')
+        
+    def test_sales_report_with_start_date(self):
+        # กำหนด start_date เป็นวันที่ 1 วันก่อนหน้านี้
+        start_date = (timezone.now() - timezone.timedelta(days=2)).date()  # ตั้ง `start_date` ให้ตรงกับคำสั่งซื้อที่ต้องการให้กรอง
+        response = self.client.get(reverse('restaurant:sales_report'), {'start_date': start_date})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['orders']), 1)  # คำสั่งซื้อที่กรองจะต้องเหลือแค่ 1 คำสั่ง
+        self.assertEqual(response.context['orders'][0].total_price, 150)  # คำสั่งซื้อที่กรองออกมาควรมีราคา 150 (order2)

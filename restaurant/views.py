@@ -1,4 +1,4 @@
-from datetime import timezone
+from django.utils import timezone
 import decimal
 from email.utils import parsedate
 from django.shortcuts import render,redirect, get_object_or_404
@@ -179,39 +179,6 @@ def add_menu_res(request):
 
     return render(request, "add_menu_res.html", {"restaurant_name": restaurant_name, 'food_categories': food_categories})
 
-
-
-def add_payment(request):
-    restaurant_profile = RestaurantProfile.objects.get(user_profile__user=request.user)
-  
-    error_message = None
-
-    if request.method == 'POST':
-        bank_name = request.POST.get('bank_name', '').strip()
-        account_number = request.POST.get('account_number', '').strip()
-
-        if not bank_name or not account_number:
-            error_message = "กรุณากรอกชื่อธนาคารและเลขบัญชีให้ครบถ้วน"
-        else:
-
-            PaymentMethod.objects.create(
-                restaurant_profile=restaurant_profile,
-                bank_name=bank_name,
-                account_number=account_number
-            )
-         
-            #return redirect('restaurant:add_payment')
-            return redirect('restaurant:edit_menu_payment')
-
-
-    payment_methods = PaymentMethod.objects.filter(restaurant_profile=restaurant_profile)
-    
-
-    return render(request, "add_payment.html", {
-        'payment_methods': payment_methods,
-        'error_message': error_message
-    })
-
 def edit_only_menu(request):
     username = request.user.username
     restaurant = get_object_or_404(RestaurantProfile, user_profile__user__username=username)
@@ -250,8 +217,7 @@ def edit_only_menu(request):
                     menu_item.menu_picture = menu_picture
                     menu_item.save()
                     messages.success(request, "Menu picture updated successfully!")
-                else:
-                    messages.error(request, "No picture uploaded!")
+             
             
             menu_item.save()
             return render(request, "edit_only_menu.html", {"restaurant": restaurant, "menu_item": menu_item, "menu_id": menu_id})
@@ -276,56 +242,57 @@ def edit_only_menu(request):
         },
     )
 
+from django.utils import timezone
 @login_required
 def order_confirmation(request, order_id):
-    order = get_object_or_404(Order, id=order_id, restaurant=request.user.userprofile.restaurantprofile)
+    user_profile = request.user.userprofile
+    restaurant_profile = user_profile.restaurantprofile_set.first()
+
+    order = get_object_or_404(Order, id=order_id, restaurant=restaurant_profile)
 
     if request.method == 'POST':
         status = request.POST.get('status')
-        
+
         if status == 'paid':
-            order.status = 'paid'  # เปลี่ยนสถานะเป็น "ชำระเงินแล้ว"
+            order.status = 'paid'
         elif status == 'cooking':
-            order.status = 'cooking'  # เปลี่ยนสถานะเป็น "กำลังทำอาหาร" 
+            order.status = 'cooking'
         elif status == 'completed':
-            order.status = 'completed'  # เปลี่ยนสถานะเป็น "อาหารเสร็จแล้ว"
-            order.completed_at = timezone.now()  # บันทึกเวลาเสร็จสมบูรณ์
-        
+            order.status = 'completed'
+            order.completed_at = timezone.now()
+
         order.save()
 
-    return redirect('restaurant_order_list')
+    return redirect('restaurant:order_list')
 
 
-from django.utils.timezone import make_aware
+
 from django.utils.dateparse import parse_date
-from pytz import timezone
+from django.db.models import Sum
 
 @login_required
 def sales_report(request):
     username = request.user.username
     restaurant = get_object_or_404(RestaurantProfile, user_profile__user__username=username)
-    local_tz = timezone("Asia/Bangkok") 
+
+    # รับค่าจาก query parameters
     start_date = request.GET.get('start_date')
     end_date = request.GET.get('end_date')
 
     # ดึงคำสั่งซื้อที่สถานะเป็น completed
     orders = Order.objects.filter(restaurant=restaurant, status='completed')
 
+    # ถ้ามีการกรอง start_date
     if start_date:
-        start_date = parse_date(start_date)
-       
-        if start_date:
-            start_date = make_aware(datetime.combine(start_date, datetime.min.time()))    
-            orders = orders.filter(order_date__gte=start_date)
+        start_date = parse_date(start_date)  # แปลง start_date เป็นวันที่
+        orders = orders.filter(order_date__date__gte=start_date)  # ใช้ฟิลด์ order_date ในการกรอง
 
-
+    # ถ้ามีการกรอง end_date
     if end_date:
-        end_date = parse_date(end_date)
-        
-        if end_date:
-            end_date = make_aware(datetime.combine(end_date, datetime.max.time()))
-            orders = orders.filter(order_date__lte=end_date)
+        end_date = parse_date(end_date)  # แปลง end_date เป็นวันที่
+        orders = orders.filter(order_date__date__lte=end_date)
 
+    # คำนวณยอดขายรวม
     total_sales = orders.aggregate(Sum('total_price'))['total_price__sum'] or 0
 
     return render(request, 'sales_report.html', {
@@ -336,9 +303,8 @@ def sales_report(request):
         'end_date': end_date,
     })
 
+
 def add_payment(request):
-    if not request.user.is_authenticated:
-        return HttpResponseRedirect(reverse('login'))
 
     restaurant_profile = RestaurantProfile.objects.get(user_profile__user=request.user)
     error_message = None
