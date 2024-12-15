@@ -2,6 +2,7 @@ from django.urls import path
 from . import views
 from django.conf import settings
 from django.conf.urls.static import static
+from django.contrib.auth import views as auth_views
 
 app_name = "restaurant"
 
@@ -20,6 +21,7 @@ urlpatterns = [
     path('order_confirmation/<int:order_id>/', views.order_confirmation, name='order_confirmation'),
     path('sales_report/', views.sales_report, name='sales_report'),
     #path('delete_menu', views.delete_menu, name='delete_menu'),
+    path('accounts/login/', auth_views.LoginView.as_view(), name='login'),
 ]
 
 if settings.DEBUG:  # ใช้เฉพาะในโหมด debug (development server)

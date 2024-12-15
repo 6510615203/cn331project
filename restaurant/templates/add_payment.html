@@ -13,6 +13,26 @@
 <div class="main-container">
     <div class="form-wrapper">
         <h1 class="text-center">เพิ่มช่องทางการชำระเงิน</h1>
+    
+        {% if error_message %}
+            <div class="error-message" style="color: red; text-align: center;">
+                {{ error_message }}
+            </div>
+        {% endif %}
+    
+        {% if payment_methods %}
+            <h2 class="text-center">บัญชีธนาคารที่มีอยู่</h2>
+            <ul class="bank-list">
+                {% for method in payment_methods %}
+                    <li class="bank-item">
+                        ชื่อธนาคาร: {{ method.bank_name }} | เลขบัญชี: {{ method.account_number }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="no-data" style="text-align: center; color: gray;">ยังไม่มีบัญชีธนาคารที่เพิ่มไว้</p>
+        {% endif %}
+    
         <form method="post" class="form-container">
             {% csrf_token %}
             <div class="form-group">

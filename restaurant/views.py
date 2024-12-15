@@ -17,6 +17,8 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 from django.db.models import Count
 from django.db.models import Q
+from datetime import datetime
+from django.test import TestCase, Client
 # Create your views here.
 def index(request):
     username = request.user.username
@@ -221,8 +223,8 @@ def edit_only_menu(request):
 
     if request.method == "POST":
         menu_id = request.POST.get("menu_id")
-        print("POST data:", request.POST)
-        print("Menu ID received:", menu_id)
+        if not menu_id:
+            return HttpResponse(status=404)
         if menu_id:
             menu_item = get_object_or_404(Menu, id=menu_id)
             if request.POST.get('delete_menu') == 'true':
@@ -244,7 +246,6 @@ def edit_only_menu(request):
                 menu_item.price = price
             elif "menu_picture" in request.FILES:
                 menu_picture = request.FILES["menu_picture"]
-                print("Menu picture received:", menu_picture)  # ตรวจสอบว่าไฟล์ถูกส่งมาหรือไม่
                 if menu_picture:
                     menu_item.menu_picture = menu_picture
                     menu_item.save()
@@ -295,14 +296,15 @@ def order_confirmation(request, order_id):
     return redirect('restaurant_order_list')
 
 
-from django.db.models import Sum
+from django.utils.timezone import make_aware
 from django.utils.dateparse import parse_date
+from pytz import timezone
 
 @login_required
 def sales_report(request):
     username = request.user.username
     restaurant = get_object_or_404(RestaurantProfile, user_profile__user__username=username)
-
+    local_tz = timezone("Asia/Bangkok") 
     start_date = request.GET.get('start_date')
     end_date = request.GET.get('end_date')
 
@@ -311,13 +313,19 @@ def sales_report(request):
 
     if start_date:
         start_date = parse_date(start_date)
-        orders = orders.filter(order_date__date__gte=start_date)  # ใช้ฟิลด์ order_date ในการกรอง
+       
+        if start_date:
+            start_date = make_aware(datetime.combine(start_date, datetime.min.time()))    
+            orders = orders.filter(order_date__gte=start_date)
+
 
     if end_date:
         end_date = parse_date(end_date)
-        orders = orders.filter(order_date__date__lte=end_date)
+        
+        if end_date:
+            end_date = make_aware(datetime.combine(end_date, datetime.max.time()))
+            orders = orders.filter(order_date__lte=end_date)
 
-    # คำนวณยอดขายรวม
     total_sales = orders.aggregate(Sum('total_price'))['total_price__sum'] or 0
 
     return render(request, 'sales_report.html', {
@@ -329,36 +337,43 @@ def sales_report(request):
     })
 
 def add_payment(request):
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse('login'))
+
     restaurant_profile = RestaurantProfile.objects.get(user_profile__user=request.user)
-  
     error_message = None
 
     if request.method == 'POST':
         bank_name = request.POST.get('bank_name', '').strip()
         account_number = request.POST.get('account_number', '').strip()
 
+        # ตรวจสอบว่าชื่อธนาคารหรือเลขบัญชีว่างเปล่า
         if not bank_name or not account_number:
             error_message = "กรุณากรอกชื่อธนาคารและเลขบัญชีให้ครบถ้วน"
+        # ตรวจสอบว่าเลขบัญชีเป็นตัวเลขเท่านั้น
+        elif not account_number.isdigit():
+            error_message = "กรุณากรอกเลขบัญชีที่ถูกต้อง"
+        # ตรวจสอบความซ้ำซ้อน
+        elif PaymentMethod.objects.filter(
+                restaurant_profile=restaurant_profile,
+                bank_name=bank_name,
+                account_number=account_number).exists():
+            error_message = "บัญชีนี้มีอยู่แล้ว"
         else:
-
+            # บันทึกข้อมูลเมื่อผ่าน Validation ทั้งหมด
             PaymentMethod.objects.create(
                 restaurant_profile=restaurant_profile,
                 bank_name=bank_name,
                 account_number=account_number
             )
-         
-            #return redirect('restaurant:add_payment')
             return redirect('restaurant:edit_menu_payment')
 
-
     payment_methods = PaymentMethod.objects.filter(restaurant_profile=restaurant_profile)
-    
-
     return render(request, "add_payment.html", {
         'payment_methods': payment_methods,
         'error_message': error_message
     })
-
+    
 def edit_only_payment(request):
     username = request.user.username
     restaurant = get_object_or_404(RestaurantProfile, user_profile__user__username=username)
@@ -369,8 +384,6 @@ def edit_only_payment(request):
 
     if request.method == "POST":
         payment_id = request.POST.get("payment_id")
-        print("POST data:", request.POST)
-        print("Payment ID received:", payment_id)
         if payment_id:
             payment_item = get_object_or_404(PaymentMethod, id=payment_id)
             if request.POST.get('delete_payment_method') == 'true':
@@ -403,3 +416,4 @@ def edit_only_payment(request):
             "is_editing": is_editing,
         },
     )
+    
