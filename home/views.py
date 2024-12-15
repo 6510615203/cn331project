@@ -53,12 +53,9 @@ def choose_regis(request):
         if user_type == 'restaurant':
             return redirect("register") 
         else:
-            return redirect("customer_register")            
+            return redirect("register")            
             
     return render(request, "choose_regis.html")
-
-def customer_register(request):
-    return render(request, "customer_register.html")
 
 def restaurant_register(request):
     username = request.user.username  # รับ username จาก query parameter
@@ -199,10 +196,10 @@ def register(request):
 # ตรวจสอบการเข้าสู่ระบบ
 def authenticate_user_profile(username, password):
     try:
-        user = UserProfile.objects.get(username=username)
+        user_profile = UserProfile.objects.get(user__username=username)
         # ตรวจสอบรหัสผ่าน
-        if check_password(password, user.password):  # ใช้ check_password เพื่อเช็คการเข้ารหัส
-            return user
+        if check_password(password, user_profile.user.password):  # ใช้ check_password เพื่อเช็คการเข้ารหัส
+            return user_profile
         else:
             return None
     except UserProfile.DoesNotExist:
@@ -226,10 +223,11 @@ def login_view(request):
                 user_type = profile.user_type
             except UserProfile.DoesNotExist:
                 user_type = None
+                return redirect("index")
 
             if user_type == "restaurant":
                 messages.success(request, "Login successfully!")
-                return redirect("restaurant:index")  
+                return redirect("/restaurant/")  
             else:
                 messages.success(request, "Login successfully!")
                 return redirect("/order/") 
@@ -344,11 +342,6 @@ def your_order(request):
     orders = Order.objects.filter(user_profile=request.user.userprofile, status='waiting_for_payment')
     return render(request, 'your_order.html', {'orders': orders})
 
-@login_required
-def order_status(request):
-    orders = Order.objects.filter(user_profile=request.user.userprofile)
-
-    return render(request, "order_status.html", {"orders": orders})
 
 @login_required
 def upload_payment_slip(request, order_id):
